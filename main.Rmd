@@ -1,0 +1,84 @@
+---
+title: "Statistical Machine Learning for Modeling Foodborne Disease Outbreaks"
+## subtitle: "Assignment 1"
+author: 
+- Amos Okutse
+- Zexuan Yu
+- Rophence Ojiambo
+date: "  `r format(Sys.time(), '%d %B, %Y')` "
+abstract: |
+  Here is a line
+  
+  Here is another line which can be longer.
+keywords: "nothing, nothingness"
+header-includes:
+- \usepackage{pdflscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+- \usepackage{fvextra}
+- \usepackage{float}
+- \usepackage{wrapfig}
+- \usepackage{amsmath}
+- \usepackage{threeparttable} %used to fix table with notes
+- \usepackage{float}
+- \usepackage{graphicx}
+- \usepackage{microtype}
+- \usepackage{setspace}
+- \usepackage[font=singlespacing]{caption} #can change font here for captions here!!
+- \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines, commandchars=\\\{\}}
+- \singlespacing
+fontsize: 10pt
+output:
+  bookdown::pdf_document2:
+    latex_engine: xelatex
+    toc: false
+    toc_depth: 4
+    number_sections: false
+    keep_md: true
+link-citations: yes
+colorlinks: yes
+linkcolor: blue
+urlcolor: blue
+bibliography: references.bib
+csl: sage-vancouver-brackets.csl
+---
+
+## Introduction
+
+Some paper used the data set [@sanaa2019genomegraphr].
+
+
+## Related Literature
+
+
+
+## Methodology
+
+
+
+## Results
+
+
+
+
+### Exploratory data analysis
+
+
+
+### Statistical modeling
+
+
+
+## Discussion
+
+
+
+## Conclusion
+
+
+
+
+## References
+
+<div id="refs"></div>
+

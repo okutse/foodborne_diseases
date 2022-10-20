@@ -5,7 +5,7 @@ author:
 - Amos Okutse
 - Zexuan Yu
 - Rophence Ojiambo
-date: "  19 October, 2022 "
+date: "  20 October, 2022 "
 abstract: |
   Here is a line
   
@@ -43,90 +43,108 @@ bibliography: references.bib
 csl: sage-vancouver-brackets.csl
 ---
 
+
+
+
 ## Introduction
 
-Some paper used the data set [@sanaa2019genomegraphr].
+The burden of foodborne illnesses remains substantially high across the globe. Contaminated food has been implicated in 600 million foodborne disease incidences and 420, 000 deaths per year worldwide with children below five years accounting for one-third of the total fatalities [@who2015, @Lee2021]. In the United States, foodborne illnesses result in about 128, 000 hospitalizations and about 3000 fatalities [@tanui2022machine]. Known pathogens account for most of the reported cases with most illnesses being caused by noroviruses (58%), followed by non-typhoid salmonella (11%), Clostridium perfringens (10%), and *Campylobacter SPP.* (9%) whereas non-typhoid salmonella (35%), and norovirus (26%) account for the most hospitalizations [@Scallan2011]. *Salmonella enterica*, *E-coli*, and *Listeria monocytogenes* remain the three most common pathogens responsible for most foodborne disease outbreaks, defined as two or more cases of a similar illness resulting from the ingestion of a common food [@tanui2022machine; @gourama2020foodborne].
+
+*Listeria monocytogenes* remains one of the most severe causes of foodborne-related disease burden despite its characterization with low morbidity, particularly, due to the severity of its clinical manifestations [@chlebicz2018campylobacteriosis, @filipello2020attribution]. With the immuno-compromised, pregnant women, the elderly, and infants characterized as being at high risk for listeriosis, it is ranked as the third top cause of foodborne illness-associated deaths in the US [@lomonaco2015evolution]. The US Centers for Disease Control and Prevention (CDC) notes that about 1600 cases of listeriosis are recorded annually with about 260 mortalities [@cdc2022]. Outbreak investigations have shown links between these pathogens and specific food sources, a crucial phenomenon in identifying potential areas of food safety concern including points of contamination and the current performance of foodborne illness prevention strategies [@tanui2022machine].
+
+In recent times, core genome multilocus sequence typing (cgMLST) has been employed to corroborate epidemiological findings, in addition to auditing the effect of public health interventions targeting the food chain on the food reservoirs [@tanui2022machine, @Munck2020]. This methodology enables differentiation of isolates and can be used to link them to their potential food sources in studies seeking to infer the food source of an outbreak given a pathogenic strain and ultimately result in a reduction in the incidence of foodborne illnesses [@tanui2022machine, @Munck2020]. Since the pathogens associated with foodborne illnesses are prone to change, understanding the role of these changes in their adaptation to food handling practices is imperative in the effective surveillance of the distribution, as well as, the occurrence of the pathogens. Moreover, the use of genomic data with machine learning methods has gained precedence due to the ability of these methods to learn patterns in high-dimensional data sets which are then exploited in predictive models [@Munck2020]. 
+
+Even though machine learning models promise substantial gains in outbreak investigations, particularly while thinking about the use of cgMLST profiles in foodborne disease source attribution studies, there are a limited number of studies that have explored this avenue while thinking about the gains that these methods promise in allowing exploration of how foodborne pathogens adapt to or respond to food handling practices and how this information can be analyzed and ultimately reduce the incidence of listeriosis in humans. For instance, @tanui2022machine built a machine-learning model for food source attribution of Listeria monocytogenes using a boosted logit model whereas @Njage2019 employed next-generation sequencing using support vector machines with linear kernels to predict the risk of illnesses. 
+
+Additionally, Lupolova et al. [@lupolova2017patchy], Munck et al. [@Munck2020], Tanui et al. [@tanui2022machine], and Karanth et al. [@karanth2022exploring] employed these methodologies in studying *Salmonella enterica*. Varied statistical methods have been employed in analyzing foodborne disease outbreak dynamics. For listeria outbreaks, advanced statistical analysis methods have also come into play including studies by Liu et al. [@liu2021machine] and Vangay et al., [@vangay2014classification] which used machine learning methods to provide advice on listeria outbreaks. On the other hand, Sun et al. [@sun2019quantitative] used Markov chain Monte Carlo (MCMC) to simulate the risk of a Listeria outbreak whereas Pasonen et al. [@pasonen2019listeria] employed a repeated exposures model to assess the risk of a Listeria outbreak in Finnish fish products. Mughini-Gras et al. [@mughini2022statistical] conducted a meta-analysis of sporadic infection sources of some pathogens including Listeria based on the Bayesian framework whereas Lassen et al., [@lassen2016two] used whole genome sequencing to analyze the risk of listeria outbreaks.
+ 
+Given the serious threat of foodborne diseases and the high burden posed by listeriosis on human health, this research project seeks to expand the literature on foodborne disease source attribution for human listeriosis using Bayesian and ensemble-based machine learning methods and core genome multilocus sequencing typing data and other selected information about the sampled *Listeria monocytogenes* isolates in the US. In particular, the study seeks to evaluate common food categories and their link to foodborne illnesses using pathogenic isolates. The study seeks to explore the question: Given a human Listeriosis monocytogene isolate how likely is it to be from a particular isolate? This study is informed by the need to leverage emerging technologies to identify strategies to enhance food safety, and the food production process and ultimately reduce the burden of foodborne illnesses. The prevention of the transmission of foodborne illnesses promises substantial improvements in public health. Modeling periodic human cases of diseases attributable to food sources as well as animal reservoirs informs the public health decision making process [@pires2014source, @Munck2020].  
+
+## Data overview
+
+### Data source
+
+This project uses secondary data downloaded on the 18th October, 2022 from the National Center for Biotechnology Information (NCBI) Pathogen Detection database [@ncbi2016] which assimilates bacterial and fungal pathogen genomic sequences from sources including food, environment, and patient samples. The data are contributed by researchers and public health agencies who sequence samples and submit them to NCBI where the sequences are analyzed and compared to identify relations between sequences and thus aid the investigation of outbreaks including real-time surveillance of pathogens such as those for foodborne illnesses. The isolates present in the database were collected by 390 different institutions and organizations. Even though the NCBI pathogen detection allows real-time identification of clusters of related genomic sequences to aid in outbreak detection, and track the spread of resistance genes, a potential limitation of this data source is that it does not identify outbreaks or outbreak memberships and analyses rely solely on publicly available data submitted to the database. 
+
+### Data and variable descriptions
+
+The data used in analyses in this project consisted of n=53, 725 *Listeria monocytogenes* pathogens with 50 variables related to the pathogenic strains submitted, including information about who collected the isolate, its taxonomic name, its isolation source, date of collection (day, month, year), country or state from which the strain originated, among other metadata. Given the vast amount of information available in the database, these analyses employed an inclusion criteria to select strains for further analysis. In particular, for consideration and inclusion into the analysis sample, the isolate had to have a non-missing location, had been collected in the US, had a non-missing isolation source, and IFSAC category. The analysis sample based on this inclusion criteria included a total of n = 14, 810 *Listeria monocytogenes* pathogens. Figure \@ref(fig:fig-one) summarizes the isolate inclusion criteria for analysis in this project.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.5\linewidth]{figures/data_cleaning} 
+
+}
+
+\caption{The flow of the data cleaning process based on the specified isolate inclusion criteria.}(\#fig:fig-one)
+\end{figure}
+
+There were 42,794 unique strains collected across the US states represented in this data set, a reflection of the variation and heterogeneity of the data. Additionally, there were 1403 unique isolation sources which comprise of *17,344 clinical types and 30,356 environmental/other types*. The data has 285 unique isolate sourcing categories as developed by IFSAC category scheme, 90 unique hosts, and 67 unique host diseases. To make meaningful comparisons in relation to our objective, we aggregate the IFASC category into 7 broad  categories and examine the collection date to create date variables to explore trends over time. Since the `Collection date` variable contains the date the sample were collected in the format the submitter supplied ranging from Month-Date-Year, Year-Month and Year only while the `Create date` is in the Year-Month-Date ISO format with time stamp the data was added into the Pathogen Detection Project, we reduced these variables to extract information on Year only to maintain consistency in terms of available year records. There were 296 different AMR genotypes, and 39 different outbreaks. Table \@ref(tab:table-one) summarizes selected variables from the data set.
+
+\begin{table}
+
+\caption{(\#tab:table-one)Variable descriptions}
+\centering
+\begin{tabular}[t]{>{}l>{\raggedright\arraybackslash}p{11cm}}
+\toprule
+\textbf{Variable} & \textbf{Description}\\
+\midrule
+\textbf{Organism group} & The name of the taxonomy group that the isolate belongs to and is represented by the Genus species name, for our case we shall focus on Listeria monocytogenes.\\
+\textbf{Isolate} & The unique Pathogen Detection accession of the isolate  where each accession has a prefix (PDT), which stands for Pathogen Detection Target.\\
+\textbf{IFSAC category} & Categories of isolate sourcing information as developed by The Interagency Food Safety Analytics Collaboration (IFSAC).\\
+\textbf{Isolation Source} & Provides information on the physical, environmental and/or local geographical source of the biological sample from which the sampled was derived.\\
+\textbf{Isolation Type} & Contains categories of the isolation sources into either clinical or environmental/other groups.\\
+\addlinespace
+\textbf{Strain} & Denotes the microbial strain name used to distinguish a genetically distinct lineage separated from another strain by one or two mutations.\\
+\textbf{Host} & Refers to the host species of the isolate such as Animal, Homo sapiens, Sheep, Pigeon, Horse and Guinea pig.\\
+\textbf{Host Disease} & Host disease matches the identified isolate to a disease origin, for example Listeriosis, gastroenteritis, Meningitis and Septicaemia.\\
+\textbf{Collection Date} & Gives the date the sample was collected.\\
+\textbf{Create Date} & Gives the date on which the isolates were first seen by the Pathogen Detection system.\\
+\addlinespace
+\textbf{Outbreak} & Defines a way to group isolates that originated due to the same breakout among a specific group of people or within a specific area over a period of time.\\
+\textbf{BioSample} & Describes the biological source materials used in experimental assay.\\
+\textbf{Lat/Lon} & Provides the geographical coordinates (latitude and longitude) of the location where the sample was collected.\\
+\textbf{Location} & Provides the geographical origin of the sample (Country or Region).\\
+\textbf{Min-Same} & Represents the minimum single nucleotide polymorphism (SNP) distance to another isolate of the same isolation type for example, the minimum SNP distance from one clinical isolate to another clinical isolate.\\
+\addlinespace
+\textbf{Min Diff} & Represents the minimum SNP distance to another isolate of a different isolation type. For example, the minimum SNP difference from a clinical isolate to an environmental isolate.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+### Potential limitations of the data
+
+Even though the NCBI pathogen detection allows real-time identification of clusters of related genomic sequences to aid in outbreak detection, and track the spread of resistance genes, a potential limitation of this data source is that it does not identify outbreaks or outbreak memberships and analyses rely solely on publicly available data submitted to the database. Additionally, the database allows a lot of flexibility in the naming conventions which results in substantial heterogeneity that make it difficult to query and extract meaningful patterns for microbial risk assessments [@sanaa2019genomegraphr]. For instance, the “collected by” and “isolation source” are fields entered as free text which are very extreme in the options they present for analysis. Moreover, there are a lot of missing data on potentially useful fields, a scenario that makes it difficult to derive inferences that could inform food policies.
+
+### Data preprocessing
+
+We then use line plots an initial exploration of the trends in number of *Listeria monocytogenes* over time, the line plot in Figure 2 shows a non-linear trend. There was a moderate increase in sample collected from the year 2010 to 2012, which was followed by a relatively sharp increase through the year 2016. From 2016 to 2020, there was variation in terms of steady increase and decrease that was later followed by a sustained decrease in the samples collected from the year 2020 through 2022.
 
 
-## Related Literature
 
-
-
-## Methodology
-
-
-
-## Results
-
-\newpage
-### Exploratory data analysis
-
-### Variables Description
-
-The listeria dataset as of last download on 10/18/2022 from the NCBI dataset had 53,725 observations with a total of 50 variables. Below is information on the variables of interest in our study as described in \textbf{Table 1.}
-
-
-\textbf{Organism group}
-
-This variable denotes the name of the taxonomy group that the isolate belongs to and is represented by the Genus species name and for our case we shall focus on Listeria monocytogenes. 
-
-\textbf{Isolate}
-
-The isolate variable gives the unique Pathogen Detection accession of the isolate  where each accession has a prefix "PDT," which stands for Pathogen Detection Target.
-
-\textbf{IFSAC category}
-
-This variable defines the categories of isolate sourcing information as developed by The Interagency Food Safety Analytics Collaboration (IFSAC).
-
-
-\textbf{Isolation Source and Isolation Type}
-
-Isolation source provides information on the physical, environmental and/or local geographical source of the biological sample from which the sampled was derived. Examples include cheese, blood,environmental swab, stool, tuna salad and smoked salmon. On the other hand, Isolation type categorizes the isolation sources into either clinical or environmental/other broad groups. These are the key variables in our study.
-
-\textbf{Strain}
-
-The strain variable gives the microbial strain name. It's used to distinguish a genetically distinct lineage separated from another strain by one or two mutations. Different strings of strains indicate different genetic variants or subtypes of microorganisms. 
-
-\textbf{Host and Host Disease}
-
-Host refers to the host species of the isolate such as Animal, Homo sapiens, Sheep, Pigeon, Horse and Guinea pig whereas Host disease matches the identified isolate to a disease origin, for example Listeriosis, gastroenteritis, Meningitis and Septicaemia.
-
-\textbf{Collection Date and Create Date}
-
-Collection Date gives us the date the sample was collected which may differ from the Create date that gives the date on which the isolates were first seen by the Pathogen Detection system.
-Note: Decide on one of the two
-
-\textbf{Outbreak}
-
-The outbreak variable is a way to group isolates that originated due to the same breakout. It is a submitter given name for the occurrence of more cases of a disease than expected among a specific group of people or within a specific area over a period of time. 
-
-\textbf{BioSample}
-
-BioSample variable describes the biological source materials used in experimental assays.
-
-\textbf{Lat/Lon and Location}
-
-Lat/Lon provides the geographical coordinates (latitude and longitude) of the location where the sample was collected while location provides the geographical origin of the sample (Country or Region)
-
-\textbf{Min-Same and Min Diff}
-
-Min-same variable represents the minimum single nucleotide polymorphism (SNP) distance to another isolate of the same isolation type for example, the minimum SNP distance from one clinical isolate to another clinical isolate, while the Min-diff is the minimum SNP distance to another isolate of a different isolation type. For example, the minimum SNP difference from a clinical isolate to an environmental isolate.
 
 ### Missing Data
 
-We shall start by assessing the missingness in our dataset. \textbf{Figure 1} shows us the overall missingness of our selected variables ordered from the least to the largest missing percentage. Key to note here is that there is over 86% missing observations in the variables Host Disease, Lat/Long, and Outbreak, with Outbreak having the most percentage (99.54%) of missing values. This amount of missingness will be a major limitation of our study as these variables may not be informative in our analysis and may limit the interpretation and generalizability of our study findings.
+We shall start by assessing the missingness in our data set. \textbf{Figure 1} shows us the overall missingness of our selected variables ordered from the least to the largest missing percentage. Key to note here is that there is over 86% missing observations in the variables Host Disease, Lat/Long, and Outbreak, with Outbreak having the most percentage (99.54%) of missing values. This amount of missingness will be a major limitation of our study as these variables may not be informative in our analysis and may limit the interpretation and generalizability of our study findings.
 
-### Variable Distributions
+## Exploratory data analysis
 
-Next, we shall explore our data to get a sense of the variable distributions. Our data has 53,725 and 53694 unique isolates and BioSamples respectively. There are 42,7948 unique strains represented in our dataset, a reflection of the variation and heterogeneity of our data. Additionally, there are 3084 unique isolation sources which comprise of 17,344 clinical types and 30,356 environmental/other types. The data has 285 unique isolate sourcing categories as developed by IFSAC category scheme, 90 unique Hosts, and 67 unique Host Disease. To make meaningful comparisons in relation to our objective, we shall aggregate the IFASC category into 7 broad  categories. Next, we examine the collection date and create date variables to see the time frame of our dataset. Since the collection date variable contains the date the sample was collected in the format the submitter supplied ranging from Month-Date-Year, Year-Month and Year only while the Create date is in the Year-Month-Date ISO format with time stamp the data was added into the Pathogen Detection Project, we shall reduce these variables to extract information on Year only to maintain consistency in terms of available year records. 
+### Descriptive statistics
 
-As an initial exploration of the trends in number of Listeria monocytogenes over time, the line plot in Figure 2 shows a non-linear trend. There was a moderate increase in sample collected from the year 2010 to 2012, which was followed by a relatively sharp increase through the year 2016. From 2016 to 2020, there was variation in terms of steady increase and decrease that was later followed by a sustained decrease in the samples collected from the year 2020 through 2022.
 
-Next, we aggregate the IFSAC isolate sourcing categories into 7 categories named; Dairy, Fruits, Leafy Greens, Meat, Poultry, Seafood and Vegetables, then further explore relationships with other variables in the dataset.
+Figure \@ref(fig:figure-two)
 
+\begin{figure}[H]
+
+{\centering \includegraphics{main_files/figure-latex/figure-two-1} 
+
+}
+
+\end{figure}
 
 
 \newpage
+
 ### Statistical modeling
 
 
@@ -136,6 +154,7 @@ Next, we aggregate the IFSAC isolate sourcing categories into 7 categories named
 
 
 ## Conclusion
+
 
 
 

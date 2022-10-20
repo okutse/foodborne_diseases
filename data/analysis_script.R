@@ -1,22 +1,32 @@
-# data goes here!
+################################################################################
+## Data analysis for the final project
+## Amos Okutse
+## Rophence Ojiambo
+## Zexhuan Yu
+## PHP2550 Practical Data Anlysis
+################################################################################
 
-# Required libraries
+
+# Load the required libraries for data analysis
 library(tidyverse)
 library(lubridate)
 library(anytime) # dates
 library(kableExtra)
 library(naniar) # Missing data
+library(tidyr) # for data cleaning
+library(stringr) # for working with characters
 
-
+################################################################################
+# DATA AND VARIABLE DESCRIPTIONS
+################################################################################
 # loading in the data
 listeria_data <- read.csv("data/listeria_isolates.csv")
 
-# viewing first 6 rows
-head(listeria_data)
+## viewing variable names
+names(listeria_data)
 dim(listeria_data) # as of 10/18/2022 data has 53725 observations with 50 variables
 
-# Variable Descriptions
-
+## Table 1: Description of selected variables in the Listeria pathogen data set
 variables <- c("Organism group","Isolate","IFSAC category", "Isolation Source", "Isolation Type","Strain", "Host", "Host Disease",
                "Collection Date", "Create Date", "Outbreak", "BioSample", "Lat/Lon", "Location", "Min-Same", "Min Diff")
 description <- c("The name of the taxonomy group that the isolate belongs to and is represented by the Genus species name, for our case we shall focus on Listeria monocytogenes.",
@@ -37,18 +47,54 @@ description <- c("The name of the taxonomy group that the isolate belongs to and
     "Represents the minimum SNP distance to another isolate of a different isolation type. For example, the minimum SNP difference from a clinical isolate to an environmental isolate.")
 
 var_desc <- data.frame(Variable = variables, Description = description)
-kable(var_desc, caption = "Variable Descriptions")%>%
-  kable_styling(full_width = FALSE, latex_options = 
-                  c("HOLD_position","stripped"))%>%
-  column_spec(1, bold = TRUE)%>%
-  row_spec(0, bold = TRUE) %>%
-  column_spec(2, width = "30cm")
+################################################################################
+## Data pre-processing
+################################################################################
+### convert characters to factors in the dataset
+listeria_data <- listeria_data %>% 
+  dplyr::mutate_if(is.character, as.factor)
 
-
-# Data pre-processing
-
-# Replacing empty strings with NA value 
+### Replacing empty strings with NA value 
 listeria_data[listeria_data == ""] <- NA
+### create a subset of the data with isolates included if non missing location, isolation source, IFSAC category and in the US
+df <- listeria_data
+dim(df)
+## filter out strains with missing location
+df <- df %>% 
+  filter(!is.na(Location))
+dim(df) #47216 not NA
+## filter out isolates with missing isolation source
+df <- df %>% 
+  filter(!is.na(Isolation.source))
+dim(df) #38420 not NA
+## filter out isolates with missing IFSAC food category
+df <- df %>% 
+  filter(!is.na(IFSAC.category))
+dim(df) #16755 not NA
+## filter to isolates only in the USA
+df <-df[str_detect(df$Location, "USA"), ]
+dim(df) #14810 obs
+## drop the unused levels in the location variable to have 57 levels of the US
+df$Location <- droplevels(df$Location)
+## include only listeria monocytogenes
+df <- df %>% 
+  filter(Scientific.name == "Listeria monocytogenes")
+dim(df) #14653 
+## view the data structure
+str(df)
+## drop unused levels or levels with count zero from the data set
+length(levels(df$Isolation.source))
+df$Isolation.source <- droplevels(df$Isolation.source)
+df$IFSAC.category<- droplevels(df$IFSAC.category)
+
+## overall missing data
+sum(is.na(df))/prod(dim(df))*100 #23%
+
+
+#df$new=grepl("fish", df$Isolation.source, ignore.case = TRUE)
+
+
+
 
 listeria_cols <- names(listeria_data)[c(9,25,27,29, 31:34, 39:43, 45:47)]
 

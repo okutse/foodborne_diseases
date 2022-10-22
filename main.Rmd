@@ -87,42 +87,73 @@ The data used in analyses in this project consisted of n=53, 725 *Listeria monoc
 knitr::include_graphics("figures/data_cleaning.jpg")
 ```
 
-There were 42,794 unique strains collected across the US states represented in this data set, a reflection of the variation and heterogeneity of the data. Additionally, there were 1403 unique isolation sources which comprise of *17,344 clinical types and 30,356 environmental/other types*. The data has 285 unique isolate sourcing categories as developed by IFSAC category scheme, 90 unique hosts, and 67 unique host diseases. To make meaningful comparisons in relation to our objective, we aggregate the IFASC category into 7 broad  categories and examine the collection date to create date variables to explore trends over time. Since the `Collection date` variable contains the date the sample were collected in the format the submitter supplied ranging from Month-Date-Year, Year-Month and Year only while the `Create date` is in the Year-Month-Date ISO format with time stamp the data was added into the Pathogen Detection Project, we reduced these variables to extract information on Year only to maintain consistency in terms of available year records. There were 296 different AMR genotypes, and 39 different outbreaks. Table \@ref(tab:table-one) summarizes selected variables from the data set.
+### Data preprocessing
+
+There were 42,794 unique strains collected across the US states represented in this data set, a reflection of the variation and heterogeneity of the data. Additionally, there were 1403 unique isolation sources which comprise of *17,344 clinical types and 30,356 environmental/other types*. There were 296 different AMR genotypes, and 39 different outbreaks. The data has 285 unique isolate sourcing categories as developed by IFSAC category scheme, 90 unique hosts, and 67 unique host diseases. To make meaningful comparisons in relation to our objective, we aggregate the IFASC category into 7 broad  categories and examine the collection date to create date variables to explore trends over time. Since the `Collection date` variable contains the date the sample were collected in the format the submitter supplied ranging from Month-Date-Year, Year-Month and Year only while the `Create date` is in the Year-Month-Date ISO format with time stamp the data was added into the Pathogen Detection Project, we first convert these into a standard form of Year-Month-Date. Then for `Collection date` variable with missing values, we choose to fill in these dates by using those from the `Create date`. Finally we create new `Year` and `Month` variables and extract the respective years and months from the`Collection date` variable to maintain consistency in terms of available year records. For the Location variable, we reduced this to only include 50 states in the United States and 1 District (Puerto Rico). Table \@ref(tab:table-one) summarizes selected variables from the data set.
+
+
+### Potential data limitations
+
+Even though the NCBI pathogen detection allows real-time identification of clusters of related genomic sequences to aid in outbreak detection, and track the spread of resistance genes, a potential limitation of this data source is that it does not identify outbreaks or outbreak memberships and analyses rely solely on publicly available data submitted to the database. Additionally, the database allows a lot of flexibility in the naming conventions which results in substantial heterogeneity that make it difficult to query and extract meaningful patterns for microbial risk assessments [@sanaa2019genomegraphr]. For instance, the “collected by” and “isolation source” are fields entered as free text which are very extreme in the options they present for analysis. Moreover, there are a lot of missing data on potentially useful fields, a scenario that makes it difficult to derive inferences that could inform food policies.
+
 
 ```{r table-one, warning=FALSE}
 kable(var_desc, format = "latex", caption = "Variable descriptions", booktabs = TRUE)%>%
-  kable_styling(full_width = FALSE)%>%
+  kable_styling(full_width = FALSE, latex_options = "HOLD_position")%>%
   column_spec(1, bold = TRUE)%>%
   row_spec(0, bold = TRUE) %>%
   column_spec(2, width = "11cm")
 ```
 
-### Potential limitations of the data
-
-Even though the NCBI pathogen detection allows real-time identification of clusters of related genomic sequences to aid in outbreak detection, and track the spread of resistance genes, a potential limitation of this data source is that it does not identify outbreaks or outbreak memberships and analyses rely solely on publicly available data submitted to the database. Additionally, the database allows a lot of flexibility in the naming conventions which results in substantial heterogeneity that make it difficult to query and extract meaningful patterns for microbial risk assessments [@sanaa2019genomegraphr]. For instance, the “collected by” and “isolation source” are fields entered as free text which are very extreme in the options they present for analysis. Moreover, there are a lot of missing data on potentially useful fields, a scenario that makes it difficult to derive inferences that could inform food policies.
-
-### Data preprocessing
-
-We then use line plots an initial exploration of the trends in number of *Listeria monocytogenes* over time, the line plot in Figure 2 shows a non-linear trend. There was a moderate increase in sample collected from the year 2010 to 2012, which was followed by a relatively sharp increase through the year 2016. From 2016 to 2020, there was variation in terms of steady increase and decrease that was later followed by a sustained decrease in the samples collected from the year 2020 through 2022.
-
-
-
 
 ### Missing Data
 
-We shall start by assessing the missingness in our data set. \textbf{Figure 1} shows us the overall missingness of our selected variables ordered from the least to the largest missing percentage. Key to note here is that there is over 86% missing observations in the variables Host Disease, Lat/Long, and Outbreak, with Outbreak having the most percentage (99.54%) of missing values. This amount of missingness will be a major limitation of our study as these variables may not be informative in our analysis and may limit the interpretation and generalizability of our study findings.
+We shall start by assessing the missingness in our data set. Figure \@ref(fig:fig-two) shows us the overall missingness of our selected variables ordered from the least to the largest missing percentage. Key to note here is that there is over 86% missing observations in the variables Host Disease, Lat/Long, and Outbreak, with Outbreak having the most percentage (99.54%) of missing values. This amount of missingness will be a major limitation of our study as these variables may not be informative in our analysis and may limit the interpretation and generalizability of our study findings.
+
+
+```{r fig-two, fig.align='center', fig.cap="Missing values in variables"}
+figure_one
+```
+
 
 ## Exploratory data analysis
 
-### Descriptive statistics
+### Overall trends grouped by Isoaltion type
 
+We used descriptive statistics to first examine the proportion represented by our main variable of interest, the isolation source which originally had 1401 unique values. Upon further examination, we found that were due to punctuation, case sensitivity as well as many variations of the naming conventions of a general source. For example, 'cheese', 'white cheese', 'ham cheese', and 'double cheeseburger'. For simplicity and for comparisons purposes, we grouped the isolation sources into broader categories based on the patterns observed in this variable. Ultimately, the number of isolation sources was reduced to 38 broad categories including environmental, food, pork, chicken, beef,turkey, stool, water, other/unspecified. We found that environmental sources were highest at 54.34% followed by other/unspecified sources (9.65%). Water, dairy, and food sources represented 9.65%, 9.24% and 6.43% respectively while fish, beef, and pork represented 1.67%, 1.56%, and 1.47% respectively.
 
-Figure \@ref(fig:figure-two)
+We then used line plots to show an initial exploration of the trends in number of *Listeria monocytogenes* over time. We filtered our data to work with a time frame from the year 2000 to 2022. The line plots in Figure \@ref(fig:fig-three) shows a non-linear trend over time. There was a moderate increase in sample collected from the year 2000 to 2008, which sharply increased until approximately the year 2018. From 2018 to 2020, there was variation in terms of steady decrease/increase that was later followed by another sharp decrease in the samples collected. However, we also observed a slight increase in the counts following the year 2020. Grouped by isolation types, we observed a higher count in the environmental/other types compared to the clinical type which remained relatively lower throught the entire periods of sample collection.
 
-```{r figure-two, fig.align='center', fig.cap=""}
-figure_two
+```{r fig-three, fig.align='center', fig.cap= "Line plots of listeria monocytogenes counts over time and grouped by Isoaltion type"}
+grid.arrange(figure_two, figure_three, ncol=2)
+
 ```
 
+# Trends grouped by Isolation sources.
+
+As mentioned previously, we reduced by `Isolation source` variable to 38 broad categories. In Figure \@ref(fig:fig-four), we explore the trends over time in the counts of `Listeria monocytogenes` for the following sources: beef, chicken, dairy, pork, fish, food, potato, water. We observe that the most common isolate source in our data is dairy, water, followed by food and and pork. 
+
+```{r fig-four, out.width='100%', fig.cap= "Line plots of top Isolation surces for listeria monocytogenes counts over time"}
+
+grid.arrange(figure_four, figure_five, ncol=2)
+
+```
+
+# Distributions of Min Same and Min Difference variables.
+
+Next we examined the distributions of Min Same and Min Difference variables. Min-diff is the minimum SNP distance to another isolate of a different isolation type (from an environmental isolate to a clinical isolate). Figure \@ref(fig:fig-five) shows that `Min Diff` approximately follows a bi-modal distribution. However, after log transformation of this variable, Figure \@ref(fig:fig-six) shows that it appears to approximately follow a normal distribution with left skewed tails. Therefore, transformation of this variable may be considered prior to using it in further analysis. On the other hand, `Min-same` was the minimum SNP distance to another isolate of the same isolation type (clinical to clinical or environmental to environmental). Additionally, Figure \@ref(fig:fig-five) shows that `Min Same` approximately follows an exponential distribution and log transformation of this variable as shown in Figure \@ref(fig:fig-six) does not suggest a deviation from the exponential distribution.
+
+```{r fig-five, out.width='90%', fig.cap= "Distributions of Min Same and Min Difference variables"}
+figure_six
+```
+
+
+
+
+
+```{r fig-six, out.width='90%', fig.cap= "Distributions of Log Transformed Min Same and Min Difference variables"}
+figure_seven
+```
 
 \newpage
 

@@ -239,7 +239,7 @@ figure_two <- organism_summary %>%
   theme(plot.title = element_text(hjust =0.5),
         plot.caption = element_text(hjust = 0))+
   scale_x_discrete(breaks= seq(2000,2025, by= 5))+
-  labs(title = "Changes in Lm counts over time",
+  labs(title = "L. monocytogenes counts",
        x = "Year of Sample Collection", y= "Count")+
   theme_classic()
 
@@ -259,13 +259,10 @@ figure_three <- summary_2 %>%
   theme(plot.title = element_text(hjust =0.5),
         plot.caption = element_text(hjust = 0))+
   scale_x_discrete(breaks= seq(2000,2025, by= 5))+
-  labs(title = "Changes in Lm counts over time", x = "Year of Sample Collection", y= "Count")+
+  labs(title = "L. monocytogenes counts", x = "Year of Sample Collection", y= "Count")+
   guides(color = guide_legend(title = "Types"))+
   theme_classic() +
   theme(legend.position="top")
-
-# displaying figure two and three
-grid.arrange(figure_two, figure_three, ncol=2)
 
 
 # Summary counts for listeria monocytogenes over time by top isolation sources
@@ -296,6 +293,8 @@ summary_4 <- df1 %>%
   arrange(N)
 
 # line plots
+
+# figure four
 figure_four <- summary_4%>% 
   filter(Source == "beef"| Source=="chicken"| Source=="pork" 
          |Source=="dairy")%>%
@@ -303,12 +302,13 @@ figure_four <- summary_4%>%
   geom_point(size=2)+ geom_line(size=1.2) +
   scale_x_discrete(breaks= seq(2000,2025, by= 5))+
   theme(plot.caption = element_text(hjust = 0))+
-  labs(title = "Changes in Lm counts over time",
+  labs(title = "L.monocytogenes counts",
        x = "Year of Sample Collection", y= "Count")+
   theme_classic()+
   guides(color = guide_legend(title = ""))+
   theme(legend.position="top")
 
+# Displaying figure 5
 figure_five <- summary_4%>% 
   filter(Source == "water"| Source=="food" |
            Source=="potato"|Source=="fish")%>%
@@ -316,15 +316,11 @@ figure_five <- summary_4%>%
   geom_point(size=2)+ geom_line(size=1.2) +
   theme(plot.caption = element_text(hjust = 0))+
   scale_x_discrete(breaks= seq(2000,2025, by= 5))+
-  labs(title = "Changes in Lm counts over time",
+  labs(title = "L. monocytogenes counts",
        x = "Year of Sample Collection", y= "Count")+
   theme_classic()+
   guides(color = guide_legend(title = ""))+
   theme(legend.position="top")
-
-
-# displaying figure four and five
-grid.arrange(figure_four, figure_five, ncol=2)
 
 
 # Distribution of Min_same and Min_diff variables

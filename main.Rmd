@@ -71,7 +71,7 @@ Even though machine learning models promise substantial gains in outbreak invest
 
 Additionally, Lupolova et al. [@lupolova2017patchy], Munck et al. [@Munck2020], Tanui et al. [@tanui2022machine], and Karanth et al. [@karanth2022exploring] employed these methodologies in studying *Salmonella enterica*. Varied statistical methods have been employed in analyzing foodborne disease outbreak dynamics. For listeria outbreaks, advanced statistical analysis methods have also come into play including studies by Liu et al. [@liu2021machine] and Vangay et al., [@vangay2014classification] which used machine learning methods to provide advice on listeria outbreaks. On the other hand, Sun et al. [@sun2019quantitative] used Markov chain Monte Carlo (MCMC) to simulate the risk of a Listeria outbreak whereas Pasonen et al. [@pasonen2019listeria] employed a repeated exposures model to assess the risk of a Listeria outbreak in Finnish fish products. Mughini-Gras et al. [@mughini2022statistical] conducted a meta-analysis of sporadic infection sources of some pathogens including Listeria based on the Bayesian framework whereas Lassen et al., [@lassen2016two] used whole genome sequencing to analyze the risk of listeria outbreaks.
  
-Given the serious threat of foodborne diseases and the high burden posed by listeriosis on human health, this research project seeks to expand the literature on foodborne disease source attribution for human listeriosis using Bayesian and ensemble-based machine learning methods and core genome multilocus sequencing typing data and other selected information about the sampled *Listeria monocytogenes* isolates in the US. In particular, the study seeks to evaluate common food categories and their link to foodborne illnesses using pathogenic isolates. The study seeks to explore the question: Given a human *Listeriosis monocytogene* isolate how likely is it to be from a particular isolate? This study is informed by the need to leverage emerging technologies to identify strategies to enhance food safety, and the food production process and ultimately reduce the burden of foodborne illnesses. The prevention of the transmission of foodborne illnesses promises substantial improvements in public health. Modeling periodic human cases of diseases attributable to food sources as well as animal reservoirs informs the public health decision making process [@pires2014source, @Munck2020].  
+Given the serious threat of foodborne diseases and the high burden posed by listeriosis on human health, this research project seeks to expand the literature on foodborne disease source attribution for human listeriosis using Bayesian and ensemble-based machine learning methods and core genome multilocus sequencing typing data and other selected information about the sampled *Listeria monocytogenes* isolates in the US. In particular, the study seeks to evaluate common food categories and their link to foodborne illnesses using pathogenic isolates. The study seeks to explore the question: Given a human *Listeriosis monocytogene* isolate how likely is it to be from a particular food source? This study is informed by the need to leverage emerging technologies to identify strategies to enhance food safety, and the food production process and ultimately reduce the burden of foodborne illnesses. The prevention of the transmission of foodborne illnesses promises substantial improvements in public health. Modeling periodic human cases of diseases attributable to food sources as well as animal reservoirs informs the public health decision making process [@pires2014source, @Munck2020].  
 
 ## Data overview
 
@@ -118,26 +118,26 @@ figure_one
 
 ## Exploratory data analysis
 
-### Overall trends grouped by Isoaltion type
+### Overall trends grouped by Isolation type
 
 We used descriptive statistics to first examine the proportion represented by our main variable of interest, the isolation source which originally had 1401 unique values. Upon further examination, we found that were due to punctuation, case sensitivity as well as many variations of the naming conventions of a general source. For example, 'cheese', 'white cheese', 'ham cheese', and 'double cheeseburger'. For simplicity and for comparisons purposes, we grouped the isolation sources into broader categories based on the patterns observed in this variable. Ultimately, the number of isolation sources was reduced to 38 broad categories including environmental, food, pork, chicken, beef,turkey, stool, water, other/unspecified. We found that environmental sources were highest at 54.34% followed by other/unspecified sources (9.65%). Water, dairy, and food sources represented 9.65%, 9.24% and 6.43% respectively while fish, beef, and pork represented 1.67%, 1.56%, and 1.47% respectively.
 
 We then used line plots to show an initial exploration of the trends in number of *Listeria monocytogenes* over time. We filtered our data to work with a time frame from the year 2000 to 2022. The line plots in Figure \@ref(fig:fig-three) shows a non-linear trend over time. There was a moderate increase in sample collected from the year 2000 to 2008, which sharply increased until approximately the year 2018. From 2018 to 2020, there was variation in terms of steady decrease/increase that was later followed by another sharp decrease in the samples collected. However, we also observed a slight increase in the counts following the year 2020. Grouped by isolation types, we observed a higher count in the environmental/other types compared to the clinical type which remained relatively lower throughout the entire periods of sample collection.
 
-```{r fig-three, fig.align='center', fig.cap= "Line plots of listeria monocytogenes counts over time and grouped by Isoaltion type"}
+```{r fig-three, fig.align='center', fig.cap= "$\\textbf{(a)}$ Trends in the total counts of collected $\\textit{L. monocytogene}$ pathogens. $\\textbf{(b)}$ Trends in the total counts of $\\textit{L. monocytogenes}$ by isolation type."}
 grid.arrange(figure_two, figure_three, ncol=2)
 
 ```
 
-Additionally, we explored the summary frequencies of `Listeria monocytogenes` grouping by `Month` and `Isolation type`. Table \@ref(tab:table-two) summarizes the relative frequencies and we observe that most cases for `Listeria monocytogenes` were observed in the early month of January; with 40% for clinical isolation type and 22.92% for environmental/other types. Additionally, for the clinical isolation types, frequent cases were observed in the months of September and October at 26.67% and 11.67% respectively. For the environmental/other isolation type, during the warmer months of April to August, we observed a moderate number of cases of `Listeria monocytogenes` ranging between 6.99% and 9.08%. There was missing clinical isolation types cases observed during the months of March, April and July. Looking at the trends by State, California had the largest number of `Listeria monocytogenes`cases throughout our study time frame, $N$ = 2672 (18.38%), followed by New York and Washington DC at 12.78% and 8.67% respectively. Nevada, West Virginia and Puerto Rico had the least number of cases each at 0.02%.
+Additionally, we explored the summary frequencies of *Listeria monocytogenes* grouping by `Month` and `Isolation type`. Table \@ref(tab:table-two) summarizes the counts of the *L. monocytogenes* where we observe that most cases of *Listeria monocytogenes* were observed in the early month of January; with 40% for clinical isolation type and 22.92% for environmental/other types. Additionally, for the clinical isolation types, frequent cases were observed in the months of September and October at 26.67% and 11.67% respectively. For the environmental/other isolation type, during the warmer months of April to August, we observed a moderate number of cases of *Listeria monocytogenes* ranging between 6.99% and 9.08%. There was missing clinical isolation types cases observed during the months of March, April and July. Looking at the trends by State, California had the largest number of *Listeria monocytogenes* cases throughout our study time frame, $N$ = 2672 (18.38%), followed by New York and Washington DC at 12.78% and 8.67% respectively. Nevada, West Virginia and Puerto Rico had the least number of cases each at 0.02%.
 
 
-# Trends grouped by Isolation sources.
+### Trends in the counts of *L. monocytogenes* over time by the top isolation sources
 
-As mentioned previously, we reduced by `Isolation source` variable to 38 broad categories. In Figure \@ref(fig:fig-four), we explore the trends over time in the counts of `Listeria monocytogenes` for the following sources: beef, chicken, dairy, pork, fish, food, potato, water. We observe that the most common isolate source in our data is dairy, water, followed by food and and pork. 
+The `Isolation source` was re-categorized into  38 broad categories. Figure \@ref(fig:fig-four) presents the trends over time in the counts of *Listeria monocytogenes* for the following sources: beef, chicken, dairy, pork, fish, food, potato, water. We observe that the most common isolate source in our data is dairy, water, followed by food and and pork. 
 
 
-```{r fig-four, out.width='100%', fig.cap= "Line plots of top Isolation surces for listeria monocytogenes counts over time"}
+```{r fig-four, out.width='100%', fig.cap= "Line plots of top isolation surces for listeria monocytogenes counts over time. $\\textbf{(a)}$ Trends in the counts of pathogens from beef, chicken, dairy, and pork. $\\textbf{(b)}$ Trends in the pathogen counts from fish, food, potatoes, and water."}
 
 grid.arrange(figure_four, figure_five, ncol=2)
 
@@ -145,46 +145,53 @@ grid.arrange(figure_four, figure_five, ncol=2)
 
 ```{r table-two}
 # Displaying table
-kable(month_summary, caption = "Frequency summary of listeria monocytogenes by month",
+kable(month_summary, caption = "Counts of $\\textit{Listeria monocytogenes}$ by month",
       col.names = c("Isolation", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"),
-      align = c("llllllllllll")) %>%
+      align = c("llllllllllll"),
+      booktabs = TRUE) %>%
       kable_styling(latex_options = "scale_down") %>%
       column_spec(1, bold = TRUE) %>% row_spec(0, bold = TRUE)
 ```
 
 
-\newpage
-# Serovar, AST phenotypes, AMR genotypes, and SNP Clusters
+### Serovar, AST phenotypes, AMR genotypes, and SNP Clusters
 
-Our data had 14,534 unique isolates for `Listeria monocytogenes`. There were 14517 distinct Biosamples with no missing information. Additionally, we looked at the distribution of `Serovar` and observed with there was approximately $n$ = 14275(98.22%) missing values for `Serovar` information. We noticed that most `Serovar` information was entered using free text as there are many variations of names that could be representing similar information such as 1, 1a, 1/2a. If we choose to proceed with this variable, we may need to recode the naming convention and reduce the number of `Serovar` categories. The `AST phenotypes` variable, refers to the Antimicrobial Susceptibility Test and was recorded in a raw string form. It represents the antibiotics that each isolate is either susceptible, resistant to. The `AMR genotypes` variable represents the Antimicrobial resistance (AMR) genes found in the isolate during analysis. We found 184 unique AMR genes in our data with no missing information. Lastly, we found that our data had 1, 474 SNP clusters whose genome assemblies were closely related.
+Our data had 14,534 unique isolates for *Listeria monocytogenes* with 14517 distinct `Biosamples` and no missing data on this information. Additionally, we looked at the distribution of `Serovar` and noted a relatively high percentage of missing data (n = 14275; 98.22%). `Serovar` information was entered using free text as there are many variations of names that could be representing similar information such as 1, 1a, 1/2a. On the other hand, the `AST phenotypes` variable, denoting the Antimicrobial Susceptibility Test was recorded in a raw string form. This variable represents the antibiotics that each isolate is either susceptible or resistant to. The `AMR genotypes` variable represents the Antimicrobial resistance (AMR) genes found in the isolate during analysis. We found 184 unique AMR genes in our data with no missing information. There were 1, 474 SNP clusters whose genome assemblies were closely related.
 
-# Distributions of Min Same and Min Difference variables.
+### Distributions of `Min Same` and `Min Difference` variables.
 
-Next we examined the distributions of Min Same and Min Difference variables. Min-diff is the minimum SNP distance to another isolate of a different isolation type (from an environmental isolate to a clinical isolate). Figure \@ref(fig:fig-five) shows that `Min Diff` approximately follows a bi-modal distribution. However, after log transformation of this variable, Figure \@ref(fig:fig-six) shows that it appears to approximately follow a normal distribution with left skewed tails. Therefore, transformation of this variable may be considered prior to using it in further analysis. On the other hand, `Min-same` was the minimum SNP distance to another isolate of the same isolation type (clinical to clinical or environmental to environmental). Additionally, Figure \@ref(fig:fig-five) shows that `Min Same` approximately follows an exponential distribution and log transformation of this variable as shown in Figure \@ref(fig:fig-six) does not suggest a deviation from the exponential distribution.
+Next we examined the distributions of `Min Same` and `Min Diff` variables. `Min-diff` is the minimum SNP distance to another isolate of a different isolation type (from an environmental isolate to a clinical isolate). Figure \@ref(fig:fig-five) shows that `Min Diff` approximately follows a bi-modal distribution suggesting that a transformation of this variable may be useful prior to using it in further analysis. On the other hand, `Min-same` was the minimum SNP distance to another isolate of the same isolation type (clinical to clinical or environmental to environmental). Additionally, Figure \@ref(fig:fig-five) shows that `Min Same` approximately follows an exponential distribution. A log transformation of this variable did not suggest a substantial deviation from the exponential distribution.
 
-```{r fig-five, out.width='90%', fig.cap= "Distributions of Min Same and Min Difference variables"}
+```{r fig-five, out.width='90%', fig.cap= "The distributions of the minimum SNP distance to another isolate of a different isolation type and the minimum SNP distance to another isolate of a similar isolation type."}
 figure_six
 ```
 
 
 
-```{r fig-six, out.width='90%', fig.cap= "Distributions of Log Transformed Min Same and Min Difference variables"}
-figure_seven
-```
+## Statistical modeling
 
-\newpage
+This research project seeks to expand the literature on foodborne disease source attribution for human listeriosis using Bayesian and ensemble-based machine learning methods and core genome multilocus sequencing typing data, in addition to other selected information about the sampled *Listeria monocytogene* isolates in the US. The study seeks to evaluate the common food categories and their contribution to the overall foodborne illness disease burden using pathogenic isolates. The study seeks to explore the question: Given a human *Listeria monocytogene* isolate how likely is it to be from a particular food source? This study is informed by the need to leverage emerging technologies to identify strategies to enhance food safety, and the food production process and ultimately reduce the burden of foodborne illnesses. The paper seeks to compare the performance of Bayesian additive regression trees and random forest models to develop a foodborne-illness source attribution system; methods which have been shown to yield robust results in previous studies **[Two studies about robustness of random forest and BART]**.
 
-### Statistical modeling
+### Random forest 
 
+Random forests are an ensemble of multiple decision trees which employ bagging to reduce overfitting and thus enhance the generalizibility of the resulting model. Multiple trees are fitted on the training data using randomly selected predictors to ensure that the resulting trees are uncorrelated. In the training of each tree, some samples are not used in the training process  and are used in the estimation of the model performance by averaging. Each of the trees building up the random forest makes its prediction/classification to results in multiple predictions which are then averaged to inform the final result. For an in-depth analysis of the method, see Breiman [@breiman2001random].
 
+### Bayesian additive regression trees (BART)
 
-## Discussion
+BART is an ensemble machine learning methodology that allows flexible modeling of interactions in non-linear regressions and classification problems in the Bayesian context. The method involves sums of classification or regression trees and is able to flexibly capture non-linearities. The estimation of the unknown function, $f$, involves recursive partitioning of the variable space using a fully Bayesian probability modeling approach [@chipman2010bart]. Every tree in this process is a weak learner that can only explain a portion of the variability in the outcome. The trees form decision trees which are highly interpretable and flexible but are prone to overfitting. Overfitting, in BART, is controlled using a regularization prior that forces every tree in the model to explain only a small amount of the relationships between the outcome and the predictor variables. The model can be summarized as:
 
+\begin{align}
+\begin{split}
+E[Y|X] & = f(\textbf{X}) + \epsilon \\
+       & = T_1^M (\textbf{X}) + \cdots + T_m^M(\textbf{X}) + \epsilon \, \text{where $\epsilon = N(0, \sigma^2\textbf{I}_n)$}
+\end{split}
+\end{align}
 
+where $Y$ denotes the vector of outcomes, **X** denotes the $n\times p$ design matrix where $p$ denotes the number of predictors in the model and $\epsilon$ denotes some noise. $m$ is the number of unique trees, $T$ denotes tree structure, and $M$ denotes the terminal node or leaf parameters. BART models consist of three prior components including tree structure, leaf parameter, and error variance. Chipman et al. [@chipman2010bart] presents an in-depth discussion of this methodology.
 
 ## Conclusion
 
-
+In this part of the paper, we have presented literature related to the use of statistical machine learning methods in foodborne illness source attribution. Given the high burden associated with human listeriosis and the particular severity posed on people with compromised immune systems, we focus on developing a system for linking *Listeria monocytogenes* pathogens to particular food sources following our categorization informed by the IFSAC categorization. Exploratory data analysis revealed substantial missing data as well as overall heterogeneity in the representation of the NCBI data particularly with regards to naming conventions. The lack of a standard criteria in the names of the levels of the variables is limiting in terms of querying and extracting useful patterns for risk assessment. Given our interest in listeria foodborne illness source attribution, our categorizations reveal beef, chicken, dairy, pork, fish, water, and potatoes as potential food sources of interest in our modeling given their high presence in the analyzed *Listeria monocytogene* pathogens analyzed herein. In the next steps, we examine these data more closely and employ statistical methods to extract patterns as well as substantial predictors of a food source associated with a given isolate and consider exploring the particular advantage presented by cgMLST and machine learning. We look to build on the resilience of foodborne pathogens, their ability to adapt both genetically and phenotypically to changing environments and the particular interest in using these knowledge to understand pathogen responses to food handling practices and ultimately reduce foodborne disease incidence. 
 
 
 \newpage

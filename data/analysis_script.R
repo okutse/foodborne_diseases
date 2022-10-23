@@ -232,7 +232,8 @@ organism_summary %>%
           "Summary counts listeria monocytogenes over time",
         col.names = c("Year", "N", "Relative Frequency"),
         digits = c(0, 0, 4),
-        align = c("lcc")) %>%
+        align = c("lcc"),
+        booktabs = TRUE) %>%
   kable_styling(latex_options = "HOLD_position") %>%
   column_spec(1, bold = TRUE) %>% row_spec(0, bold = TRUE)
 
@@ -243,12 +244,10 @@ figure_two <- organism_summary %>%
   theme(plot.title = element_text(hjust =0.5),
         plot.caption = element_text(hjust = 0))+
   scale_x_discrete(breaks= seq(2000,2025, by= 5))+
-  labs(title = "L. monocytogenes counts",
+  labs(title = "(a)",
        x = "Year of Sample Collection", y= "Count")+
   theme_classic()
 
-
-# Comparisons
 
 # Proportions by Isolation type and year
 summary_2<- df1 %>% 
@@ -263,7 +262,7 @@ figure_three <- summary_2 %>%
   theme(plot.title = element_text(hjust =0.5),
         plot.caption = element_text(hjust = 0))+
   scale_x_discrete(breaks= seq(2000,2025, by= 5))+
-  labs(title = "L. monocytogenes counts", x = "Year of Sample Collection", y= "Count")+
+  labs(title = "(b)", x = "Year of Sample Collection", y= "Count")+
   guides(color = guide_legend(title = "Types"))+
   theme_classic() +
   theme(legend.position="top")
@@ -295,10 +294,11 @@ state_summary[,3] = round(state_summary[,3],2)
 # Displaying table
 month_summary %>%
   kable(caption = 
-          "Frequency summary of listeria monocytogenes by month",
+          "Counts of $\\textit{Listeria monocytogenes}$ by month",
         col.names = c("Isolation type", "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"),
         digits = 2,
-        align = c("llllllllllll")) %>%
+        align = c("llllllllllll"),
+        booktabs = TRUE) %>%
   kable_styling(latex_options = "HOLD_position") %>%
   column_spec(1, bold = TRUE)
 # Summary counts for listeria monocytogenes over time by top isolation sources
@@ -338,7 +338,7 @@ figure_four <- summary_4%>%
   geom_point(size=2)+ geom_line(size=1.2) +
   scale_x_discrete(breaks= seq(2000,2025, by= 5))+
   theme(plot.caption = element_text(hjust = 0))+
-  labs(title = "L.monocytogenes counts",
+  labs(title = "(a)",
        x = "Year of Sample Collection", y= "Count")+
   theme_classic()+
   guides(color = guide_legend(title = ""))+
@@ -352,7 +352,7 @@ figure_five <- summary_4%>%
   geom_point(size=2)+ geom_line(size=1.2) +
   theme(plot.caption = element_text(hjust = 0))+
   scale_x_discrete(breaks= seq(2000,2025, by= 5))+
-  labs(title = "L. monocytogenes counts",
+  labs(title = "(b)",
        x = "Year of Sample Collection", y= "Count")+
   theme_classic()+
   guides(color = guide_legend(title = ""))+
@@ -363,12 +363,13 @@ figure_five <- summary_4%>%
 df_distance <- df1[, c("Organism.group","Min.same", "Min.diff")] %>%
   pivot_longer(!Organism.group, names_to = "Type", values_to = "Value")
 
-# Displaying plot of untransformed values
+# Displaying plot of un-transformed values
 figure_six <- df_distance %>% ggplot(aes(x = Value, col = Type)) + 
   geom_histogram(aes(y = ..density.., fill = Type), color= "black", alpha = 0.3, bins = 30) +
   geom_density(size = 0.8) + 
   facet_wrap(~ Type) +
-  ggtitle("Distributions of Min Same and Min Difference variables") +
+  labs(y="Density")+
+  ggtitle("") +
   theme(plot.title = element_text(hjust = 0.5))+
   theme_classic()+
   theme(legend.position="top")

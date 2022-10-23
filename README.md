@@ -12,7 +12,7 @@ This repository holds files related to the final project in PHP2550 Practical Da
 
 - `main_files/figure-latex`: This file contains all figures we get from the full Exploratory Data Analysis report done for the project.
 
-- `main.Rmd` and `main.pdf`: This file contains the written Literature Review and full Exploratory Data Analysis report done for this project. The pdf version hides the code. 
+- `main.Rmd`, `main.md` and `main.pdf`: This file contains the written Literature Review and full Exploratory Data Analysis report done for this project. The pdf version hides the code. 
 
 - `references.bib`: This file contains all the reference literatures we list in this project.
 

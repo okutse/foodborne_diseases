@@ -1,6 +1,5 @@
-# PHP 2550 Final Project
-## Statistical Machine Learning for Modeling Foodborne Disease Source Attribution
-This project was conducted as the final project for the PHP 2550 Practical Data Analysis, Fall 2022, School of Public Health, Brown University. We are working on a project regarding using Bayesian and ensemble-based machine learning methods and core genome multilocus sequencing typing data and other selected information about the sampled Listeria monocytogenes isolates in the US. We hope our project can help enhance food safety, reduce the burden of foodborne illnesses and improve public health. This repository holds files related to the project in practical data analysis: Statistical Machine Learning Methods for Modeling Foodborne Disease Outbreaks.
+## Statistical Machine Learning for *Listeria monocytogene* Food Source Attribution
+This repository holds files related to the final project in PHP2550 Practical Data Analysis: *Statistical Machine Learning for Foodborne Disease Source Attribution* using *L. monocytogene* pathogen data downloaded from the [NCBI Pathogen Detection Database](https://www.ncbi.nlm.nih.gov/pathogens/) conducted in Fall 2022, School of Public Health, Brown University. This project sought to use ensemble-based machine learning methods and core genome multilocus sequence typing (cgMLST) data and other selected information about the sampled *Listeria monocytogenes* isolates in the United States (US). We seek to examine these data more closely and employ statistical methods to extract patterns, as well as, substantial predictors of a food source associated with a given *L. monocytogene* isolate and consider exploring the particular advantage presented by cgMLST and machine learning. We look to build on the resilience of foodborne pathogens, their ability to adapt both genetically and phenotypically to changing environments and the particular interest in using these knowledge to understand pathogen responses to food handling practices and ultimately reduce foodborne disease incidence by proposing ways of enhancing food safety, and improve public health. 
 
 ------------------------------------------------------------
 
@@ -15,7 +14,6 @@ This project was conducted as the final project for the PHP 2550 Practical Data 
 - `main.Rmd` and `main.pdf`: This file contains the written Literature Review and full Exploratory Data Analysis report done for this project. The pdf version hides the code. 
 
 - `references.bib`: This file contains all the reference literatures we list in this project.
-
 
 More folders and files to be added throughout the course of the project.
 

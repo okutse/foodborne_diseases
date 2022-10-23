@@ -29,7 +29,7 @@ dim(listeria_data) # as of 10/18/2022 data has 53725 observations with 50 variab
 
 ## Table 1: Description of selected variables in the Listeria pathogen data set
 variables <- c("Organism group","Isolate","IFSAC category", "Isolation Source", "Isolation Type","Strain", "Host", "Host Disease",
-               "Collection Date", "Create Date", "Outbreak", "BioSample", "Lat/Lon", "Location", "Min-Same", "Min Diff")
+               "Collection Date", "Create Date", "Outbreak", "BioSample", "Lat/Lon", "Location", "Min-Same", "Min Diff", "Serovar", "AMR Genotypes", "SNP Cluster")
 description <- c("The name of the taxonomy group that the isolate belongs to and is represented by the Genus species name, for our case we shall focus on Listeria monocytogenes.",
     "The unique Pathogen Detection accession of the isolate  where each accession has a prefix (PDT), which stands for Pathogen Detection Target.",
     "Categories of isolate sourcing information as developed by The Interagency Food Safety Analytics Collaboration (IFSAC).",
@@ -45,7 +45,10 @@ description <- c("The name of the taxonomy group that the isolate belongs to and
     "Provides the geographical coordinates (latitude and longitude) of the location where the sample was collected.",
     "Provides the geographical origin of the sample (Country or Region).",
     "Represents the minimum single nucleotide polymorphism (SNP) distance to another isolate of the same isolation type for example, the minimum SNP distance from one clinical isolate to another clinical isolate.",
-    "Represents the minimum SNP distance to another isolate of a different isolation type. For example, the minimum SNP difference from a clinical isolate to an environmental isolate.")
+    "Represents the minimum SNP distance to another isolate of a different isolation type. For example, the minimum SNP difference from a clinical isolate to an environmental isolate.",
+    "Represents the combined field of sub-species, serotype, or serovar",
+    "Provides information on the antimicrobial resistance (AMR) genes found in each isolate.",
+    "Represents single nucleotide polymorphisms (SNP) clusters, where the genome assemblies are closely linked to each other.")
 
 var_desc <- data.frame(Variable = variables, Description = description)
 ################################################################################
@@ -87,6 +90,7 @@ str(df)
 length(levels(df$Isolation.source))
 df$Isolation.source <- droplevels(df$Isolation.source)
 df$IFSAC.category<- droplevels(df$IFSAC.category)
+
 
 # Collection date and creation date variables, extracting years
 # There are 78 missing values in the Collection date variable which we infer from the Create date variable
@@ -180,7 +184,7 @@ missing.values <- df %>%
   summarise(num.isna = n()) %>%
   mutate(pct = num.isna / total * 100)
 
-# variables with missing values
+# Restricting to only variables that have NA values and arranging in descending order
 levels <- (missing.values  %>% filter(isna == T) %>%     
              arrange(desc(pct)))$key
 
@@ -205,7 +209,7 @@ figure_one
 ################################################################################
 
 # Selecting columns for EDA
-df_cols <- names(df)[c(9,25,29, 31,33:34, 39, 41, 43, 45:47, 53:56)]
+df_cols <- names(df)[c(9,23,25,26,29, 31, 33:34, 38,39, 41:47, 49, 53:56)]
 
 # Data subset with variables of interest
 df1 <- df[df_cols]
@@ -264,7 +268,39 @@ figure_three <- summary_2 %>%
   theme_classic() +
   theme(legend.position="top")
 
+# Summary counts for listeria monocytogenes by Month
+month_summary <- df1 %>% 
+  group_by(Isolation.type,Month)%>%
+  summarise(N = n()) %>% 
+  mutate(Frequency = N/sum(N)*100)%>%
+  select(-N)%>%
+  arrange(Month) 
+month_summary$Isolation.type <- str_replace(month_summary$Isolation.type, "environmental/other", "Environmental")
 
+month_summary[,3] = round(month_summary[,3],2)
+month_summary[, -c(1,2)] <- data.frame (matrix(paste0(as.matrix(month_summary[, -c(1,2)]), '%'), ncol=1))
+
+month_summary<- month_summary %>% pivot_wider(names_from = Month, values_from = Frequency)
+
+
+# Summary counts for listeria monocytogenes by state
+state_summary <- df1 %>% 
+  group_by(state)%>%
+  summarise(N = n()) %>% 
+  mutate(Frequency = N/sum(N)*100)%>%
+  arrange(desc(N)) 
+state_summary[,3] = round(state_summary[,3],2)
+
+
+# Displaying table
+month_summary %>%
+  kable(caption = 
+          "Frequency summary of listeria monocytogenes by month",
+        col.names = c("Isolation type", "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"),
+        digits = 2,
+        align = c("llllllllllll")) %>%
+  kable_styling(latex_options = "HOLD_position") %>%
+  column_spec(1, bold = TRUE)
 # Summary counts for listeria monocytogenes over time by top isolation sources
 
 # Proportions by Isolation type 

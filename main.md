@@ -5,7 +5,7 @@ author:
 - Amos Okutse
 - Zexuan Yu
 - Rophence Ojiambo
-date: "  22 October, 2022 "
+date: "  23 October, 2022 "
 abstract: |
   Here is a line
   
@@ -81,12 +81,12 @@ The data used in analyses in this project consisted of n=53, 725 *Listeria monoc
 
 ### Data preprocessing
 
-There were 42,794 unique strains collected across the US states represented in this data set, a reflection of the variation and heterogeneity of the data. Additionally, there were 1403 unique isolation sources which comprise of *17,344 clinical types and 30,356 environmental/other types*. There were 296 different AMR genotypes, and 39 different outbreaks. The data has 285 unique isolate sourcing categories as developed by IFSAC category scheme, 90 unique hosts, and 67 unique host diseases. To make meaningful comparisons in relation to our objective, we aggregate the IFASC category into 7 broad  categories and examine the collection date to create date variables to explore trends over time. Since the `Collection date` variable contains the date the sample were collected in the format the submitter supplied ranging from Month-Date-Year, Year-Month and Year only while the `Create date` is in the Year-Month-Date ISO format with time stamp the data was added into the Pathogen Detection Project, we first convert these into a standard form of Year-Month-Date. Then for `Collection date` variable with missing values, we choose to fill in these dates by using those from the `Create date`. Finally we create new `Year` and `Month` variables and extract the respective years and months from the`Collection date` variable to maintain consistency in terms of available year records. For the Location variable, we reduced this to only include 50 states in the United States and 1 District (Puerto Rico). Table \@ref(tab:table-one) summarizes selected variables from the data set.
+There were 42,794 unique strains collected across the US states represented in this data set, a reflection of the variation and heterogeneity of the data. Additionally, there were 1401 unique isolation sources which comprised of 60 clinical types and 14,474 environmental/other types. There were 296 different AMR genotypes, and 39 different outbreaks. The data had 285 unique isolate sourcing categories as developed by IFSAC category scheme, 90 unique hosts, and 67 unique host diseases. To make meaningful comparisons in relation to our objective, further work will involve aggregating the IFASC category into 7 broad  categories. We also examined the collection date variable that was used to explore trends over time. Since the `Collection date` variable contained the date the sample were collected in the format the submitter supplied ranging from Month-Date-Year, Year-Month and Year only while the `Create date` was in the Year-Month-Date ISO format with time stamp the data was added into the Pathogen Detection Project, we first converted these into a standard form of Year-Month-Date. Then for `Collection date` variable with missing values, we chose to fill in these dates by using those from the `Create date` variable. Finally we created  `Year` and `Month` variables and extracted the respective years and months from the`Collection date` variable to maintain consistency in terms of available year records. For the Location variable, we reduced this to only include 50 states in the United States and 1 District (Puerto Rico). Table \@ref(tab:table-one) summarizes selected variables from the data set.
 
 
 ### Potential data limitations
 
-Even though the NCBI pathogen detection allows real-time identification of clusters of related genomic sequences to aid in outbreak detection, and track the spread of resistance genes, a potential limitation of this data source is that it does not identify outbreaks or outbreak memberships and analyses rely solely on publicly available data submitted to the database. Additionally, the database allows a lot of flexibility in the naming conventions which results in substantial heterogeneity that make it difficult to query and extract meaningful patterns for microbial risk assessments [@sanaa2019genomegraphr]. For instance, the “collected by” and “isolation source” are fields entered as free text which are very extreme in the options they present for analysis. Moreover, there are a lot of missing data on potentially useful fields, a scenario that makes it difficult to derive inferences that could inform food policies.
+Even though the NCBI pathogen detection allows real-time identification of clusters of related genomic sequences to aid in outbreak detection, and track the spread of resistance genes, a potential limitation of this data source is that it does not identify outbreaks or outbreak memberships and analyses rely solely on publicly available data submitted to the database. Additionally, the database allows a lot of flexibility in the naming conventions which results in substantial heterogeneity that make it difficult to query and extract meaningful patterns for microbial risk assessments [@sanaa2019genomegraphr]. For instance, the “collected by” and “isolation source” are fields that were entered as free text which are very extreme in the options they present for analysis. Moreover, there is a lot of missing data on potentially useful fields, a scenario that makes it difficult to derive inferences that could inform food policies.
 
 
 \begin{table}[H]
@@ -116,11 +116,14 @@ Even though the NCBI pathogen detection allows real-time identification of clust
 \textbf{Min-Same} & Represents the minimum single nucleotide polymorphism (SNP) distance to another isolate of the same isolation type for example, the minimum SNP distance from one clinical isolate to another clinical isolate.\\
 \addlinespace
 \textbf{Min Diff} & Represents the minimum SNP distance to another isolate of a different isolation type. For example, the minimum SNP difference from a clinical isolate to an environmental isolate.\\
+\textbf{Serovar} & Represents the combined field of sub-species, serotype, or serovar\\
+\textbf{AMR Genotypes} & Provides information on the antimicrobial resistance (AMR) genes found in each isolate.\\
+\textbf{SNP Cluster} & Represents single nucleotide polymorphisms (SNP) clusters, where the genome assemblies are closely linked to each other.\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-
+\newpage
 ### Missing Data
 
 We shall start by assessing the missingness in our data set. Figure \@ref(fig:fig-two) shows us the overall missingness of our selected variables ordered from the least to the largest missing percentage. Key to note here is that there is over 86% missing observations in the variables Host Disease, Lat/Long, and Outbreak, with Outbreak having the most percentage (99.54%) of missing values. This amount of missingness will be a major limitation of our study as these variables may not be informative in our analysis and may limit the interpretation and generalizability of our study findings.
@@ -142,7 +145,7 @@ We shall start by assessing the missingness in our data set. Figure \@ref(fig:fi
 
 We used descriptive statistics to first examine the proportion represented by our main variable of interest, the isolation source which originally had 1401 unique values. Upon further examination, we found that were due to punctuation, case sensitivity as well as many variations of the naming conventions of a general source. For example, 'cheese', 'white cheese', 'ham cheese', and 'double cheeseburger'. For simplicity and for comparisons purposes, we grouped the isolation sources into broader categories based on the patterns observed in this variable. Ultimately, the number of isolation sources was reduced to 38 broad categories including environmental, food, pork, chicken, beef,turkey, stool, water, other/unspecified. We found that environmental sources were highest at 54.34% followed by other/unspecified sources (9.65%). Water, dairy, and food sources represented 9.65%, 9.24% and 6.43% respectively while fish, beef, and pork represented 1.67%, 1.56%, and 1.47% respectively.
 
-We then used line plots to show an initial exploration of the trends in number of *Listeria monocytogenes* over time. We filtered our data to work with a time frame from the year 2000 to 2022. The line plots in Figure \@ref(fig:fig-three) shows a non-linear trend over time. There was a moderate increase in sample collected from the year 2000 to 2008, which sharply increased until approximately the year 2018. From 2018 to 2020, there was variation in terms of steady decrease/increase that was later followed by another sharp decrease in the samples collected. However, we also observed a slight increase in the counts following the year 2020. Grouped by isolation types, we observed a higher count in the environmental/other types compared to the clinical type which remained relatively lower throught the entire periods of sample collection.
+We then used line plots to show an initial exploration of the trends in number of *Listeria monocytogenes* over time. We filtered our data to work with a time frame from the year 2000 to 2022. The line plots in Figure \@ref(fig:fig-three) shows a non-linear trend over time. There was a moderate increase in sample collected from the year 2000 to 2008, which sharply increased until approximately the year 2018. From 2018 to 2020, there was variation in terms of steady decrease/increase that was later followed by another sharp decrease in the samples collected. However, we also observed a slight increase in the counts following the year 2020. Grouped by isolation types, we observed a higher count in the environmental/other types compared to the clinical type which remained relatively lower throughout the entire periods of sample collection.
 
 \begin{figure}[H]
 
@@ -153,9 +156,13 @@ We then used line plots to show an initial exploration of the trends in number o
 \caption{Line plots of listeria monocytogenes counts over time and grouped by Isoaltion type}(\#fig:fig-three)
 \end{figure}
 
+Additionally, we explored the summary frequencies of `Listeria monocytogenes` grouping by `Month` and `Isolation type`. Table \@ref(tab:table-two) summarizes the relative frequencies and we observe that most cases for `Listeria monocytogenes` were observed in the early month of January; with 40% for clinical isolation type and 22.92% for environmental/other types. Additionally, for the clinical isolation types, frequent cases were observed in the months of September and October at 26.67% and 11.67% respectively. For the environmental/other isolation type, during the warmer months of April to August, we observed a moderate number of cases of `Listeria monocytogenes` ranging between 6.99% and 9.08%. There was missing clinical isolation types cases observed during the months of March, April and July. Looking at the trends by State, California had the largest number of `Listeria monocytogenes`cases throughout our study time frame, $N$ = 2672 (18.38%), followed by New York and Washington DC at 12.78% and 8.67% respectively. Nevada, West Virginia and Puerto Rico had the least number of cases each at 0.02%.
+
+
 # Trends grouped by Isolation sources.
 
 As mentioned previously, we reduced by `Isolation source` variable to 38 broad categories. In Figure \@ref(fig:fig-four), we explore the trends over time in the counts of `Listeria monocytogenes` for the following sources: beef, chicken, dairy, pork, fish, food, potato, water. We observe that the most common isolate source in our data is dairy, water, followed by food and and pork. 
+
 
 \begin{figure}[H]
 
@@ -165,6 +172,28 @@ As mentioned previously, we reduced by `Isolation source` variable to 38 broad c
 
 \caption{Line plots of top Isolation surces for listeria monocytogenes counts over time}(\#fig:fig-four)
 \end{figure}
+
+\begin{table}
+
+\caption{(\#tab:table-two)Frequency summary of listeria monocytogenes by month}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{>{}l|l|l|l|l|l|l|l|l|l|l|l|l}
+\hline
+\textbf{Isolation} & \textbf{Jan} & \textbf{Feb} & \textbf{Mar} & \textbf{Apr} & \textbf{May} & \textbf{Jun} & \textbf{Jul} & \textbf{Aug} & \textbf{Sep} & \textbf{Oct} & \textbf{Nov} & \textbf{Dec}\\
+\hline
+\textbf{clinical} & 40\% & 3.33\% & NA & NA & 6.67\% & 3.33\% & NA & 5\% & 26.67\% & 11.67\% & 1.67\% & 1.67\%\\
+\hline
+\textbf{Environmental} & 22.92\% & 6.94\% & 7.16\% & 9.08\% & 7.28\% & 7.38\% & 7.52\% & 6.99\% & 6.71\% & 7.02\% & 5.31\% & 5.69\%\\
+\hline
+\end{tabular}}
+\end{table}
+
+
+\newpage
+# Serovar, AST phenotypes, AMR genotypes, and SNP Clusters
+
+Our data had 14,534 unique isolates for `Listeria monocytogenes`. There were 14517 distinct Biosamples with no missing information. Additionally, we looked at the distribution of `Serovar` and observed with there was approximately $n$ = 14275(98.22%) missing values for `Serovar` information. We noticed that most `Serovar` information was entered using free text as there are many variations of names that could be representing similar information such as 1, 1a, 1/2a. If we choose to proceed with this variable, we may need to recode the naming convention and reduce the number of `Serovar` categories. The `AST phenotypes` variable, refers to the Antimicrobial Susceptibility Test and was recorded in a raw string form. It represents the antibiotics that each isolate is either susceptible, resistant to. The `AMR genotypes` variable represents the Antimicrobial resistance (AMR) genes found in the isolate during analysis. We found 184 unique AMR genes in our data with no missing information. Lastly, we found that our data had 1, 474 SNP clusters whose genome assemblies were closely related.
 
 # Distributions of Min Same and Min Difference variables.
 
@@ -178,8 +207,6 @@ Next we examined the distributions of Min Same and Min Difference variables. Min
 
 \caption{Distributions of Min Same and Min Difference variables}(\#fig:fig-five)
 \end{figure}
-
-
 
 
 

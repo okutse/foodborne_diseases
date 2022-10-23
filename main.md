@@ -1,5 +1,5 @@
 ---
-title: "Statistical Machine Learning for Modeling Foodborne Disease Source Attribution"
+title: "Statistical Machine Learning for Foodborne Disease Source Attribution"
 ## subtitle: "Assignment 1"
 author: 
 - Amos Okutse
@@ -7,9 +7,7 @@ author:
 - Rophence Ojiambo
 date: "  23 October, 2022 "
 abstract: |
-  Here is a line
-  
-  Here is another line which can be longer.
+  *Listeria monocytogenes* remains one of the most severe causes of foodborne-disease-related disease burden, particularly, due to the severity of its clinical manifestations. This project seeks to use machine learning methods, core genome multilocus sequence typing (cgMLST) data, and other selected information about the sampled Listeria monocytogenes isolates in the United States (US) obtained from the National Center for Biotechnology Information (NCBI) Pathogen Detection Database. We seek to examine these data more closely and employ statistical methods to extract patterns, as well as, substantial predictors of a food source associated with a given L. monocytogene isolate, and consider exploring the particular advantage presented by cgMLST and machine learning in food source attribution. We look to build on the resilience of foodborne pathogens, their ability to adapt both genetically and phenotypically to changing environments, and the particular interest in using this knowledge to understand pathogen responses to food management practices and ultimately reduce foodborne disease incidence by proposing ways of enhancing food safety and improve public health.
 keywords: "nothing, nothingness"
 header-includes:
 - \usepackage{pdflscape}

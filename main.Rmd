@@ -1,5 +1,5 @@
 ---
-title: "Statistical Machine Learning for Modeling Foodborne Disease Source Attribution"
+title: "Statistical Machine Learning for Foodborne Disease Source Attribution"
 ## subtitle: "Assignment 1"
 author: 
 - Amos Okutse
@@ -7,9 +7,7 @@ author:
 - Rophence Ojiambo
 date: "  `r format(Sys.time(), '%d %B, %Y')` "
 abstract: |
-  Here is a line
-  
-  Here is another line which can be longer.
+  *Listeria monocytogenes* remains one of the most severe causes of foodborne-disease-related disease burden, particularly, due to the severity of its clinical manifestations. This project seeks to use machine learning methods, core genome multilocus sequence typing (cgMLST) data, and other selected information about the sampled Listeria monocytogenes isolates in the United States (US) obtained from the National Center for Biotechnology Information (NCBI) Pathogen Detection Database. We seek to examine these data more closely and employ statistical methods to extract patterns, as well as, substantial predictors of a food source associated with a given L. monocytogene isolate, and consider exploring the particular advantage presented by cgMLST and machine learning in food source attribution. We look to build on the resilience of foodborne pathogens, their ability to adapt both genetically and phenotypically to changing environments, and the particular interest in using this knowledge to understand pathogen responses to food management practices and ultimately reduce foodborne disease incidence by proposing ways of enhancing food safety and improve public health.
 keywords: "nothing, nothingness"
 header-includes:
 - \usepackage{pdflscape}
@@ -170,7 +168,7 @@ figure_six
 
 ## Statistical modeling
 
-This research project seeks to expand the literature on foodborne disease source attribution for human listeriosis using Bayesian and ensemble-based machine learning methods and core genome multilocus sequencing typing data, in addition to other selected information about the sampled *Listeria monocytogene* isolates in the US. The study seeks to evaluate the common food categories and their contribution to the overall foodborne illness disease burden using pathogenic isolates. The study seeks to explore the question: Given a human *Listeria monocytogene* isolate how likely is it to be from a particular food source? This study is informed by the need to leverage emerging technologies to identify strategies to enhance food safety, and the food production process and ultimately reduce the burden of foodborne illnesses. The paper seeks to compare the performance of Bayesian additive regression trees and random forest models to develop a foodborne-illness source attribution system; methods which have been shown to yield robust results in previous studies **[Two studies about robustness of random forest and BART]**.
+This research project seeks to expand the literature on foodborne disease source attribution for human listeriosis using Bayesian and ensemble-based machine learning methods and core genome multilocus sequencing typing data, in addition to other selected information about the sampled *Listeria monocytogene* isolates in the US. The study seeks to evaluate the common food categories and their contribution to the overall foodborne illness disease burden using pathogenic isolates. The study seeks to explore the question: Given a human *Listeria monocytogene* isolate how likely is it to be from a particular food source? This study is informed by the need to leverage emerging technologies to identify strategies to enhance food safety, and the food production process and ultimately reduce the burden of foodborne illnesses. The paper seeks to compare the performance of Bayesian additive regression trees and random forest models to develop a foodborne-illness source attribution system; methods which have been shown to yield robust results in previous studies.
 
 ### Random forest 
 

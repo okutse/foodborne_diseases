@@ -6,19 +6,19 @@ This repository holds files related to the final project in PHP2550 Practical Da
 
 ## Organization 
 
-- `data`: This folder contains the `listeria_isolates.csv` data files used in order to conduct the analyses for our study. This is the cleaned data from the raw data files downloaded directly from the [NCBI website](https://www.ncbi.nlm.nih.gov/pathogens/). This folder also contains the `analysis_script.R`, which is the code of Exploratory Data Analysis (EDA).
+- `data`: This folder contains the `listeria_isolates.csv` data file used to conduct the analyses in our study. This is the cleaned data from the raw data files downloaded directly from the [NCBI website](https://www.ncbi.nlm.nih.gov/pathogens/). This folder also contains the `analysis_script.R`, which is the code used in the initial Exploratory Data Analysis (EDA).
 
-- `figures`: This folder contains flow chart of data cleaning in this project. 
+- `figures`: This folder contains flow chart of the data cleaning process used in this project. 
 
 - `main_files/figure-latex`: This file contains all figures we get from the full Exploratory Data Analysis report done for the project.
 
-- `main.Rmd`, `main.md` and `main.pdf`: This file contains the written Literature Review and full Exploratory Data Analysis report done for this project. The pdf version hides the code. 
+- `main.Rmd`, `main.md` and `main.pdf`: This files contain the written Literature Review and full Exploratory Data Analysis report done for this project. The code is hidden in the pdf version. 
 
-- `references.bib`: This file contains all the reference literatures we list in this project.
+- `references.bib`: This file contains all the reference literature we have used in this project.
 
 More folders and files to be added throughout the course of the project.
 
-
+-------------------------------------------------------------
 ## Collaborators
 
 [Amos Okutse](https://github.com/okutse)
@@ -26,3 +26,5 @@ More folders and files to be added throughout the course of the project.
 [Rophence Ojiambo](https://github.com/rophenceojiambo)
 
 [Zexuan Yu](https://github.com/xueshenfec)
+
+-------------------------------------------------------------

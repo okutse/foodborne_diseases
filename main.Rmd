@@ -103,7 +103,6 @@ kable(var_desc, format = "latex", caption = "Variable descriptions", booktabs = 
   column_spec(2, width = "11cm")
 ```
 
-\newpage
 ### Missing Data
 
 We shall start by assessing the missingness in our data set. Figure \@ref(fig:fig-two) shows us the overall missingness of our selected variables ordered from the least to the largest missing percentage. Key to note here is that there is over 86% missing observations in the variables Host Disease, Lat/Long, and Outbreak, with Outbreak having the most percentage (99.54%) of missing values. This amount of missingness will be a major limitation of our study as these variables may not be informative in our analysis and may limit the interpretation and generalizability of our study findings.
@@ -116,23 +115,23 @@ figure_one
 
 ## Exploratory data analysis
 
-### Overall trends grouped by Isolation type
+### Overall trends in the counts of *L. monocytogenes* through time
 
-We used descriptive statistics to first examine the proportion represented by our main variable of interest, the isolation source which originally had 1401 unique values. Upon further examination, we found that were due to punctuation, case sensitivity as well as many variations of the naming conventions of a general source. For example, 'cheese', 'white cheese', 'ham cheese', and 'double cheeseburger'. For simplicity and for comparisons purposes, we grouped the isolation sources into broader categories based on the patterns observed in this variable. Ultimately, the number of isolation sources was reduced to 38 broad categories including environmental, food, pork, chicken, beef,turkey, stool, water, other/unspecified. We found that environmental sources were highest at 54.34% followed by other/unspecified sources (9.65%). Water, dairy, and food sources represented 9.65%, 9.24% and 6.43% respectively while fish, beef, and pork represented 1.67%, 1.56%, and 1.47% respectively.
+We used descriptive statistics to first examine the proportion represented by our main variable of interest, the isolation source which originally had 1401 unique values which were as a result of punctuation, case sensitivity as well as many variations of the naming conventions of a general source. For example, 'cheese', 'white cheese', 'ham cheese', and 'double cheeseburger'. For simplicity and for comparative purposes, we grouped the isolation sources into broader categories based on the patterns observed in this variable. Ultimately, the number of isolation sources was reduced to 38 broad categories including environmental, food, pork, chicken, beef,turkey, stool, water, other/unspecified. Environmental sources were highest at 54.34% followed by other/unspecified sources (9.65%). Water, dairy, and food sources represented 9.65%, 9.24% and 6.43%, respectively, while fish, beef, and pork represented 1.67%, 1.56%, and 1.47%, respectively.
 
-We then used line plots to show an initial exploration of the trends in number of *Listeria monocytogenes* over time. We filtered our data to work with a time frame from the year 2000 to 2022. The line plots in Figure \@ref(fig:fig-three) shows a non-linear trend over time. There was a moderate increase in sample collected from the year 2000 to 2008, which sharply increased until approximately the year 2018. From 2018 to 2020, there was variation in terms of steady decrease/increase that was later followed by another sharp decrease in the samples collected. However, we also observed a slight increase in the counts following the year 2020. Grouped by isolation types, we observed a higher count in the environmental/other types compared to the clinical type which remained relatively lower throughout the entire periods of sample collection.
+We then used line plots to show an initial exploration of the trends in the number of *Listeria monocytogenes* over time. We filtered our data to work with a time frame from the year 2000 to 2022. The line plots in Figure \@ref(fig:fig-three) show a non-linear trend over time. There was a moderate increase in samples collected from the year 2000 to 2008, which sharply increased until about the year 2018. From 2018 to 2020, there was variation in terms of steady decrease/increase that was later followed by another sharp decrease in the samples collected. However, we also observed a slight increase in the counts following the year 2020. Grouped by isolation types, we observed a higher count in the environmental/other source types compared to the clinical type which remained relatively lower throughout the entire period of sample collection.
 
 ```{r fig-three, fig.align='center', fig.cap= "$\\textbf{(a)}$ Trends in the total counts of collected $\\textit{L. monocytogene}$ pathogens. $\\textbf{(b)}$ Trends in the total counts of $\\textit{L. monocytogenes}$ by isolation type."}
 grid.arrange(figure_two, figure_three, ncol=2)
 
 ```
 
-Additionally, we explored the summary frequencies of *Listeria monocytogenes* grouping by `Month` and `Isolation type`. Table \@ref(tab:table-two) summarizes the counts of the *L. monocytogenes* where we observe that most cases of *Listeria monocytogenes* were observed in the early month of January; with 40% for clinical isolation type and 22.92% for environmental/other types. Additionally, for the clinical isolation types, frequent cases were observed in the months of September and October at 26.67% and 11.67% respectively. For the environmental/other isolation type, during the warmer months of April to August, we observed a moderate number of cases of *Listeria monocytogenes* ranging between 6.99% and 9.08%. There was missing clinical isolation types cases observed during the months of March, April and July. Looking at the trends by State, California had the largest number of *Listeria monocytogenes* cases throughout our study time frame, $N$ = 2672 (18.38%), followed by New York and Washington DC at 12.78% and 8.67% respectively. Nevada, West Virginia and Puerto Rico had the least number of cases each at 0.02%.
+Additionally, we explored summary frequencies of *Listeria monocytogenes* grouping by `Month` and `Isolation type`. Table \@ref(tab:table-two) summarizes the counts of the *L. monocytogenes* where we observe that most cases of *Listeria monocytogenes* were observed in the early month of January; with 40% for clinical isolation type and 22.92% for environmental/other types. Additionally, for the clinical isolation types, frequent cases were observed in the months of September and October at 26.67% and 11.67% respectively. For the environmental/other isolation type, during the warmer months of April to August, we observed a moderate number of cases of *Listeria monocytogenes* ranging between 6.99% and 9.08%. There was missing clinical isolation types cases observed during the months of March, April and July. Looking at the trends by State, California had the largest number of *Listeria monocytogenes* cases throughout our study time frame, $N$ = 2672 (18.38%), followed by New York and Washington DC at 12.78% and 8.67% respectively. Nevada, West Virginia and Puerto Rico had the least number of cases each at 0.02%.
 
 
 ### Trends in the counts of *L. monocytogenes* over time by the top isolation sources
 
-The `Isolation source` was re-categorized into  38 broad categories. Figure \@ref(fig:fig-four) presents the trends over time in the counts of *Listeria monocytogenes* for the following sources: beef, chicken, dairy, pork, fish, food, potato, water. We observe that the most common isolate source in our data is dairy, water, followed by food and and pork. 
+The `Isolation source` was re-categorized into 38 broad categories. Figure \@ref(fig:fig-four) presents the trends over time in the counts of *Listeria monocytogenes* for the following sources: beef, chicken, dairy, pork, fish, food, potato, water. We observe that the most common isolate source in our data is dairy, water, followed by food and and pork. 
 
 
 ```{r fig-four, out.width='100%', fig.cap= "Line plots of top isolation surces for listeria monocytogenes counts over time. $\\textbf{(a)}$ Trends in the counts of pathogens from beef, chicken, dairy, and pork. $\\textbf{(b)}$ Trends in the pathogen counts from fish, food, potatoes, and water."}
@@ -164,8 +163,6 @@ Next we examined the distributions of `Min Same` and `Min Diff` variables. `Min-
 figure_six
 ```
 
-
-
 ## Statistical modeling
 
 This research project seeks to expand the literature on foodborne disease source attribution for human listeriosis using Bayesian and ensemble-based machine learning methods and core genome multilocus sequencing typing data, in addition to other selected information about the sampled *Listeria monocytogene* isolates in the US. The study seeks to evaluate the common food categories and their contribution to the overall foodborne illness disease burden using pathogenic isolates. The study seeks to explore the question: Given a human *Listeria monocytogene* isolate how likely is it to be from a particular food source? This study is informed by the need to leverage emerging technologies to identify strategies to enhance food safety, and the food production process and ultimately reduce the burden of foodborne illnesses. The paper seeks to compare the performance of Bayesian additive regression trees and random forest models to develop a foodborne-illness source attribution system; methods which have been shown to yield robust results in previous studies.
@@ -185,7 +182,7 @@ E[Y|X] & = f(\textbf{X}) + \epsilon \\
 \end{split}
 \end{align}
 
-where $Y$ denotes the vector of outcomes, **X** denotes the $n\times p$ design matrix where $p$ denotes the number of predictors in the model and $\epsilon$ denotes some noise. $m$ is the number of unique trees, $T$ denotes tree structure, and $M$ denotes the terminal node or leaf parameters. BART models consist of three prior components including tree structure, leaf parameter, and error variance. Chipman et al. [@chipman2010bart] presents an in-depth discussion of this methodology.
+where $Y$ denotes the vector of outcomes, $\textbf{X}$ denotes the $n\times p$ design matrix where $p$ denotes the number of predictors in the model and $\epsilon$ denotes some noise. $m$ is the number of unique trees, $T$ denotes tree structure, and $M$ denotes the terminal node or leaf parameters. BART models consist of three prior components including tree structure, leaf parameter, and error variance. Chipman et al. [@chipman2010bart] presents an in-depth discussion of this methodology.
 
 ## Conclusion
 

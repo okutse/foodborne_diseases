@@ -101,13 +101,10 @@ kable(var_desc, format = "latex", caption = "Variable descriptions", booktabs = 
   column_spec(2, width = "11cm")
 ```
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 88043d74a02567d984ccd884b80fa75f03072eaa
 ### Missing Data
 
-We shall start by assessing the missingness in our data set. Figure \@ref(fig:fig-two) shows us the overall missingness of our selected variables ordered from the least to the largest missing percentage. Key to note here is that there is over 86% missing observations in the variables. `Host Disease`, `AST Phenotypes`, `Computed types`, `Virulence genotypes`, `Source type` and `Outbreak` have approximately 100% of missing values. Variables such as `Isolation source`, `Isolation type`, `BioSample`, `Location`, `AMR genotypes` and `Isolates` have no missingness present. The missingness observed in this dataset is likely due to  under-reporting or non-response by the researchers or clinicians who submit this information on the NCBI website. Missing information in the collection date variable could be due to data entry errors when entering this information or just an oversight by the submitter. Generally, the missingness can be attributed to the high variations in the reporting practices or amount of time taken for lab processing prior to submission to the NCBI pathogen detection database. We acknowledge that this amount of missingness will be pose a major limitation in our study as these variables may not be informative in our analysis and may limit the interpretation and generalizability of our study findings.
+We shall start by assessing the missingness in our data set. Figure \@ref(fig:fig-two) shows us the overall missingness of our selected variables ordered from the least to the largest missing percentage. Key to note here is that there is over 86% missing observations in the variables. `Host Disease`, `AST Phenotypes`, `Computed types`, `Virulence genotypes`, `Source type` and `Outbreak` have approximately 100% of missing values. Variables such as `Isolation source`, `Isolation type`, `BioSample`, `Location`, `AMR genotypes` and `Isolates` have no missingness present. The missingness observed in this data set is likely due to  under-reporting or non-response by the researchers or clinicians who submit this information on the NCBI website. Missing information in the collection date variable could be due to data entry errors when entering this information or just an oversight by the submitter. Generally, the missingness can be attributed to the high variations in the reporting practices or amount of time taken for lab processing prior to submission to the NCBI pathogen detection database. We acknowledge that this amount of missingness will be pose a major limitation in our study as these variables may not be informative in our analysis and may limit the interpretation and generalizability of our study findings.
 
 
 ```{r fig-two, fig.align='center', fig.cap="Missing values in variables"}
@@ -196,9 +193,10 @@ Even though the NCBI pathogen detection allows real-time identification of clust
 
 In this part of the paper, we have presented literature related to the use of statistical machine learning methods in foodborne illness source attribution. Given the high burden associated with human listeriosis and the particular severity posed on people with compromised immune systems, we focus on developing a system for linking *Listeria monocytogenes* pathogens to particular food sources following our categorization informed by the IFSAC categorization. Exploratory data analysis revealed substantial missing data as well as overall heterogeneity in the representation of the NCBI data particularly with regards to naming conventions. The lack of a standard criteria in the names of the levels of the variables is limiting in terms of querying and extracting useful patterns for risk assessment. Given our interest in listeria foodborne illness source attribution, our categorizations reveal beef, chicken, dairy, pork, fish, water, and potatoes as potential food sources of interest in our modeling given their high presence in the analyzed *Listeria monocytogene* pathogens analyzed herein. In the next steps, we examine these data more closely and employ statistical methods to extract patterns as well as substantial predictors of a food source associated with a given isolate and consider exploring the particular advantage presented by cgMLST and machine learning. We look to build on the resilience of foodborne pathogens, their ability to adapt both genetically and phenotypically to changing environments and the particular interest in using these knowledge to understand pathogen responses to food handling practices and ultimately reduce foodborne disease incidence. 
 
-### Github Repository
+## Data and code availability
 
-https://github.com/okutse/foodborne_diseases
+The data and other analysis files associated with this project are available online on GitHub at
+https://github.com/okutse/foodborne_diseases.
 
 
 \newpage

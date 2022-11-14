@@ -62,7 +62,7 @@ source("data\\analysis_script.R")
 
 ## METHODOLOGY
 
-In this section, we present a summary of the potential methods for consideration into our analysis and their implementation including the model building process, model validation including tuning parameters, model evaluation and selection including the considered performance metrics. We also highlight the potential software and justify choices associated with the implemented methods including the specific packages considered for our analysis. 
+In this section, we present a summary of the potential methods for consideration into our analysis and their implementation; the model building and validation process, including tuning parameters. We also examine model evaluation and selection considerations, including the performance metrics. Additionally, we highlight the potential software and justify choices associated with the implemented methods including the specific packages considered for our analysis. 
 
 ### Objective:
 

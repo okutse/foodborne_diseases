@@ -62,11 +62,11 @@ source("data\\analysis_script.R")
 
 ## METHODOLOGY
 
-In this section, we present a summary of the potential methods for consideration into our analysis and their implementation including the model building process, model validation including tuning parameters, model evaluation and selection including the considered performance metrics. We also highlight the potential software and justify choices associated with the implemented methods including the specific packages considered for our analysis. 
+In this section, we present an updated objective of our project and summarize of our potential methods for consideration into our analysis and their implementation including the model building process, model validation including tuning parameters, model evaluation and selection including the considered performance metrics. We also highlight the potential software and justify choices associated with the implemented methods including the specific packages considered for our analysis. 
 
 ### Objective:
 
-To develop a throughput statistical machine learning classification model for *Listeria monocytogene* pathogen food source attribution.
+To develop a throughput statistical machine learning classification model for *Listeria monocytogene* pathogen food source attribution based on a comparative analysis of selected classification models.
 
 
 ### Statistical methods
@@ -77,7 +77,7 @@ This section presents a summary of the potential methods for inclusion into our 
 #### Naïve Bayes 
 
 
-The Naïve Bayes algorithm is a supervised machine learning technique for classification that uses a Bayesian-based approach under the *naïve* assumption that features in a data set are independent of each of each other. The methodology proceeds by using conditional probability and the principles of the Bayes theorem to classify an input based on features present in a dataset. The Bayes theorem which forms a fundamental building block of the algorithm follows as:
+The Naïve Bayes algorithm is a supervised machine learning technique for classification that uses a Bayesian-based approach under the *naïve* assumption that features in a data set are independent of each of each other. The methodology proceeds by using conditional probability and the principles of the Bayes theorem to classify an input based on features present in a data set. The Bayes theorem which forms a fundamental building block of the algorithm follows as:
 \begin{equation}
     P(A|B) = \frac{P(B|A)P(A)}{P(B)}
 \end{equation}

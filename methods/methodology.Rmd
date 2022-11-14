@@ -1,0 +1,110 @@
+---
+title: "Statistical Machine Learning for Foodborne Disease Source Attribution"
+## subtitle: "Assignment 1"
+author: 
+- Amos Okutse
+- Zexuan Yu
+- Rophence Ojiambo
+date: "  23 October, 2022 "
+abstract: |
+keywords: "nothing, nothingness"
+header-includes:
+- \usepackage{pdflscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+- \usepackage{fvextra}
+- \usepackage{float}
+- \usepackage{wrapfig}
+- \usepackage{amsmath}
+- \usepackage{threeparttable} %used to fix table with notes
+- \usepackage{float}
+- \usepackage{graphicx}
+- \usepackage{microtype}
+- \usepackage{setspace}
+- \usepackage[font=singlespacing]{caption} #can change font here for captions here!!
+- \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines, commandchars=\\\{\}}
+- \singlespacing
+fontsize: 10pt
+output:
+  bookdown::pdf_document2:
+    latex_engine: xelatex
+    toc: false
+    toc_depth: 4
+    number_sections: false
+    keep_md: true
+link-citations: yes
+colorlinks: yes
+linkcolor: blue
+urlcolor: blue
+bibliography: references.bib
+csl: sage-vancouver-brackets.csl
+---
+
+```{r include=FALSE}
+source("data\\analysis_script.R")
+```
+
+## METHODOLOGY
+
+In this section, we present a summary of the potential methods for consideration into our analysis and their implementation including the model building process, model validation including tuning parameters, model evaluation and selection including the considered performance metrics. We also highlight the potential software and justify choices associated with the implemented methods including the specific packages considered for our analysis. 
+
+### Objective/ Updated Question:
+
+
+
+[Data preprocessing??]
+
+
+### Statistical methods
+
+This section presents a summary of the potential methods for inclusion into our analysis based on the scope of the project which is foodborne disease source attribution modeling using *Listeria monocytogene* pathogens.
+
+#### Naïve Bayes 
+
+
+## PRELIMINARY RESULTS
+
+This section highlights the preliminary results based on the implementation of the Naïve Bayes algorithm. Other models which will be included here are random forest and Bayesian Additive Regression Trees (BART).
+
+Table \@ref(tab:prop-sampled) highlights the proportion of samples under each selected food category in the training and testing sets of the data. We notice that water, dairy, and beef have slightly higher proportions in the train and test data sets, respectively. Stratified sampling allows the data to be split with particular consideration of the proportion in each food category.
+
+```{r prop-sampled}
+## Table of the proportions of samples in the train and test data sets
+kable(test_train_prop, digits = 3, format = "latex", caption = "Proportion in training and test set datasets by food source", booktabs = TRUE) %>% 
+  kable_styling(latex_options = c("HOLD_position"))
+```
+
+
+### Model performance
+
+Table \@ref(tab:naive) presents the preliminary results based on the implementation of the Naïve Bayes algorithm. Figure \@ref(fig:naivegain) and Figure \@ref(fig:naiveroc) on the other hand present the results based on the analysis of the gain associated with the use of this model relative to random guessing. All results suggest that the model has a reasonable accuracy as well as discriminatory ability.
+
+
+```{r naive}
+## Naive Bayes performance metrics
+kable(final_metrics, digits = 3, caption = "Performance metrics based on the implementation of the Naive Bayes algorithm for $\\textit{Listeria monocytogene}$ pathogen food source attribution", format = "latex", booktabs = TRUE) %>% 
+  kable_styling(latex_options = c("HOLD_position"))
+
+```
+
+
+```{r naivegain, fig.align='center', out.width='100%', dpi=300, fig.cap="Gain curve based on the implemented naive Bayesian model"}
+## Gain curve
+naive_gain
+
+```
+
+
+```{r naiveroc, fig.align='center', out.width='100%', dpi=300, fig.cap="ROC curve based on the implemented naive Bayesian model"}
+## ROC curve
+naive_ROC
+```
+
+
+
+
+\newpage
+## References
+
+<div id="refs"></div>
+

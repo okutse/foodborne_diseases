@@ -4,7 +4,7 @@ This repository holds files related to the final project in PHP2550 Practical Da
 
 ------------------------------------------------------------
 
-## Organization 
+## Repository Organization 
 
 - `data`: This folder contains the `listeria_isolates.csv` data file used to conduct the analyses in our study. This is the cleaned data from the raw data files downloaded directly from the [NCBI website](https://www.ncbi.nlm.nih.gov/pathogens/). This folder also contains the `analysis_script.R`, which is the code used in the initial Exploratory Data Analysis (EDA).
 

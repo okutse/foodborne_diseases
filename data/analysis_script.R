@@ -3,19 +3,33 @@
 ## Amos Okutse
 ## Rophence Ojiambo
 ## Zexhuan Yu
-## PHP2550 Practical Data Anlysis
+## PHP2550 Practical Data Analysis
 ################################################################################
 
 
 # Load the required libraries for data analysis
-library(tidyverse)
-library(lubridate)
-library(anytime) # dates
+library(tidyverse)     ## for data analysis pipelines
+library(lubridate)     ## for working with dates
+library(anytime)       ## for working with dates
 library(kableExtra)
-library(naniar) # Missing data
-library(tidyr) # for data cleaning
-library(stringr) # for working with characters
-library(gridExtra) # displaying plots side by side
+library(naniar)        ## for handling missing data
+library(tidyr)         ## for data cleaning
+library(stringr)       ## for working with characters
+library(gridExtra)     ## displaying plots side by side
+
+
+##########################################
+## Modeling Libraries
+##########################################
+library(tidymodels)    ## for using tidy models in R
+library(broom.mixed)   ## for converting Bayesian models to tidy tibbles
+library(dotwhisker)    ## for visualizing regression results
+library(naivebayes)    ## implementation of the naive Bayes algorithm
+library(discrim)       ## the required extension package for using the `naivebayes` engine in parsnip
+library(vip)           ## for plotting variable importannce
+
+
+
 
 ################################################################################
 # DATA AND VARIABLE DESCRIPTIONS
@@ -384,5 +398,173 @@ figure_seven <- df_distance %>% ggplot(aes(x = log(Value), col = Type)) +
   guides(color = guide_legend(title = "Variable"))+
   theme_classic() +
   theme(legend.position="top")
+
+
+################################################################################
+## METHODOLOGY: STATISTICAL MODELING
+################################################################################
+
+
+# given a strain how likely is it to be from a given food source? [isolation source is actually a predictor variable]
+
+
+## In the current study, we
+##investigated the potential of machine learning to predict the food source origins of bacterial
+##strains isolated from human cases of listeriosis using machine learning analyses of cgMLST
+##data. Our machine learning model was able to recognize patterns in the complex data set
+##and use this information to predict the source of human listeriosis isolates. These
+
+################################################################################
+## focus on dairy, fish, beef, pork, avocado, potato, chicken as the outcome classes
+
+sub_df <- df %>% dplyr::filter(Source == "water" |
+                                 Source == "dairy" |
+                                 Source == "fish" |
+                                 Source == "beef" |
+                                 Source == "pork" |
+                                 Source == "avocado" |
+                                 Source == "chicken" |
+                                 Source == "beans")
+
+
+dim(sub_df)  ## 3377
+attach(sub_df)
+
+## select the potential features of interest in the model
+variables <- c("Host", "Host.disease", "Min.same", "Min.diff", "Outbreak", "Location", "Strain", "AMR.genotypes", "Isolate",
+               "Source.type", "Stress.genotypes", "state", "Virulence.genotypes", "Source")
+
+sub_dfx <- sub_df %>% 
+  dplyr::select(c("Source", "Min.same", "Min.diff", "Location", "Strain", "Isolate", "state"))
+
+sub_dfx <- na.omit(sub_dfx)
+saveRDS(sub_dfx, "data\\final_df.RData")
+write.csv(sub_dfx, "data\\final_df.csv", row.names = FALSE)
+
+## Explore the class proportions
+tab <- sub_dfx %>% dplyr::group_by(Source) %>% 
+  dplyr::summarise(count = n())
+tab
+
+sub_dfx <- sub_dfx %>% 
+  dplyr::mutate_if(is.character, as.factor)
+## Create data partition
+set.seed(123)
+df_split <- sub_dfx %>% 
+  initial_split(strata = Source, 
+                prop = 3/4)
+
+
+## get the actual train and test data sets
+train <- training(df_split)
+test  <- testing(df_split)
+
+## save the test and train datasets
+write.csv(train, "data\\train.csv", row.names = FALSE)
+write.csv(train, "data\\test.csv", row.names = FALSE)
+
+
+nrow(train)
+nrow(train)/nrow(sub_dfx) ## 74%
+
+
+# training set proportions by food source
+train.prop <- train %>% 
+  count(Source) %>% 
+  mutate(prop = n/sum(n))
+
+
+# test set proportions by food source
+test.prop <- test %>% 
+  count(Source) %>% 
+  mutate(prop = n/sum(n))
+
+
+test_train_prop <- bind_cols(list(train.prop, test.prop)) %>% 
+  dplyr::select(c(1, 2, 3, 5, 6))
+names(test_train_prop) <- c("Food source", "Train set sample size", "Train set proportion", "Test set sample size", "Test set proportion" )
+test_train_prop
+
+
+## Initial model builds
+
+###############################
+### (1) Naive Bayes
+###############################
+
+#use Laplace smoothing here to handle zero probabilities: value proposed here
+naiveModel <- naive_Bayes(Laplace = 1) %>% 
+  set_mode("classification") %>% 
+  set_engine("naivebayes") %>% 
+  fit(Source ~., data = train)
+
+
+## can predict using this model on the test set
+naive_pred <- predict(naiveModel, test, type = "class")
+   
+## get the accuracy for the non-cross validated Naive Bayes
+ acc = predict(naiveModel, test) %>% 
+   bind_cols(test) %>% 
+   metrics(truth = Source, estimate = .pred_class)
+ 
+
+## compute the final metrics for presentation 
+ final_metrics <- predict(naiveModel, test, type = "prob") %>%
+   bind_cols(predict(naiveModel, test)) %>%
+   bind_cols(select(test, Source)) %>%
+   metrics(Source, .pred_avocado:.pred_water, estimate = .pred_class)
+ final_metrics
+ 
+ 
+## plot the AUC: first get predicted probabilities on the test set then use these for the plot for each potential food source
+naive_probs <- predict(naiveModel, test, type = "prob") %>%
+  bind_cols(test) %>% 
+  glimpse()
+ 
+ 
+          # Gain curve for each food source
+naive_gain <- naive_probs %>%
+  gain_curve(Source, .pred_avocado:.pred_water) %>%
+  autoplot()
+naive_gain
+
+
+          # ROC curve for each food source
+naive_ROC <- naive_probs %>%
+  roc_curve(Source, .pred_avocado:.pred_water) %>%
+  autoplot()
+naive_ROC
+
+
+## save the naive gain curve to figures folder
+jpeg("figures\\naive_gain.jpeg", width = 4, height = 4, units = 'in', res = 300)
+naive_gain
+dev.off()
+
+
+jpeg("figures\\naive_ROC.jpeg", width = 4, height = 4, units = 'in', res = 300)
+naive_ROC
+dev.off()
+
+  
+############################
+### (2) Random forest
+############################
+
+
+
+
+
+
+
+
+
+#################################################
+## (3) Bayesian additive regression trees [BART]
+#################################################
+
+
+
+
 
 

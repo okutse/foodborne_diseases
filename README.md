@@ -19,7 +19,7 @@ food source attribution. Ultimately, we hope our model and result can help reduc
 
 - `methodology.Rmd`, `methodology.md` and `methodology.pdf`: This files contain the written Methods and Analysis Plan report done for this project. The code is hidden in the pdf version. 
 
-- `references.bib`: This file contains all the reference literature we have used in this project.
+- `references.bib`: This file contains all the reference literature and updated Methods and Analysis Plan we have used in this project.
 
 More folders and files to be added throughout the course of the project.
 

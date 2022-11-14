@@ -7,7 +7,7 @@ food source attribution. Ultimately, we hope our model and result can help reduc
 
 ## Repository Organization 
 
-- `data`: This folder contains the `listeria_isolates.csv` data file used to conduct the analyses in our study. This is the cleaned data from the raw data files downloaded directly from the [NCBI website](https://www.ncbi.nlm.nih.gov/pathogens/). This folder also contains the `analysis_script.R`, which is the code used in the initial Exploratory Data Analysis (EDA), updated data pre-processing and brief use cases for sanity check. We also include the updated dataset used to conduct several brief use cases. The training and the test set we divided are also contained.
+- `data`: This folder contains the `listeria_isolates.csv` data file used to conduct the analyses in our study. This is the cleaned data from the raw data files downloaded directly from the [NCBI website](https://www.ncbi.nlm.nih.gov/pathogens/). This folder also contains the `analysis_script.R`, which is the code used in the initial Exploratory Data Analysis (EDA), updated data pre-processing and brief use cases for sanity check. We also include the updated dataset used to conduct several brief use cases and made comparisons between different models. The training and the test set we divided are also contained.
 
 - `figures`: This folder contains flow chart of the data cleaning process used in this project. 
 
@@ -19,7 +19,7 @@ food source attribution. Ultimately, we hope our model and result can help reduc
 
 - `methodology.Rmd`, `methodology.md` and `methodology.pdf`: This files contain the written Methods and Analysis Plan report done for this project. The code is hidden in the pdf version. 
 
-- `references.bib`: This file contains all the reference literature we have used in this project.
+- `references.bib`: This file contains all the reference literature and updated Methods and Analysis Plan we have used in this project.
 
 More folders and files to be added throughout the course of the project.
 

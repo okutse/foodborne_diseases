@@ -551,9 +551,23 @@ dev.off()
 ### (2) Random forest
 ############################
 
+rf_model <- rand_forest() %>% 
+  set_engine("ranger") %>% 
+  set_mode("classification") %>% 
+  fit(Source ~ ., data = train) 
+
+#%>% 
+#  predict(test) %>% 
+#  bind_cols(test) %>% 
+#  glimpse()
 
 
-
+## metrics for the random forest algorithm [non cross-validation]
+final_mets <- predict(rf_model, test, type = "prob") %>%
+  bind_cols(predict(rf_model, test)) %>%
+  bind_cols(select(test, Source)) %>%
+  metrics(Source, .pred_avocado:.pred_water, estimate = .pred_class)
+final_mets
 
 
 
@@ -562,9 +576,11 @@ dev.off()
 #################################################
 ## (3) Bayesian additive regression trees [BART]
 #################################################
+## section to be checked: Error in .Object$initialize(...) : sigma estimate is NaN
 
-
-
-
+#bart_model <- parsnip::bart(trees = 1000, prior_terminal_node_coef = 0.95, prior_terminal_node_expo = 2, prior_outcome_range = 2) %>% 
+#  set_mode("classification") %>% 
+#  set_engine("dbarts") %>% 
+#  fit(Source ~., data = train)
 
 

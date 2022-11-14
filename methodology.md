@@ -5,7 +5,7 @@ author:
 - Amos Okutse
 - Zexuan Yu
 - Rophence Ojiambo
-date: "  23 October, 2022 "
+date: "  13 November, 2022 "
 abstract: |
 keywords: "nothing, nothingness"
 header-includes:
@@ -111,7 +111,7 @@ where $Y$ denotes the vector of outcomes, $\textbf{X}$ denotes the $n\times p$ d
 
 The data considered for analysis had a very high percentage of missing data which rendered the use of data imputation methods unreasonable. The inclusion of potentially predictive features in the model resulted in the exclusion of all possible observations under a complete case analysis. As such, the analysis that followed was limited to the variables we deemed useful in linking a particular *Listeria monocytogene* strain to a food source. The features which we deemed relevant for this analysis included the food source, the minimum single nucleotide polymorphism (SNP) distance to another isolate of the same isolation type for example, the minimum SNP distance from one clinical isolate to another clinical isolate (`Min.same`), the minimum SNP distance to another isolate of a different isolation type (`Min.diff`), the microbial strain name used to distinguish a genetically distinct lineage separated from another strain by one or two mutations (`Strain`), the isolate, and the location (state) from which the particular isolate was collected, all of which were informed by literature [@tanui2022machine], [@tanui2022machine], [@filipello2020attribution]. 
 
-The food source variable employed was recategorized into 38 unique levels, however, for simplicity and to avoid potential empty levels characterized by food source categories with a limited number of samples, we restricted our analysis to the top 8 food categories which had $n \geq 150$ samples, that is, water (n = 1343 samples), dairy (n = 935 samples), fish (n = 244 samples), beef (n = 227 samples), pork (n = 214 samples), avocado (n = 209 samples), chicken (n = 168 samples), and beans (n = 150 samples). Even though the environment as a food source had a substantial number of samples linked to it, we chose to exclude this level considering the breadth of the term. We also excluded unknown food types from the outcome considering their uninformative nature. The resulting data set had n = 2143 *Listeria monocytogene* isolates which we use in all subsequent statistical modeling processes. We split into the training and testing sets with ¾ of the observations used in the training and the remaining ¼ of the observations used in the model validation. The split criteria considered the probable imbalance in the outcome food source by stratifying the way in which this split was performed using the food source variable. Table \@ref(tab:prop-sampled) highlights the proportions of the food sources in the train and test samples, respectively. All models are trained on the same dataset using the same features to reduce the potential effect of varied model building strategies on the resulting model performance estimates and thus also enhance comparability of the performance metrics. In the following section, we describe the specific implementation strategies considered for each of the implemented algorithms.
+The food source variable employed was recategorized into 38 unique levels, however, for simplicity and to avoid potential empty levels characterized by food source categories with a limited number of samples, we restricted our analysis to the top 8 food categories which had $n \geq 150$ samples, that is, water (n = 1343 samples), dairy (n = 935 samples), fish (n = 244 samples), beef (n = 227 samples), pork (n = 214 samples), avocado (n = 209 samples), chicken (n = 168 samples), and beans (n = 150 samples). Even though the environment as a food source had a substantial number of samples linked to it, we chose to exclude this level considering the breadth of the term. We also excluded unknown food types from the outcome considering their uninformative nature. The resulting data set had n = 2143 *Listeria monocytogene* isolates which we use in all subsequent statistical modeling processes. We split into the training and testing sets with ¾ of the observations used in the training and the remaining ¼ of the observations used in the model validation. The split criteria considered the probable imbalance in the outcome food source by stratifying the way in which this split was performed using the food source variable. <!--Table \@ref(tab:prop-sampled) highlights the proportions of the food sources in the train and test samples, respectively.--> All models are trained on the same dataset using the same features to reduce the potential effect of varied model building strategies on the resulting model performance estimates and thus also enhance comparability of the performance metrics. In the following section, we describe the specific implementation strategies considered for each of the implemented algorithms.
 
 
 ***Implementation***
@@ -127,13 +127,6 @@ The Naïve Bayes algorithm will be implemented using the `naive_bayes()` functio
 
 
 The random forest algorithm will be implemented using the `rand_forest()` function which defines a model for the creation of a substantial number of trees that are independent of each other. The final classification follows from averaging/bagging or majority voting. The model will use the `ranger` engine, a workflow, similarly derived from the `tidymodels` package [@kuhn2020]. The `rand_forest()`  function takes in five arguments including the outcome mode of the prediction, the engine used in model fitting, and tuning parameters `mtry`, `trees`, and `min_n` corresponding to the number of predictors on which to split the creation of a tree, the number of trees in the ensemble, and the minimum number of data points in a node for an additional split to be performed at this node. Hyperparameter tuning proceeded using a space-filling design with 25 candidate models using the `tune_grid()` function and the `show_best()` metric set to the AUC. For this process, the training data is split further using the `validation_split()` function with 20% of the samples used in the validation. The `ranger` [@wright2017] package is used for parallel processing to allow computational efficiency using 1000 trees.     
-
-
-(3) Bayesian additive regression trees [BART]
-
-
-The Bayesian
-
 
 
 ### Model evaluation {#performance}
@@ -161,28 +154,9 @@ All statistical analyses were performed using the open-source R statistical prog
 
 This section highlights the preliminary results based on the implementation of the Naïve Bayes algorithm. Other models which will be included here are random forest and Bayesian Additive Regression Trees (BART).
 
-Table \@ref(tab:prop-sampled) highlights the proportion of samples under each selected food category in the training and testing sets of the data. We notice that water, dairy, and beef have slightly higher proportions in the train and test data sets, respectively. Stratified sampling allows the data to be split with particular consideration of the proportion in each food category.
+<!--Table \@ref(tab:prop-sampled) highlights the proportion of samples under each selected food category in the training and testing sets of the data. We notice that water, dairy, and beef have slightly higher proportions in the train and test data sets, respectively. Stratified sampling allows the data to be split with particular consideration of the proportion in each food category. -->
 
-\begin{table}[H]
 
-\caption{(\#tab:prop-sampled)Proportion in training and test datasets by food source}
-\centering
-\begin{tabular}[t]{lrrrr}
-\toprule
-Food source & Train set sample size & Train set proportion & Test set sample size & Test set proportion\\
-\midrule
-avocado & 81 & 0.050 & 28 & 0.052\\
-beans & 74 & 0.046 & 23 & 0.043\\
-beef & 117 & 0.073 & 29 & 0.054\\
-chicken & 61 & 0.038 & 24 & 0.045\\
-dairy & 368 & 0.229 & 131 & 0.244\\
-\addlinespace
-fish & 113 & 0.070 & 35 & 0.065\\
-pork & 96 & 0.060 & 24 & 0.045\\
-water & 696 & 0.433 & 243 & 0.453\\
-\bottomrule
-\end{tabular}
-\end{table}
 
 
 ### Model performance
@@ -209,7 +183,7 @@ roc\_auc & hand\_till & 0.823\\
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=1\linewidth]{methodology_files/figure-latex/naivegain-1} 
+{\centering \includegraphics[width=0.55\linewidth]{methodology_files/figure-latex/naivegain-1} 
 
 }
 
@@ -219,12 +193,13 @@ roc\_auc & hand\_till & 0.823\\
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=1\linewidth]{methodology_files/figure-latex/naiveroc-1} 
+{\centering \includegraphics[width=0.55\linewidth]{methodology_files/figure-latex/naiveroc-1} 
 
 }
 
 \caption{ROC curve based on the implemented naive Bayesian model}(\#fig:naiveroc)
 \end{figure}
+
 
 
 

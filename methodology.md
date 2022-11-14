@@ -26,7 +26,7 @@ header-includes:
 - \DeclareMathOperator*{\argmax}{arg\,max}
 - \DeclareMathOperator*{\argmin}{arg\,min}
 - \singlespacing
-fontsize: 10pt
+fontsize: 9pt
 output:
   bookdown::pdf_document2:
     latex_engine: xelatex
@@ -140,8 +140,7 @@ On the other hand, the ability of the models to discriminate between the differe
 ### Model selection
 
 
-Model selection was based on the performance metrics discussed in \@ref(performance) to determine a suitable model with a combination of the highest accuracy as well as ability to discriminate between the different food sources to facilitate a relatively accurate linkage of the varied *Listeria monocytogene* pathogenic isolates to a potential food source and thus facilitate contact tracing and outcome investigation rapidly. The best model based on the metrics above will be trained on the full set of features to allow the model to learn the heterogeneity in the full data set and thus enhance robustness. This approach has been employed elsewhere [@tanui2022machine], [@Munck2020] and shown to yield substantially throughput results for predictive models.
-
+Model selection was based on the performance metrics discussed in \@ref(performance) to determine a suitable model with a combination of the highest accuracy as well as ability to discriminate between the different food sources to facilitate a relatively accurate linkage of the varied *Listeria monocytogene* pathogenic isolates to a potential food source and thus facilitate contact tracing and outcome investigation rapidly. The best model based on the metrics above will be trained on the full set of features to allow the model to learn the heterogeneity in the full data set and thus enhance robustness. This approach has been employed elsewhere [@tanui2022machine], [@Munck2020] and shown to yield substantially throughput results for predictive models. The model comparison approach highlighted here enables us to link a particular strain of listeria to a specific food source using a model that has a high discriminatory ability.
 
 ### Statistical software, code, and data availability
 
@@ -151,10 +150,10 @@ All statistical analyses were performed using the open-source R statistical prog
 
 ## PRELIMINARY RESULTS
 
-
+<!--
 This section highlights the preliminary results based on the implementation of the Naïve Bayes algorithm. Other models which will be included here are random forest and Bayesian Additive Regression Trees (BART).
 
-<!--Table \@ref(tab:prop-sampled) highlights the proportion of samples under each selected food category in the training and testing sets of the data. We notice that water, dairy, and beef have slightly higher proportions in the train and test data sets, respectively. Stratified sampling allows the data to be split with particular consideration of the proportion in each food category. -->
+Table \@ref(tab:prop-sampled) highlights the proportion of samples under each selected food category in the training and testing sets of the data. We notice that water, dairy, and beef have slightly higher proportions in the train and test data sets, respectively. Stratified sampling allows the data to be split with particular consideration of the proportion in each food category. -->
 
 
 
@@ -183,7 +182,7 @@ roc\_auc & hand\_till & 0.823\\
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=0.55\linewidth]{methodology_files/figure-latex/naivegain-1} 
+{\centering \includegraphics[width=0.5\linewidth]{methodology_files/figure-latex/naivegain-1} 
 
 }
 

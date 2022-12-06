@@ -21,6 +21,7 @@ library(gridExtra)     ## displaying plots side by side
 ##########################################
 ## Modeling Libraries
 ##########################################
+library(rsample)
 library(tidymodels)    ## for using tidy models in R
 library(broom.mixed)   ## for converting Bayesian models to tidy tibbles
 library(dotwhisker)    ## for visualizing regression results
@@ -128,6 +129,8 @@ df$Year <- ifelse(is.na(df$Year), format(as.Date(df$Create.date1), "%Y"), df$Yea
 
 # Cleaning up location variable and creating variable for state
 # PR stands for Puerto Rico
+# DC stands for District of Columbia
+# USA state renamed to "other"
 df<- df %>%
   mutate(state = sub('.*:', '', Location))
 
@@ -136,9 +139,20 @@ df$state[df$state == " Arizona" ] <- "AZ"
 df$state[df$state == " CO" ] <- "CO"
 df$state[df$state == " NC" ] <- "NC"
 df$state[df$state == "Fl" ] <- "FL"
+df$state[df$state == "USA" ] <- "Other"
+
 
 df$Location<- gsub(":.*$", "", df$Location)
 
+# looking at seasonality
+# We want to look at seasonality 
+df$Month <- as.numeric(df$Month)
+df <- df %>% mutate(season =case_when(Month == 1 ~ "Winter",  Month == 2 ~ "Winter",
+                           Month == 3 ~ "Spring", Month == 4 ~ "Spring",
+                           Month == 5 ~ "Spring", Month == 6 ~ "Summer",
+                           Month == 7 ~ "Summer", Month == 8 ~ "Summer",
+                           Month == 9 ~ "Fall", Month == 10 ~ "Fall",
+                           Month == 11 ~ "Fall", Month == 12 ~ "Winter"))
 
 # Aggregating IFSAC categories, Isolation source, Host, Host Disease
 # Isolation sources
@@ -152,26 +166,46 @@ Sources <- df %>%
 
 # collapsing the sources based on the above frequencies
 df <- df %>%
-            mutate(Source =  ifelse(grepl("deli", Isolation.source), "deli", ifelse(grepl("chicken", Isolation.source), "chicken",ifelse(grepl("blood", Isolation.source), "blood",
-                             ifelse(grepl("food", Isolation.source), "food", ifelse(grepl("pork", Isolation.source) | grepl("salami", Isolation.source)|grepl("ham", Isolation.source)|grepl("hog", Isolation.source)|grepl("swine", Isolation.source), "pork",
-                             ifelse(grepl("beef", Isolation.source) | grepl("meat", Isolation.source), "beef",
-                             ifelse(grepl("fecal", Isolation.source) | grepl("blood", Isolation.source)| grepl("tissue", Isolation.source)| grepl("rectal", Isolation.source) | grepl("feces", Isolation.source) |grepl("stool", Isolation.source), "stool",
-                             ifelse(grepl("turkey", Isolation.source), "turkey", ifelse(grepl("dairy", Isolation.source)| grepl("cheese", Isolation.source)| grepl("ice cream", Isolation.source)| grepl("milk", Isolation.source), "dairy",
-                             ifelse(grepl("environmental",Isolation.source) |grepl("environment", Isolation.source)|grepl("swab", Isolation.source), "environment",
-                             ifelse(grepl("clinical",Isolation.source) |grepl("clincial", Isolation.source)|grepl("csf", Isolation.source) | grepl("cerebral", Isolation.source)| grepl("culture", Isolation.source) |grepl("fluid", Isolation.source), "clinical", 
-                             ifelse(grepl("human", Isolation.source), "human",ifelse(grepl("farm", Isolation.source), "farm",
-                             ifelse(grepl("poultry", Isolation.source), "poultry",ifelse(grepl("rte", Isolation.source), "rte products",ifelse(grepl("retail", Isolation.source)| grepl("retailer", Isolation.source), "retail",
-                             ifelse(grepl("potato", Isolation.source), "potato",ifelse(grepl("water", Isolation.source) | grepl("drain", Isolation.source)| grepl("river", Isolation.source), "water",
-                             ifelse(grepl("avocado", Isolation.source)|grepl("guacamole", Isolation.source), "avocado",
-                             ifelse(grepl("blueberry", Isolation.source)| grepl("nectarines", Isolation.source)| grepl("peach", Isolation.source)| grepl("pico", Isolation.source)| grepl("cantaloupe", Isolation.source), "fruit",
-                             ifelse(grepl("lettuce", Isolation.source), "lettuce", ifelse(grepl("egg", Isolation.source), "egg", ifelse(grepl("beet", Isolation.source), "beet",
-                             ifelse(grepl("bean", Isolation.source)| grepl("sprout", Isolation.source), "beans", ifelse(grepl("vegetable", Isolation.source)| grepl("hummus", Isolation.source)| grepl("kale", Isolation.source), "vegetable",
-                             ifelse(grepl("apple", Isolation.source), "apple",
-                             ifelse(grepl("bovine", Isolation.source), "bovine", ifelse(grepl("brain", Isolation.source), "brain", ifelse(grepl("butchery", Isolation.source), "butchery", ifelse(grepl("shrimp", Isolation.source), "shrimp",
-                             ifelse(grepl("mushroom", Isolation.source), "mushroom", ifelse(grepl("factory", Isolation.source), "factory", ifelse(grepl("feed", Isolation.source), "feed",
-                             ifelse(grepl("fish", Isolation.source)| grepl("salmon", Isolation.source)|grepl("herring", Isolation.source)| grepl("tuna", Isolation.source), "fish",
-                             ifelse(grepl("not available", Isolation.source)|grepl("not provided", Isolation.source)|grepl("not collected", Isolation.source) , "other/unspecified",
-                             ifelse(is.na(Isolation.source), NA, "other/unspecified")))))))))))))))))))))))))))))))))))))
+  mutate(Source1 = ifelse(grepl("deli", Isolation.source), "deli", ifelse(grepl("chicken", Isolation.source), "chicken",ifelse(grepl("blood", Isolation.source), "blood",
+                   ifelse(grepl("food", Isolation.source), "food", ifelse(grepl("pork", Isolation.source) | grepl("salami", Isolation.source)|grepl("ham", Isolation.source)|grepl("hog", Isolation.source)|grepl("swine", Isolation.source), "pork",
+                   ifelse(grepl("beef", Isolation.source) | grepl("meat", Isolation.source), "beef",
+                   ifelse(grepl("fecal", Isolation.source) | grepl("blood", Isolation.source)| grepl("tissue", Isolation.source)| grepl("rectal", Isolation.source) | grepl("feces", Isolation.source) |grepl("stool", Isolation.source), "stool",
+                   ifelse(grepl("turkey", Isolation.source), "turkey", ifelse(grepl("dairy", Isolation.source)| grepl("cheese", Isolation.source)| grepl("ice cream", Isolation.source)| grepl("milk", Isolation.source), "dairy",
+                   ifelse(grepl("environmental",Isolation.source) |grepl("environment", Isolation.source)|grepl("swab", Isolation.source), "environment",
+                   ifelse(grepl("clinical",Isolation.source) |grepl("clincial", Isolation.source)|grepl("csf", Isolation.source) | grepl("cerebral", Isolation.source)| grepl("culture", Isolation.source) |grepl("fluid", Isolation.source), "clinical", 
+                   ifelse(grepl("human", Isolation.source), "human",ifelse(grepl("farm", Isolation.source), "farm",
+                   ifelse(grepl("poultry", Isolation.source), "poultry",ifelse(grepl("rte", Isolation.source), "rte products",ifelse(grepl("retail", Isolation.source)| grepl("retailer", Isolation.source), "retail",
+                   ifelse(grepl("potato", Isolation.source), "potato",ifelse(grepl("water", Isolation.source) | grepl("drain", Isolation.source)| grepl("river", Isolation.source), "water",
+                   ifelse(grepl("avocado", Isolation.source)|grepl("guacamole", Isolation.source), "avocado",
+                   ifelse(grepl("blueberry", Isolation.source)| grepl("nectarines", Isolation.source)| grepl("peach", Isolation.source)| grepl("pico", Isolation.source)| grepl("cantaloupe", Isolation.source), "fruit",
+                   ifelse(grepl("lettuce", Isolation.source), "lettuce", ifelse(grepl("egg", Isolation.source), "egg", ifelse(grepl("beet", Isolation.source), "beet",
+                   ifelse(grepl("bean", Isolation.source)| grepl("sprout", Isolation.source), "beans", ifelse(grepl("vegetable", Isolation.source)| grepl("hummus", Isolation.source)| grepl("kale", Isolation.source), "vegetable",
+                   ifelse(grepl("apple", Isolation.source), "apple",
+                   ifelse(grepl("bovine", Isolation.source), "bovine", ifelse(grepl("brain", Isolation.source), "brain", ifelse(grepl("butchery", Isolation.source), "butchery", ifelse(grepl("shrimp", Isolation.source), "shrimp",
+                   ifelse(grepl("mushroom", Isolation.source), "mushroom", ifelse(grepl("factory", Isolation.source), "factory", ifelse(grepl("feed", Isolation.source), "feed",
+                   ifelse(grepl("fish", Isolation.source)| grepl("salmon", Isolation.source)|grepl("herring", Isolation.source)| grepl("tuna", Isolation.source), "fish",
+                   ifelse(grepl("not available", Isolation.source)|grepl("not provided", Isolation.source)|grepl("not collected", Isolation.source) , "other/unspecified",
+                   ifelse(is.na(Isolation.source), NA, "other/unspecified")))))))))))))))))))))))))))))))))))))
+
+
+
+                                                               
+# further collapsing the categories
+df <- df %>%
+      mutate(Source2 = ifelse(grepl("environmental",Isolation.source) |grepl("environment", Isolation.source)|grepl("swab", Isolation.source) |grepl("water", Isolation.source) | grepl("drain", Isolation.source)| grepl("river", Isolation.source) | grepl("soil", Isolation.source)| grepl("wheel", Isolation.source), "environment",
+                        ifelse(grepl("dairy", Isolation.source)| grepl("cheese", Isolation.source)| grepl("cream", Isolation.source)| grepl("milk", Isolation.source)| grepl("egg", Isolation.source)| grepl("yogurt", Isolation.source)| grepl("butter", Isolation.source), "dairy",
+                          ifelse(grepl("clinical",Isolation.source) |grepl("clincial", Isolation.source)|grepl("csf", Isolation.source) | grepl("cerebral", Isolation.source)| grepl("culture", Isolation.source) |grepl("fluid", Isolation.source)|grepl("human", Isolation.source)|grepl("blood", Isolation.source)|
+                                grepl("fecal", Isolation.source) | grepl("blood", Isolation.source)| grepl("tissue", Isolation.source)| grepl("rectal", Isolation.source) | grepl("feces", Isolation.source) |grepl("stool", Isolation.source) | grepl("brain", Isolation.source), "Human",
+                            ifelse(grepl("beef", Isolation.source) | grepl("bovine", Isolation.source)|grepl("cow", Isolation.source)| grepl("cattle", Isolation.source)|grepl("calf", Isolation.source)|grepl("meat", Isolation.source)|grepl("pork", Isolation.source) | grepl("salami", Isolation.source)|
+                                     grepl("ham", Isolation.source)|grepl("hog", Isolation.source)|grepl("swine", Isolation.source)|grepl("porcine", Isolation.source), "Meat",
+                              ifelse(grepl("chicken", Isolation.source)|grepl("poultry", Isolation.source)|grepl("turkey", Isolation.source)|grepl("sponge", Isolation.source), "Poultry",      
+                                  ifelse(grepl("kale", Isolation.source)|grepl("lettuce", Isolation.source)|grepl("beet", Isolation.source)|grepl("spinach", Isolation.source)| grepl("microgreen", Isolation.source)|grepl("collard", Isolation.source)|grepl("leaf", Isolation.source)|grepl("cabbage", Isolation.source)|
+                                          grepl("chard", Isolation.source)|grepl("brocco", Isolation.source)|grepl("parsley", Isolation.source)|grepl("cilantro", Isolation.source)|grepl("basil", Isolation.source)|grepl("spring", Isolation.source), "Leafy greens",
+                                    ifelse(grepl("potato", Isolation.source)|grepl("vegetable", Isolation.source)| grepl("hummus", Isolation.source)|grepl("bean", Isolation.source)| grepl("sprout", Isolation.source)|grepl("mushroom", Isolation.source)|grepl("corn", Isolation.source), "vegetables",      
+                                      ifelse(grepl("avocado", Isolation.source)|grepl("guacamole", Isolation.source)|grepl("blueberry", Isolation.source)| grepl("nectarines", Isolation.source)| grepl("peach", Isolation.source)| grepl("pico", Isolation.source)| grepl("cantaloupe", Isolation.source)|grepl("apple", Isolation.source), "fruits",         
+                                        ifelse(grepl("shrimp", Isolation.source)|grepl("fish", Isolation.source)| grepl("salmon", Isolation.source)|grepl("herring", Isolation.source)| grepl("tuna", Isolation.source), "Sea Food",
+                                           ifelse(grepl("not available", Isolation.source)|grepl("not provided", Isolation.source)|grepl("not collected", Isolation.source) , "other/unspecified",
+                                                  ifelse(is.na(Isolation.source), "NA", "other/unspecified"))))))))))))
 
                                     
                             
@@ -184,7 +218,7 @@ df <- df %>%
 # Missing values in all all variables
 
 ## overall missing data
-sum(is.na(df))/prod(dim(df))*100 #23%
+sum(is.na(df))/prod(dim(df))*100 #20.4455%
 missing_values <- df %>% miss_var_summary()
 
 
@@ -223,7 +257,7 @@ figure_one
 ################################################################################
 
 # Selecting columns for EDA
-df_cols <- names(df)[c(9,23,25,26,29, 31, 33:34, 38,39, 41:47, 49, 53:56)]
+df_cols <- names(df)[c(9,23,25,26,29, 31, 33:34, 38,39, 41:47, 49, 53:58)]
 
 # Data subset with variables of interest
 df1 <- df[df_cols]
@@ -319,7 +353,7 @@ month_summary %>%
 
 # Proportions by Isolation type 
 summary_3<- df1 %>% 
-  group_by(Source)%>%
+  group_by(Source2)%>%
   summarise(N = n()) %>% 
   mutate(Frequency = N/sum(N)*100)%>%
   arrange(desc(Frequency))%>%
@@ -337,7 +371,7 @@ summary_3 %>%
 
 # Year summary
 summary_4 <- df1 %>% 
-  group_by(Source, Year)%>%
+  group_by(Source1, Year)%>%
   summarise(N = n()) %>% 
   mutate(Frequency = N/sum(N)*100)%>%
   arrange(N)
@@ -346,9 +380,9 @@ summary_4 <- df1 %>%
 
 # figure four
 figure_four <- summary_4%>% 
-  filter(Source == "beef"| Source=="chicken"| Source=="pork" 
-         |Source=="dairy")%>%
-  ggplot(aes(x= Year, y = N, group= Source, color= Source))+
+  filter(Source1 == "beef"| Source1=="chicken"| Source1=="pork" 
+         |Source1=="dairy")%>%
+  ggplot(aes(x= Year, y = N, group= Source1, color= Source1))+
   geom_point(size=2)+ geom_line(size=1.2) +
   scale_x_discrete(breaks= seq(2000,2025, by= 5))+
   theme(plot.caption = element_text(hjust = 0))+
@@ -360,9 +394,9 @@ figure_four <- summary_4%>%
 
 # Displaying figure 5
 figure_five <- summary_4%>% 
-  filter(Source == "water"| Source=="food" |
-           Source=="potato"|Source=="fish")%>%
-  ggplot(aes(x= Year, y = N, group= Source, color= Source))+
+  filter(Source1 == "water"| Source1=="food" |
+           Source1 =="potato"|Source1 =="fish")%>%
+  ggplot(aes(x= Year, y = N, group= Source1, color= Source1))+
   geom_point(size=2)+ geom_line(size=1.2) +
   theme(plot.caption = element_text(hjust = 0))+
   scale_x_discrete(breaks= seq(2000,2025, by= 5))+
@@ -417,14 +451,14 @@ figure_seven <- df_distance %>% ggplot(aes(x = log(Value), col = Type)) +
 ################################################################################
 ## focus on dairy, fish, beef, pork, avocado, potato, chicken as the outcome classes
 
-sub_df <- df %>% dplyr::filter(Source == "water" |
-                                 Source == "dairy" |
-                                 Source == "fish" |
-                                 Source == "beef" |
-                                 Source == "pork" |
-                                 Source == "avocado" |
-                                 Source == "chicken" |
-                                 Source == "beans")
+sub_df <- df %>% dplyr::filter(Source1 == "water" |
+                                 Source1 == "dairy" |
+                                 Source1 == "fish" |
+                                 Source1 == "beef" |
+                                 Source1 == "pork" |
+                                 Source1 == "avocado" |
+                                 Source1 == "chicken" |
+                                 Source1 == "beans")
 
 
 dim(sub_df)  ## 3377
@@ -435,14 +469,14 @@ variables <- c("Host", "Host.disease", "Min.same", "Min.diff", "Outbreak", "Loca
                "Source.type", "Stress.genotypes", "state", "Virulence.genotypes", "Source")
 
 sub_dfx <- sub_df %>% 
-  dplyr::select(c("Source", "Min.same", "Min.diff", "Location", "Strain", "Isolate", "state"))
+  dplyr::select(c("Source1", "Min.same", "Min.diff", "Location", "Strain", "Isolate", "state"))
 
 sub_dfx <- na.omit(sub_dfx)
 saveRDS(sub_dfx, "data\\final_df.RData")
 write.csv(sub_dfx, "data\\final_df.csv", row.names = FALSE)
 
 ## Explore the class proportions
-tab <- sub_dfx %>% dplyr::group_by(Source) %>% 
+tab <- sub_dfx %>% dplyr::group_by(Source1) %>% 
   dplyr::summarise(count = n())
 tab
 
@@ -451,7 +485,7 @@ sub_dfx <- sub_dfx %>%
 ## Create data partition
 set.seed(123)
 df_split <- sub_dfx %>% 
-  initial_split(strata = Source, 
+  initial_split(strata = Source1, 
                 prop = 3/4)
 
 
@@ -470,13 +504,13 @@ nrow(train)/nrow(sub_dfx) ## 74%
 
 # training set proportions by food source
 train.prop <- train %>% 
-  count(Source) %>% 
+  count(Source1) %>% 
   mutate(prop = n/sum(n))
 
 
 # test set proportions by food source
 test.prop <- test %>% 
-  count(Source) %>% 
+  count(Source1) %>% 
   mutate(prop = n/sum(n))
 
 
@@ -496,7 +530,7 @@ test_train_prop
 naiveModel <- naive_Bayes(Laplace = 1) %>% 
   set_mode("classification") %>% 
   set_engine("naivebayes") %>% 
-  fit(Source ~., data = train)
+  fit(Source1 ~., data = train)
 
 
 ## can predict using this model on the test set
@@ -505,14 +539,14 @@ naive_pred <- predict(naiveModel, test, type = "class")
 ## get the accuracy for the non-cross validated Naive Bayes
  acc = predict(naiveModel, test) %>% 
    bind_cols(test) %>% 
-   metrics(truth = Source, estimate = .pred_class)
+   metrics(truth = Source1, estimate = .pred_class)
  
 
 ## compute the final metrics for presentation 
  final_metrics <- predict(naiveModel, test, type = "prob") %>%
    bind_cols(predict(naiveModel, test)) %>%
-   bind_cols(select(test, Source)) %>%
-   metrics(Source, .pred_avocado:.pred_water, estimate = .pred_class)
+   bind_cols(select(test, Source1)) %>%
+   metrics(Source1, .pred_avocado:.pred_water, estimate = .pred_class)
  final_metrics
  
  
@@ -524,14 +558,14 @@ naive_probs <- predict(naiveModel, test, type = "prob") %>%
  
           # Gain curve for each food source
 naive_gain <- naive_probs %>%
-  gain_curve(Source, .pred_avocado:.pred_water) %>%
+  gain_curve(Source1, .pred_avocado:.pred_water) %>%
   autoplot()
 naive_gain
 
 
           # ROC curve for each food source
 naive_ROC <- naive_probs %>%
-  roc_curve(Source, .pred_avocado:.pred_water) %>%
+  roc_curve(Source1, .pred_avocado:.pred_water) %>%
   autoplot()
 naive_ROC
 
@@ -554,7 +588,7 @@ dev.off()
 rf_model <- rand_forest() %>% 
   set_engine("ranger") %>% 
   set_mode("classification") %>% 
-  fit(Source ~ ., data = train) 
+  fit(Source1 ~ ., data = train) 
 
 #%>% 
 #  predict(test) %>% 
@@ -565,8 +599,8 @@ rf_model <- rand_forest() %>%
 ## metrics for the random forest algorithm [non cross-validation]
 final_mets <- predict(rf_model, test, type = "prob") %>%
   bind_cols(predict(rf_model, test)) %>%
-  bind_cols(select(test, Source)) %>%
-  metrics(Source, .pred_avocado:.pred_water, estimate = .pred_class)
+  bind_cols(select(test, Source1)) %>%
+  metrics(Source1, .pred_avocado:.pred_water, estimate = .pred_class)
 final_mets
 
 

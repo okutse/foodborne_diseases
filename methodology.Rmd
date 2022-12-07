@@ -200,7 +200,10 @@ naive_ROC
 ```
 
 
+```{r}
+performance
 
+```
 
 
 \newpage

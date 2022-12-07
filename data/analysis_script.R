@@ -218,7 +218,7 @@ SNP_summary <- df %>%
   arrange(desc(N))
 
 df <- df %>%
-  mutate(SNP_Cluster = ifelse(grepl("PDS000000366.504",SNP.cluster), "PDS000000366.504",
+  mutate(snp_cluster = ifelse(grepl("PDS000000366.504",SNP.cluster), "PDS000000366.504",
                        ifelse(grepl("PDS000024989.120", SNP.cluster), "PDS000024989.120",
                        ifelse(grepl("PDS000024934.85",Isolation.source), "PDS000024934.85",
                        ifelse(grepl("PDS000024311.16", Isolation.source), "PDS000024311.16",
@@ -507,7 +507,7 @@ figure_seven <- df_distance %>% ggplot(aes(x = log(Value), col = Type)) +
 #               "Source.type", "Stress.genotypes", "state", "Virulence.genotypes", "Source")
 
 sub_dfx <- df %>% 
-  dplyr::select(c("Source2", "Min.same", "Min.diff", "Strain", "Isolate", "state", "SNP.cluster", "season"))
+  dplyr::select(c("Source2", "Min.same", "Min.diff", "Strain", "Isolate", "state", "snp_cluster", "season"))
 
 sub_dfx <- na.omit(sub_dfx)
 saveRDS(sub_dfx, "data\\final_df.RData")
@@ -659,59 +659,59 @@ dev.off()
 ##------------------------------------------------------------------------------
 
 #use Laplace smoothing here to handle zero probabilities: value proposed here
-naiveModel <- naive_Bayes(Laplace = 1) %>% 
-  set_mode("classification") %>% 
-  set_engine("naivebayes") %>% 
-  fit(Source2 ~., data = train)
+#naiveModel <- naive_Bayes(Laplace = 1) %>% 
+#  set_mode("classification") %>% 
+#  set_engine("naivebayes") %>% 
+#  fit(Source2 ~., data = train)
 
 
 ## can predict using this model on the test set
-naive_pred <- predict(naiveModel, test, type = "class")
+#naive_pred <- predict(naiveModel, test, type = "class")
    
 ## get the accuracy for the non-cross validated Naive Bayes
- acc = predict(naiveModel, test) %>% 
-   bind_cols(test) %>% 
-   metrics(truth = Source2, estimate = .pred_class)
+# acc = predict(naiveModel, test) %>% 
+#   bind_cols(test) %>% 
+#   metrics(truth = Source2, estimate = .pred_class)
  
 
 ## compute the final metrics for presentation 
- final_metrics <- predict(naiveModel, test, type = "prob") %>%
-   bind_cols(predict(naiveModel, test)) %>%
-   bind_cols(select(test, Source2)) %>%
+# final_metricsx <- predict(naiveModel, test, type = "prob") %>%
+#   bind_cols(predict(naiveModel, test)) %>%
+#   bind_cols(select(test, Source2)) %>%
    #metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
- class_metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
- final_metrics
+# class_metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
+ #final_metricsx
  
  
 ## plot the AUC: first get predicted probabilities on the test set then use these for the plot for each potential food source
-naive_probs <- predict(naiveModel, test, type = "prob") %>%
-  bind_cols(test) %>% 
-  glimpse()
+#naive_probs <- predict(naiveModel, test, type = "prob") %>%
+#  bind_cols(test) %>% 
+#  glimpse()
  
  
           # Gain curve for each food source
-naive_gain <- naive_probs %>%
-  gain_curve(Source2, .pred_dairy:.pred_vegetables) %>%
-  autoplot()
-naive_gain
+#naive_gain <- naive_probs %>%
+#  gain_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+#  autoplot()
+#naive_gain
 
 
           # ROC curve for each food source
-naive_ROC <- naive_probs %>%
-  roc_curve(Source2, .pred_dairy:.pred_vegetables) %>%
-  autoplot()
-naive_ROC
+#naive_ROC <- naive_probs %>%
+#  roc_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+#  autoplot()
+#naive_ROC
 
 
 ## save the naive gain curve to figures folder
-jpeg("figures\\naive_gain.jpeg", width = 4, height = 4, units = 'in', res = 300)
-naive_gain
-dev.off()
+#jpeg("figures\\naive_gain.jpeg", width = 4, height = 4, units = 'in', res = 300)
+#naive_gain
+#dev.off()
 
 
-jpeg("figures\\naive_ROC.jpeg", width = 4, height = 4, units = 'in', res = 300)
-naive_ROC
-dev.off()
+#jpeg("figures\\naive_ROC.jpeg", width = 4, height = 4, units = 'in', res = 300)
+#naive_ROC
+#dev.off()
 
 ##------------------------------------------------------------------------------  
 ### (2) Random forest [cross-validated and corrected for class imbalance]
@@ -743,29 +743,29 @@ val_set <- validation_split(train,
 val_set
 
 ## set up the tuning grid [commented out after run due to computational intensity]
-#set.seed(345)
-#rf_res <- 
-#  rf_workflow %>% 
-#  tune_grid(val_set,
-#            grid = 25,
-#            control = control_grid(save_pred = TRUE),
-#            metrics = metric_set(roc_auc))
+set.seed(345)
+rf_res <- 
+  rf_workflow %>% 
+  tune_grid(val_set,
+            grid = 25,
+            control = control_grid(save_pred = TRUE),
+            metrics = metric_set(roc_auc))
 
 ## show the top 5 best rf models based on AUC
-#rf_res %>% 
-#  show_best(metric = "roc_auc")
+rf_res %>% 
+  show_best(metric = "roc_auc")
 
 ## plot the best models using AUC values [show supplementary]
-#autoplot(rf_res)
+autoplot(rf_res)
 
 ## select the best model based on the AUC
-#rf_best <- 
-#  rf_res %>% 
-#  select_best(metric = "roc_auc")
-#rf_best  ##[mtry = 2, min_n = 3] are best parameters 3 and 7
+rf_best <- 
+  rf_res %>% 
+  select_best(metric = "roc_auc")
+rf_best  ##[mtry = 2, min_n = 3] are best parameters 3 and 7
 
 
-## re-fit model using best parameters
+## re-fit model using best parameters based on the tuning process
 rf_model_tuned <- rand_forest(trees = 500, mtry = 2, min_n = 3) %>% 
   set_engine("ranger") %>% 
   set_mode("classification")
@@ -832,229 +832,68 @@ naive_ROC
 dev.off()
 
 ##------------------------------------------------------------------------------
-## Multinomial regression [Cross validated and corrected for class imbalance]
+## Performance measures [Table should be in paper]
 ##------------------------------------------------------------------------------
 
-# Specify a multinomial regression via nnet
-multi_mod <- multinom_reg(penalty = 1) %>% 
-  set_engine("nnet") %>% 
+## Performance of the models across 10 folds
+naive_metrics <- naive_train %>% dplyr::select(.metric, mean, std_err)
+rf_metrics <- rf_train %>% dplyr::select(.metric, mean, std_err)
+cv_metrics <- bind_cols(list(naive_metrics, rf_metrics))
+rownames(cv_metrics) <- c("Accuracy", "Jaccard's index", "Kappa", "AUC", "Sensitivity", "Specificity")
+performance = kable(cv_metrics, format = "latex", caption = "Model performance measures across 10 folds with resampling for Naive Bayes and random forest classification algorithms",
+      digits = 4, booktabs = TRUE, col.names = c("Metric", "Estimate", "Standard error (SE)", "Metric", "Average", "Standard error (SE)")) %>% 
+  add_header_above(header = c("Naive Bayes" = 2, "Random Forest" = 2))
+performance
+
+## Performance on test set
+naive_test_metrics <- final_metrics %>% dplyr::select(.metric, .estimate)
+rnf_test_metrics <- rf_test_metrics %>% dplyr::select(.metric, .estimate)
+test.metrics <- bind_cols(list(naive_test_metrics, rnf_test_metrics))
+rownames(test.metrics) <- c("Accuracy", "Jaccard's index", "Kappa", "AUC", "Sensitivity", "Specificity")
+performance.test = kable(test.metrics, format = "latex", 
+                         caption = "Model performance measures for Naive Bayes and random forest classification algorithms on the test dataset",
+                      digits = 4, booktabs = TRUE, col.names = c("Metric", "Estimate", "Standard error (SE)", "Metric", "Average", "Standard error (SE)")) %>% 
+  add_header_above(header = c("Naive Bayes" = 2, "Random Forest" = 2))
+performance.test
+
+
+##------------------------------------------------------------------------------
+## Fit the best model on all the data with re-sampling
+##------------------------------------------------------------------------------
+## full dataset is called sub_dfx
+
+best_rf_model <- rand_forest(trees = 500, mtry = 2, min_n = 3) %>% 
+  set_engine("ranger") %>% 
   set_mode("classification")
 
-# create the recipe with minority class up-sampling
-multi_recipe <- recipe(Source2 ~ ., data = train) %>% 
+rf_recipe <- recipe(Source2 ~ ., data = sub_dfx) %>% 
   step_upsample(Source2, over_ratio = 1) 
 
-## create the workflow
-m_workflow <- 
-  workflow() %>% 
-  add_model(multi_mod) %>% 
-  add_recipe(multi_recipe)
+## re-sampling folds within the strata
+foldsx <- vfold_cv(sub_dfx, v = 10, strata = Source2)
 
-## fit cross-validated
-multinom_results <- fit_resamples(
-  m_workflow,
-  resamples = folds,
-  metrics = class_metrics
-)
-
-## collect the metrics on the training data set
-rf_train <- collect_metrics(multinom_results)
-rf_train
-
-
-## fit the model on the full training data set to make predictions on test set
-up_rf_model <- workflow() %>% 
-  add_model(rf_model_tuned) %>% 
-  add_recipe(rf_recipe) %>% 
-  fit(train)
-
-
-
-## compute the final metrics for the random forest model [reported in paper]
-rf_test_metrics <- predict(up_rf_model, test, type = "prob") %>%
-  bind_cols(predict(up_rf_model, test)) %>%
-  bind_cols(select(test, Source2)) %>%
-  #metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
-  class_metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
-rf_test_metrics
-
-
-## gain and AUC curves [presented as supplementary materials]
-## plot the AUC: first get predicted probabilities on the test set then use these for the plot for each potential food source
-rf_probs <- predict(up_rf_model, test, type = "prob") %>%
-  bind_cols(test) %>% 
-  glimpse()
-
-
-# Gain curve for each food source
-rf_gain <- rf_probs %>%
-  gain_curve(Source2, .pred_dairy:.pred_vegetables) %>%
-  autoplot()
-rf_gain
-
-
-# ROC curve for each food source
-rf_ROC <- rf_probs %>%
-  roc_curve(Source2, .pred_dairy:.pred_vegetables) %>%
-  autoplot()
-rf_ROC
-
-
-## save the naive gain curve to figures folder
-jpeg("figures\\rf_gain_cv.jpeg", width = 4, height = 4, units = 'in', res = 300)
-naive_gain
-dev.off()
-
-jpeg("figures\\rf_ROC_cv.jpeg", width = 4, height = 4, units = 'in', res = 300)
-naive_ROC
-dev.off()
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-## create the random forest model
-  rf_model <- rand_forest(trees = 500, mtry = tune(), min_n = tune()) %>% 
-  set_engine("ranger", num.threads = cores) %>% 
-  set_mode("classification") #%>% 
-#fit(Source2 ~ ., data = train) 
-
-## create a recipe 
-rf_recipe <- recipe(Source2 ~ ., data = train) %>% 
-  step_upsample(Source2, over_ratio = 1) 
-
-## create the rf workflow
-
-
-## create the validation set [80%] for parameter tuning
-set.seed(234)
-val_set <- validation_split(train, 
-                            strata = Source2, 
-                            prop = 0.80)
-val_set
-
-## set up the tuning grid
-set.seed(345)
-rf_res <- 
-  rf_workflow %>% 
-  tune_grid(val_set,
-            grid = 25,
-            control = control_grid(save_pred = TRUE),
-            metrics = metric_set(roc_auc))
-
-## show the top 5 best rf models based on AUC
-rf_res %>% 
-  show_best(metric = "roc_auc")
-
-## plot the best models using AUC values [show supplementary]
-autoplot(rf_res)
-
-## select the best model based on the AUC
-rf_best <- 
-  rf_res %>% 
-  select_best(metric = "roc_auc")
-rf_best  ##[mtry = 3, min_n = 7] are best parameters
-
-
-## re-fit model using best parameters
-rf_model_tuned <- rand_forest(trees = 500, mtry = 3, min_n = 7) %>% 
-  set_engine("ranger", num.threads = cores) %>% 
-  set_mode("classification")
-
+## build the workflow for the best model on all the data
 rf_workflow <- 
   workflow() %>% 
-  add_model(rf_model_tuned) %>% 
+  add_model(best_rf_model) %>% 
   add_recipe(rf_recipe)
 
 rf_results <- fit_resamples(
   rf_workflow,
-  resamples = folds,
+  resamples = foldsx,
   metrics = class_metrics
 )
 
-## collect the metrics on the training data set
-rf_train <- collect_metrics(rf_results)
-rf_train
+## collect the metrics on the trained random forest on all the folds 
+best_rf_model_xtics <- collect_metrics(rf_results) %>% dplyr::select(.metric, mean, std_err)
+best_rf_model_xtics
 
-## fit the model on the full training data set to make predictions on test set
-up_rf_model <- workflow() %>% 
-  add_model(rf_model_tuned) %>% 
-  add_recipe(rf_recipe) %>% 
-  fit(train)
-
-
-## compute the final metrics for the random forest model [reported in paper]
-rf_test_metrics <- predict(up_rf_model, test, type = "prob") %>%
-  bind_cols(predict(up_rf_model, test)) %>%
-  bind_cols(select(test, Source2)) %>%
-  #metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
-  class_metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
-rf_test_metrics
-
-
-## gain and AUC curves [presented as supplementary materials]
-## plot the AUC: first get predicted probabilities on the test set then use these for the plot for each potential food source
-rf_probs <- predict(up_rf_model, test, type = "prob") %>%
-  bind_cols(test) %>% 
-  glimpse()
-
-
-# Gain curve for each food source
-rf_gain <- rf_probs %>%
-  gain_curve(Source2, .pred_dairy:.pred_vegetables) %>%
-  autoplot()
-rf_gain
-
-
-# ROC curve for each food source
-rf_ROC <- rf_probs %>%
-  roc_curve(Source2, .pred_dairy:.pred_vegetables) %>%
-  autoplot()
-rf_ROC
-
-
-## save the naive gain curve to figures folder
-jpeg("figures\\rf_gain_cv.jpeg", width = 4, height = 4, units = 'in', res = 300)
-naive_gain
-dev.off()
-
-jpeg("figures\\rf_ROC_cv.jpeg", width = 4, height = 4, units = 'in', res = 300)
-naive_ROC
-dev.off()
+## create the table of performance measures based on re-sampling the data set for the best model [Table in paper]
+final_best_model = kable(best_rf_model_xtics, format = "latex", 
+                         caption = "Model performance measures for random forest classification on the full dataset with resampling",
+                         digits = 4, booktabs = TRUE, col.names = c("Metric", "Estimate", "Standard error (SE)")) 
+final_best_model
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## THE MODEL

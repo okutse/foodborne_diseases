@@ -472,39 +472,12 @@ figure_seven <- df_distance %>% ggplot(aes(x = log(Value), col = Type)) +
 ################################################################################
 
 
-# given a strain how likely is it to be from a given food source? [isolation source is actually a predictor variable]
 
-
-## In the current study, we
-##investigated the potential of machine learning to predict the food source origins of bacterial
-##strains isolated from human cases of listeriosis using machine learning analyses of cgMLST
-##data. Our machine learning model was able to recognize patterns in the complex data set
-##and use this information to predict the source of human listeriosis isolates. These
+## In the current study, we investigated the potential of machine learning to predict the food source origins of bacterial
+##strains isolated from human cases of listeriosis using machine learning analyses of pathogenic data. Our machine learning model was able to recognize patterns in the complex data set
+##and use this information to predict the source of human listeriosis isolates. 
 
 ################################################################################
-## focus on dairy, fish, beef, pork, avocado, potato, chicken as the outcome classes
-
-#sub_df <- df %>% dplyr::filter(Source1 == "water" |
-#                                 Source1 == "dairy" |
-#                                 Source1 == "fish" |
-#                                 Source1 == "beef" |
-#                                 Source1 == "pork" |
-#                                 Source1 == "avocado" |
-#                                 Source1 == "chicken" |
-#                                 Source1 == "beans")
-
-
-
-
-
-
-
-#dim(sub_df)  ## 3377
-#attach(sub_df)
-
-## select the potential features of interest in the model
-#variables <- c("Host", "Host.disease", "Min.same", "Min.diff", "Outbreak", "Location", "Strain", "AMR.genotypes", "Isolate",
-#               "Source.type", "Stress.genotypes", "state", "Virulence.genotypes", "Source")
 
 sub_dfx <- df %>% 
   dplyr::select(c("Source2", "Min.same", "Min.diff", "Strain", "Isolate", "state", "snp_cluster", "season"))
@@ -592,7 +565,7 @@ nb_results <- fit_resamples(
   metrics = class_metrics
 )
 
-## collect the metrics on the training dataset
+## collect the metrics on the training data set
 naive_train <- collect_metrics(nb_results)
 naive_train
 
@@ -614,7 +587,6 @@ acc
 final_metrics <- predict(up_naive_model, test, type = "prob") %>%
   bind_cols(predict(up_naive_model, test)) %>%
   bind_cols(select(test, Source2)) %>%
-  #metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
   class_metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
 final_metrics
 
@@ -824,11 +796,11 @@ rf_ROC
 
 ## save the naive gain curve to figures folder
 jpeg("figures\\rf_gain_cv.jpeg", width = 4, height = 4, units = 'in', res = 300)
-naive_gain
+rf_gain
 dev.off()
 
 jpeg("figures\\rf_ROC_cv.jpeg", width = 4, height = 4, units = 'in', res = 300)
-naive_ROC
+rf_ROC
 dev.off()
 
 ##------------------------------------------------------------------------------
@@ -897,3 +869,68 @@ final_best_model
 
 
 ## THE MODEL
+##------------------------------------------------------------------------------
+## fit the model on the full training data set to make predictions on test set
+final.rf.model <- workflow() %>% 
+  add_model(best_rf_model) %>% 
+  add_recipe(rf_recipe) %>% 
+  fit(train)
+
+
+## compute the final metrics for the random forest model [reported in supplimentary material]
+rf.test.metrics <- predict(final.rf.model, sub_dfx, type = "prob") %>%
+  bind_cols(predict(final.rf.model, sub_dfx)) %>%
+  bind_cols(select(sub_dfx, Source2)) %>%
+  class_metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
+rf.test.metrics
+
+
+## gain and AUC curves [presented as supplementary materials]
+## plot the AUC: first get predicted probabilities on the test set then use these for the plot for each potential food source
+rf.probs <- predict(final.rf.model, sub_dfx, type = "prob") %>%
+  bind_cols(sub_dfx) %>% 
+  glimpse()
+
+
+# Gain curve for each food source
+rf_gain <- rf.probs %>%
+  gain_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+  autoplot()
+rf_gain
+
+
+# ROC curve for each food source
+rf_ROC <- rf.probs %>%
+  roc_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+  autoplot()
+rf_ROC
+
+
+## save the naive gain curve to figures folder [Can include the AUC in paper?]
+jpeg("figures\\rf_gain_full_best_model.jpeg", width = 4, height = 4, units = 'in', res = 300)
+rf_gain
+dev.off()
+
+jpeg("figures\\rf_ROC_full_best_model.jpeg", width = 4, height = 4, units = 'in', res = 300)
+rf_ROC
+dev.off()
+
+
+## save the model trained on the full data for use in food source attribution
+saveRDS(final.rf.model, "data\\final.rf.model.rds")
+
+## showing how to use model
+##-----------------------------------------------------------------------------
+## re-sample the data and show example of how model performs with 5 variables
+idx <- c(1, 9, 14, 40, 53, 94, 193, 208, 173, 177)
+
+## sample the rows to create the new data frame [can as supplimentary results]
+newdf = sub_dfx[idx, ]
+
+some_pred <- predict(final.rf.model, newdf, type = "prob") %>%
+  bind_cols(newdf) %>%
+  glimpse()
+
+some_pred
+
+

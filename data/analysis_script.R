@@ -715,26 +715,26 @@ val_set <- validation_split(train,
 val_set
 
 ## set up the tuning grid [commented out after run due to computational intensity]
-set.seed(345)
-rf_res <- 
-  rf_workflow %>% 
-  tune_grid(val_set,
-            grid = 25,
-            control = control_grid(save_pred = TRUE),
-            metrics = metric_set(roc_auc))
+#set.seed(345)
+#rf_res <- 
+#  rf_workflow %>% 
+#  tune_grid(val_set,
+#            grid = 25,
+#            control = control_grid(save_pred = TRUE),
+#            metrics = metric_set(roc_auc))
 
 ## show the top 5 best rf models based on AUC
-rf_res %>% 
-  show_best(metric = "roc_auc")
+#rf_res %>% 
+#  show_best(metric = "roc_auc")
 
 ## plot the best models using AUC values [show supplementary]
-autoplot(rf_res)
+#autoplot(rf_res)
 
 ## select the best model based on the AUC
-rf_best <- 
-  rf_res %>% 
-  select_best(metric = "roc_auc")
-rf_best  ##[mtry = 2, min_n = 3] are best parameters 3 and 7
+#rf_best <- 
+#  rf_res %>% 
+#  select_best(metric = "roc_auc")
+#rf_best  ##[mtry = 2, min_n = 3] are best parameters 3 and 7
 
 
 ## re-fit model using best parameters based on the tuning process
@@ -811,9 +811,10 @@ dev.off()
 naive_metrics <- naive_train %>% dplyr::select(.metric, mean, std_err)
 rf_metrics <- rf_train %>% dplyr::select(.metric, mean, std_err)
 cv_metrics <- bind_cols(list(naive_metrics, rf_metrics))
+cv_metrics <- as.data.frame(cv_metrics)
 rownames(cv_metrics) <- c("Accuracy", "Jaccard's index", "Kappa", "AUC", "Sensitivity", "Specificity")
 performance = kable(cv_metrics, format = "latex", caption = "Model performance measures across 10 folds with resampling for Naive Bayes and random forest classification algorithms",
-      digits = 4, booktabs = TRUE, col.names = c("Metric", "Estimate", "Standard error (SE)", "Metric", "Average", "Standard error (SE)")) %>% 
+      digits = 4, booktabs = TRUE, col.names = c("Metric", "Estimate", "Standard error (SE)", "Metric", "Estimate", "Standard error (SE)")) %>% 
   add_header_above(header = c("Naive Bayes" = 2, "Random Forest" = 2))
 performance
 
@@ -821,10 +822,11 @@ performance
 naive_test_metrics <- final_metrics %>% dplyr::select(.metric, .estimate)
 rnf_test_metrics <- rf_test_metrics %>% dplyr::select(.metric, .estimate)
 test.metrics <- bind_cols(list(naive_test_metrics, rnf_test_metrics))
+test.metrics <- as.data.frame(test.metrics)
 rownames(test.metrics) <- c("Accuracy", "Jaccard's index", "Kappa", "AUC", "Sensitivity", "Specificity")
 performance.test = kable(test.metrics, format = "latex", 
                          caption = "Model performance measures for Naive Bayes and random forest classification algorithms on the test dataset",
-                      digits = 4, booktabs = TRUE, col.names = c("Metric", "Estimate", "Standard error (SE)", "Metric", "Average", "Standard error (SE)")) %>% 
+                      digits = 4, booktabs = TRUE, col.names = c("Metric", "Estimate", "Metric", "Estimate")) %>% 
   add_header_above(header = c("Naive Bayes" = 2, "Random Forest" = 2))
 performance.test
 
@@ -832,7 +834,7 @@ performance.test
 ##------------------------------------------------------------------------------
 ## Fit the best model on all the data with re-sampling
 ##------------------------------------------------------------------------------
-## full dataset is called sub_dfx
+## full data set is called sub_dfx
 
 best_rf_model <- rand_forest(trees = 500, mtry = 2, min_n = 3) %>% 
   set_engine("ranger") %>% 

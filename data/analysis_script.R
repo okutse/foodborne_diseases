@@ -208,7 +208,37 @@ df <- df %>%
                                                   ifelse(is.na(Isolation.source), "NA", "other/unspecified"))))))))))))
 
                                     
-                            
+
+# creating new SNP cluster variable
+# Summary counts for listeria monocytogenes over time
+SNP_summary <- df %>% 
+  group_by(SNP.cluster)%>%
+  summarise(N = n()) %>% 
+  mutate(Frequency = N/sum(N)*100)%>%
+  arrange(desc(N))
+
+df <- df %>%
+  mutate(SNP_Cluster = ifelse(grepl("PDS000000366.504",SNP.cluster), "PDS000000366.504",
+                       ifelse(grepl("PDS000024989.120", SNP.cluster), "PDS000024989.120",
+                       ifelse(grepl("PDS000024934.85",Isolation.source), "PDS000024934.85",
+                       ifelse(grepl("PDS000024311.16", Isolation.source), "PDS000024311.16",
+                       ifelse(grepl("PDS000058430.33", Isolation.source), "PDS000058430.33",      
+                       ifelse(grepl("PDS000025154.24", Isolation.source), "PDS000025154.24",
+                       ifelse(grepl("PDS000025433.69", Isolation.source), "PDS000025433.69",      
+                       ifelse(grepl("PDS000058419.26", Isolation.source), "PDS000058419.26",         
+                       ifelse(grepl("PDS000025233.7", Isolation.source), "PDS000025233.7",
+                       ifelse(grepl("PDS000024349.25", Isolation.source) , "PDS000024349.25",
+                       ifelse(grepl("PDS000083553.8", Isolation.source) , "PDS000083553.8",
+                       ifelse(grepl("PDS000024647.66", Isolation.source) , "PDS000024647.66",
+                       ifelse(grepl("PDS000000270.29", Isolation.source) , "PDS000000270.29",
+                       ifelse(grepl("PDS000003277.110", Isolation.source) , "PDS000003277.110",
+                       ifelse(grepl("PDS000024645.152", Isolation.source) , "PDS000024645.152",
+                       ifelse(grepl("PDS000003294.17", Isolation.source) , "PDS000003294.17",
+                       ifelse(grepl("PDS000024856.163", Isolation.source) , "PDS000024856.163",
+                       ifelse(is.na(Isolation.source), "Unknown", "Others")))))))))))))))))))
+
+
+
 
 
 ################################################################################
@@ -257,7 +287,7 @@ figure_one
 ################################################################################
 
 # Selecting columns for EDA
-df_cols <- names(df)[c(9,23,25,26,29, 31, 33:34, 38,39, 41:47, 49, 53:58)]
+df_cols <- names(df)[c(9,23,25,26,29, 31, 33:34, 38,39, 41:43, 45:47, 49, 53:59)]
 
 # Data subset with variables of interest
 df1 <- df[df_cols]
@@ -432,6 +462,9 @@ figure_seven <- df_distance %>% ggplot(aes(x = log(Value), col = Type)) +
   guides(color = guide_legend(title = "Variable"))+
   theme_classic() +
   theme(legend.position="top")
+
+
+
 
 
 ################################################################################

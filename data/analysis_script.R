@@ -1,5 +1,5 @@
 ################################################################################
-## Data analysis for the final project
+## Data analysis for the final project in Practical Data Analysis
 ## Amos Okutse
 ## Rophence Ojiambo
 ## Zexhuan Yu
@@ -16,7 +16,7 @@ library(naniar)        ## for handling missing data
 library(tidyr)         ## for data cleaning
 library(stringr)       ## for working with characters
 library(gridExtra)     ## displaying plots side by side
-
+library(ROSE)          ## handling class imbalance
 
 ##########################################
 ## Modeling Libraries
@@ -27,10 +27,10 @@ library(broom.mixed)   ## for converting Bayesian models to tidy tibbles
 library(dotwhisker)    ## for visualizing regression results
 library(naivebayes)    ## implementation of the naive Bayes algorithm
 library(discrim)       ## the required extension package for using the `naivebayes` engine in parsnip
-library(vip)           ## for plotting variable importannce
-
-
-
+library(vip)           ## for plotting variable importance
+library(themis)        ## recipe steps for dealing with unbalanced datasets
+library(bonsai)        ## to use lightgbm engine
+library(lightgbm)      ##  lightgbm
 
 ################################################################################
 # DATA AND VARIABLE DESCRIPTIONS
@@ -195,17 +195,17 @@ df <- df %>%
       mutate(Source2 = ifelse(grepl("environmental",Isolation.source) |grepl("environment", Isolation.source)|grepl("swab", Isolation.source) |grepl("water", Isolation.source) | grepl("drain", Isolation.source)| grepl("river", Isolation.source) | grepl("soil", Isolation.source)| grepl("wheel", Isolation.source), "environment",
                         ifelse(grepl("dairy", Isolation.source)| grepl("cheese", Isolation.source)| grepl("cream", Isolation.source)| grepl("milk", Isolation.source)| grepl("egg", Isolation.source)| grepl("yogurt", Isolation.source)| grepl("butter", Isolation.source), "dairy",
                           ifelse(grepl("clinical",Isolation.source) |grepl("clincial", Isolation.source)|grepl("csf", Isolation.source) | grepl("cerebral", Isolation.source)| grepl("culture", Isolation.source) |grepl("fluid", Isolation.source)|grepl("human", Isolation.source)|grepl("blood", Isolation.source)|
-                                grepl("fecal", Isolation.source) | grepl("blood", Isolation.source)| grepl("tissue", Isolation.source)| grepl("rectal", Isolation.source) | grepl("feces", Isolation.source) |grepl("stool", Isolation.source) | grepl("brain", Isolation.source), "Human",
+                                grepl("fecal", Isolation.source) | grepl("blood", Isolation.source)| grepl("tissue", Isolation.source)| grepl("rectal", Isolation.source) | grepl("feces", Isolation.source) |grepl("stool", Isolation.source) | grepl("brain", Isolation.source), "human",
                             ifelse(grepl("beef", Isolation.source) | grepl("bovine", Isolation.source)|grepl("cow", Isolation.source)| grepl("cattle", Isolation.source)|grepl("calf", Isolation.source)|grepl("meat", Isolation.source)|grepl("pork", Isolation.source) | grepl("salami", Isolation.source)|
-                                     grepl("ham", Isolation.source)|grepl("hog", Isolation.source)|grepl("swine", Isolation.source)|grepl("porcine", Isolation.source), "Meat",
-                              ifelse(grepl("chicken", Isolation.source)|grepl("poultry", Isolation.source)|grepl("turkey", Isolation.source)|grepl("sponge", Isolation.source), "Poultry",      
+                                     grepl("ham", Isolation.source)|grepl("hog", Isolation.source)|grepl("swine", Isolation.source)|grepl("porcine", Isolation.source), "meat",
+                              ifelse(grepl("chicken", Isolation.source)|grepl("poultry", Isolation.source)|grepl("turkey", Isolation.source)|grepl("sponge", Isolation.source), "poultry",      
                                   ifelse(grepl("kale", Isolation.source)|grepl("lettuce", Isolation.source)|grepl("beet", Isolation.source)|grepl("spinach", Isolation.source)| grepl("microgreen", Isolation.source)|grepl("collard", Isolation.source)|grepl("leaf", Isolation.source)|grepl("cabbage", Isolation.source)|
-                                          grepl("chard", Isolation.source)|grepl("brocco", Isolation.source)|grepl("parsley", Isolation.source)|grepl("cilantro", Isolation.source)|grepl("basil", Isolation.source)|grepl("spring", Isolation.source), "Leafy greens",
+                                          grepl("chard", Isolation.source)|grepl("brocco", Isolation.source)|grepl("parsley", Isolation.source)|grepl("cilantro", Isolation.source)|grepl("basil", Isolation.source)|grepl("spring", Isolation.source), "leafy_greens",
                                     ifelse(grepl("potato", Isolation.source)|grepl("vegetable", Isolation.source)| grepl("hummus", Isolation.source)|grepl("bean", Isolation.source)| grepl("sprout", Isolation.source)|grepl("mushroom", Isolation.source)|grepl("corn", Isolation.source), "vegetables",      
                                       ifelse(grepl("avocado", Isolation.source)|grepl("guacamole", Isolation.source)|grepl("blueberry", Isolation.source)| grepl("nectarines", Isolation.source)| grepl("peach", Isolation.source)| grepl("pico", Isolation.source)| grepl("cantaloupe", Isolation.source)|grepl("apple", Isolation.source), "fruits",         
-                                        ifelse(grepl("shrimp", Isolation.source)|grepl("fish", Isolation.source)| grepl("salmon", Isolation.source)|grepl("herring", Isolation.source)| grepl("tuna", Isolation.source), "Sea Food",
-                                           ifelse(grepl("not available", Isolation.source)|grepl("not provided", Isolation.source)|grepl("not collected", Isolation.source) , "other/unspecified",
-                                                  ifelse(is.na(Isolation.source), "NA", "other/unspecified"))))))))))))
+                                        ifelse(grepl("shrimp", Isolation.source)|grepl("fish", Isolation.source)| grepl("salmon", Isolation.source)|grepl("herring", Isolation.source)| grepl("tuna", Isolation.source), "sea_food",
+                                           ifelse(grepl("not available", Isolation.source)|grepl("not provided", Isolation.source)|grepl("not collected", Isolation.source) , "other",
+                                                  ifelse(is.na(Isolation.source), "NA", "other"))))))))))))
 
                                     
                             
@@ -451,32 +451,37 @@ figure_seven <- df_distance %>% ggplot(aes(x = log(Value), col = Type)) +
 ################################################################################
 ## focus on dairy, fish, beef, pork, avocado, potato, chicken as the outcome classes
 
-sub_df <- df %>% dplyr::filter(Source1 == "water" |
-                                 Source1 == "dairy" |
-                                 Source1 == "fish" |
-                                 Source1 == "beef" |
-                                 Source1 == "pork" |
-                                 Source1 == "avocado" |
-                                 Source1 == "chicken" |
-                                 Source1 == "beans")
+#sub_df <- df %>% dplyr::filter(Source1 == "water" |
+#                                 Source1 == "dairy" |
+#                                 Source1 == "fish" |
+#                                 Source1 == "beef" |
+#                                 Source1 == "pork" |
+#                                 Source1 == "avocado" |
+#                                 Source1 == "chicken" |
+#                                 Source1 == "beans")
 
 
-dim(sub_df)  ## 3377
-attach(sub_df)
+
+
+
+
+
+#dim(sub_df)  ## 3377
+#attach(sub_df)
 
 ## select the potential features of interest in the model
-variables <- c("Host", "Host.disease", "Min.same", "Min.diff", "Outbreak", "Location", "Strain", "AMR.genotypes", "Isolate",
-               "Source.type", "Stress.genotypes", "state", "Virulence.genotypes", "Source")
+#variables <- c("Host", "Host.disease", "Min.same", "Min.diff", "Outbreak", "Location", "Strain", "AMR.genotypes", "Isolate",
+#               "Source.type", "Stress.genotypes", "state", "Virulence.genotypes", "Source")
 
-sub_dfx <- sub_df %>% 
-  dplyr::select(c("Source1", "Min.same", "Min.diff", "Location", "Strain", "Isolate", "state"))
+sub_dfx <- df %>% 
+  dplyr::select(c("Source2", "Min.same", "Min.diff", "Strain", "Isolate", "state", "SNP.cluster", "season"))
 
 sub_dfx <- na.omit(sub_dfx)
 saveRDS(sub_dfx, "data\\final_df.RData")
 write.csv(sub_dfx, "data\\final_df.csv", row.names = FALSE)
 
 ## Explore the class proportions
-tab <- sub_dfx %>% dplyr::group_by(Source1) %>% 
+tab <- sub_dfx %>% dplyr::group_by(Source2) %>% 
   dplyr::summarise(count = n())
 tab
 
@@ -485,7 +490,7 @@ sub_dfx <- sub_dfx %>%
 ## Create data partition
 set.seed(123)
 df_split <- sub_dfx %>% 
-  initial_split(strata = Source1, 
+  initial_split(strata = Source2, 
                 prop = 3/4)
 
 
@@ -504,13 +509,13 @@ nrow(train)/nrow(sub_dfx) ## 74%
 
 # training set proportions by food source
 train.prop <- train %>% 
-  count(Source1) %>% 
+  count(Source2) %>% 
   mutate(prop = n/sum(n))
 
 
 # test set proportions by food source
 test.prop <- test %>% 
-  count(Source1) %>% 
+  count(Source2) %>% 
   mutate(prop = n/sum(n))
 
 
@@ -520,17 +525,111 @@ names(test_train_prop) <- c("Food source", "Train set sample size", "Train set p
 test_train_prop
 
 
-## Initial model builds
 
-###############################
-### (1) Naive Bayes
-###############################
+##------------------------------------------------------------------------------
+## (1) Naive Bayes [Model corrected for class imbalance and cross-validated]
+##------------------------------------------------------------------------------
+
+## Initial model builds
+class_metrics <- metric_set(accuracy, roc_auc, kap, j_index, sens, spec)
+
+## create a recipe 
+nb <- recipe(Source2 ~ ., data = train) %>% 
+  step_upsample(Source2, over_ratio = 1) # %>% 
+  #step_rose(Source2, seed = 123)
+
+
+nb_model <- naive_Bayes(Laplace = 1) %>% 
+  set_mode("classification") %>% 
+  set_engine("naivebayes")
+
+## build workflow
+nb_wkflw <- workflow() %>% 
+  add_model(nb_model) %>% 
+  add_recipe(nb)
+
+## creates folds for cross-validation
+set.seed(123)
+folds <- vfold_cv(train, v = 10, strata = Source2)
+set.seed(123)
+
+nb_results <- fit_resamples(
+  nb_wkflw,
+  resamples = folds,
+  metrics = class_metrics
+)
+
+## collect the metrics on the training dataset
+naive_train <- collect_metrics(nb_results)
+naive_train
+
+
+## fit the model on up-sampled data and use to make predictions on the test set
+up_naive_model <- workflow() %>%
+  add_recipe(nb) %>%
+  add_model(nb_model) %>%
+  fit(train) 
+
+  ## get the accuracy for the non-cross validated Naive Bayes
+acc = predict(up_naive_model, test) %>% 
+  bind_cols(test) %>% 
+  metrics(truth = Source2, estimate = .pred_class)
+acc
+
+
+## compute the final metrics for presentation [reported in paper]
+final_metrics <- predict(up_naive_model, test, type = "prob") %>%
+  bind_cols(predict(up_naive_model, test)) %>%
+  bind_cols(select(test, Source2)) %>%
+  #metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
+  class_metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
+final_metrics
+
+
+## plot the AUC: first get predicted probabilities on the test set then use these for the plot for each potential food source
+naive_probs <- predict(up_naive_model, test, type = "prob") %>%
+  bind_cols(test) %>% 
+  glimpse()
+
+
+# Gain curve for each food source
+naive_gain <- naive_probs %>%
+  gain_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+  autoplot()
+naive_gain
+
+
+# ROC curve for each food source
+naive_ROC <- naive_probs %>%
+  roc_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+  autoplot()
+naive_ROC
+
+
+## save the naive gain curve to figures folder
+jpeg("figures\\naive_gain_cv.jpeg", width = 4, height = 4, units = 'in', res = 300)
+naive_gain
+dev.off()
+
+
+jpeg("figures\\naive_ROC_cv.jpeg", width = 4, height = 4, units = 'in', res = 300)
+naive_ROC
+dev.off()
+
+
+
+
+
+
+##------------------------------------------------------------------------------
+### (2) Naive Bayes [Model not corrected for class imbalance and not cross-validated]
+##------------------------------------------------------------------------------
 
 #use Laplace smoothing here to handle zero probabilities: value proposed here
 naiveModel <- naive_Bayes(Laplace = 1) %>% 
   set_mode("classification") %>% 
   set_engine("naivebayes") %>% 
-  fit(Source1 ~., data = train)
+  fit(Source2 ~., data = train)
 
 
 ## can predict using this model on the test set
@@ -539,14 +638,15 @@ naive_pred <- predict(naiveModel, test, type = "class")
 ## get the accuracy for the non-cross validated Naive Bayes
  acc = predict(naiveModel, test) %>% 
    bind_cols(test) %>% 
-   metrics(truth = Source1, estimate = .pred_class)
+   metrics(truth = Source2, estimate = .pred_class)
  
 
 ## compute the final metrics for presentation 
  final_metrics <- predict(naiveModel, test, type = "prob") %>%
    bind_cols(predict(naiveModel, test)) %>%
-   bind_cols(select(test, Source1)) %>%
-   metrics(Source1, .pred_avocado:.pred_water, estimate = .pred_class)
+   bind_cols(select(test, Source2)) %>%
+   #metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
+ class_metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
  final_metrics
  
  
@@ -558,14 +658,14 @@ naive_probs <- predict(naiveModel, test, type = "prob") %>%
  
           # Gain curve for each food source
 naive_gain <- naive_probs %>%
-  gain_curve(Source1, .pred_avocado:.pred_water) %>%
+  gain_curve(Source2, .pred_dairy:.pred_vegetables) %>%
   autoplot()
 naive_gain
 
 
           # ROC curve for each food source
 naive_ROC <- naive_probs %>%
-  roc_curve(Source1, .pred_avocado:.pred_water) %>%
+  roc_curve(Source2, .pred_dairy:.pred_vegetables) %>%
   autoplot()
 naive_ROC
 
@@ -580,41 +680,348 @@ jpeg("figures\\naive_ROC.jpeg", width = 4, height = 4, units = 'in', res = 300)
 naive_ROC
 dev.off()
 
-  
-############################
-### (2) Random forest
-############################
+##------------------------------------------------------------------------------  
+### (2) Random forest [cross-validated and corrected for class imbalance]
+##------------------------------------------------------------------------------
+#cores <- parallel::detectCores()
+#cores
 
-rf_model <- rand_forest() %>% 
+## create the random forest model
+rf_model <- rand_forest(trees = 500, mtry = tune(), min_n = tune()) %>% 
   set_engine("ranger") %>% 
-  set_mode("classification") %>% 
-  fit(Source1 ~ ., data = train) 
+  set_mode("classification") #%>% 
+  #fit(Source2 ~ ., data = train) 
 
-#%>% 
-#  predict(test) %>% 
-#  bind_cols(test) %>% 
-#  glimpse()
+## create a recipe 
+rf_recipe <- recipe(Source2 ~ ., data = train) %>% 
+  step_upsample(Source2, over_ratio = 1) 
+
+## create the rf workflow
+rf_workflow <- 
+  workflow() %>% 
+  add_model(rf_model) %>% 
+  add_recipe(rf_recipe)
+
+## create the validation set [80%] for parameter tuning
+set.seed(234)
+val_set <- validation_split(train, 
+                            strata = Source2, 
+                            prop = 0.80)
+val_set
+
+## set up the tuning grid [commented out after run due to computational intensity]
+#set.seed(345)
+#rf_res <- 
+#  rf_workflow %>% 
+#  tune_grid(val_set,
+#            grid = 25,
+#            control = control_grid(save_pred = TRUE),
+#            metrics = metric_set(roc_auc))
+
+## show the top 5 best rf models based on AUC
+#rf_res %>% 
+#  show_best(metric = "roc_auc")
+
+## plot the best models using AUC values [show supplementary]
+#autoplot(rf_res)
+
+## select the best model based on the AUC
+#rf_best <- 
+#  rf_res %>% 
+#  select_best(metric = "roc_auc")
+#rf_best  ##[mtry = 2, min_n = 3] are best parameters 3 and 7
 
 
-## metrics for the random forest algorithm [non cross-validation]
-final_mets <- predict(rf_model, test, type = "prob") %>%
-  bind_cols(predict(rf_model, test)) %>%
-  bind_cols(select(test, Source1)) %>%
-  metrics(Source1, .pred_avocado:.pred_water, estimate = .pred_class)
-final_mets
+## re-fit model using best parameters
+rf_model_tuned <- rand_forest(trees = 500, mtry = 2, min_n = 3) %>% 
+  set_engine("ranger") %>% 
+  set_mode("classification")
+
+rf_workflow <- 
+  workflow() %>% 
+  add_model(rf_model_tuned) %>% 
+  add_recipe(rf_recipe)
+
+rf_results <- fit_resamples(
+  rf_workflow,
+  resamples = folds,
+  metrics = class_metrics
+)
+
+## collect the metrics on the training data set
+rf_train <- collect_metrics(rf_results)
+rf_train
+
+## fit the model on the full training dataset to make predictions on test set
+up_rf_model <- workflow() %>% 
+  add_model(rf_model_tuned) %>% 
+  add_recipe(rf_recipe) %>% 
+  fit(train)
+
+
+## compute the final metrics for the random forest model [reported in paper]
+rf_test_metrics <- predict(up_rf_model, test, type = "prob") %>%
+  bind_cols(predict(up_rf_model, test)) %>%
+  bind_cols(select(test, Source2)) %>%
+  #metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
+  class_metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
+rf_test_metrics
+
+
+## gain and AUC curves [presented as supplementary materials]
+## plot the AUC: first get predicted probabilities on the test set then use these for the plot for each potential food source
+rf_probs <- predict(up_rf_model, test, type = "prob") %>%
+  bind_cols(test) %>% 
+  glimpse()
+
+
+# Gain curve for each food source
+rf_gain <- rf_probs %>%
+  gain_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+  autoplot()
+rf_gain
+
+
+# ROC curve for each food source
+rf_ROC <- rf_probs %>%
+  roc_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+  autoplot()
+rf_ROC
+
+
+## save the naive gain curve to figures folder
+jpeg("figures\\rf_gain_cv.jpeg", width = 4, height = 4, units = 'in', res = 300)
+naive_gain
+dev.off()
+
+jpeg("figures\\rf_ROC_cv.jpeg", width = 4, height = 4, units = 'in', res = 300)
+naive_ROC
+dev.off()
+
+##------------------------------------------------------------------------------
+## Multinomial regression [Cross validated and corrected for class imbalance]
+##------------------------------------------------------------------------------
+
+# Specify a multinomial regression via nnet
+multi_mod <- multinom_reg(penalty = 1) %>% 
+  set_engine("nnet") %>% 
+  set_mode("classification")
+
+# create the recipe with minority class up-sampling
+multi_recipe <- recipe(Source2 ~ ., data = train) %>% 
+  step_upsample(Source2, over_ratio = 1) 
+
+## create the workflow
+m_workflow <- 
+  workflow() %>% 
+  add_model(multi_mod) %>% 
+  add_recipe(multi_recipe)
+
+## fit cross-validated
+multinom_results <- fit_resamples(
+  m_workflow,
+  resamples = folds,
+  metrics = class_metrics
+)
+
+## collect the metrics on the training data set
+rf_train <- collect_metrics(multinom_results)
+rf_train
+
+
+## fit the model on the full training data set to make predictions on test set
+up_rf_model <- workflow() %>% 
+  add_model(rf_model_tuned) %>% 
+  add_recipe(rf_recipe) %>% 
+  fit(train)
+
+
+
+## compute the final metrics for the random forest model [reported in paper]
+rf_test_metrics <- predict(up_rf_model, test, type = "prob") %>%
+  bind_cols(predict(up_rf_model, test)) %>%
+  bind_cols(select(test, Source2)) %>%
+  #metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
+  class_metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
+rf_test_metrics
+
+
+## gain and AUC curves [presented as supplementary materials]
+## plot the AUC: first get predicted probabilities on the test set then use these for the plot for each potential food source
+rf_probs <- predict(up_rf_model, test, type = "prob") %>%
+  bind_cols(test) %>% 
+  glimpse()
+
+
+# Gain curve for each food source
+rf_gain <- rf_probs %>%
+  gain_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+  autoplot()
+rf_gain
+
+
+# ROC curve for each food source
+rf_ROC <- rf_probs %>%
+  roc_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+  autoplot()
+rf_ROC
+
+
+## save the naive gain curve to figures folder
+jpeg("figures\\rf_gain_cv.jpeg", width = 4, height = 4, units = 'in', res = 300)
+naive_gain
+dev.off()
+
+jpeg("figures\\rf_ROC_cv.jpeg", width = 4, height = 4, units = 'in', res = 300)
+naive_ROC
+dev.off()
 
 
 
 
 
-#################################################
-## (3) Bayesian additive regression trees [BART]
-#################################################
-## section to be checked: Error in .Object$initialize(...) : sigma estimate is NaN
 
-#bart_model <- parsnip::bart(trees = 1000, prior_terminal_node_coef = 0.95, prior_terminal_node_expo = 2, prior_outcome_range = 2) %>% 
-#  set_mode("classification") %>% 
-#  set_engine("dbarts") %>% 
-#  fit(Source ~., data = train)
+
+
+
+
+
+
+
+ 
+## create the random forest model
+  rf_model <- rand_forest(trees = 500, mtry = tune(), min_n = tune()) %>% 
+  set_engine("ranger", num.threads = cores) %>% 
+  set_mode("classification") #%>% 
+#fit(Source2 ~ ., data = train) 
+
+## create a recipe 
+rf_recipe <- recipe(Source2 ~ ., data = train) %>% 
+  step_upsample(Source2, over_ratio = 1) 
+
+## create the rf workflow
+
+
+## create the validation set [80%] for parameter tuning
+set.seed(234)
+val_set <- validation_split(train, 
+                            strata = Source2, 
+                            prop = 0.80)
+val_set
+
+## set up the tuning grid
+set.seed(345)
+rf_res <- 
+  rf_workflow %>% 
+  tune_grid(val_set,
+            grid = 25,
+            control = control_grid(save_pred = TRUE),
+            metrics = metric_set(roc_auc))
+
+## show the top 5 best rf models based on AUC
+rf_res %>% 
+  show_best(metric = "roc_auc")
+
+## plot the best models using AUC values [show supplementary]
+autoplot(rf_res)
+
+## select the best model based on the AUC
+rf_best <- 
+  rf_res %>% 
+  select_best(metric = "roc_auc")
+rf_best  ##[mtry = 3, min_n = 7] are best parameters
+
+
+## re-fit model using best parameters
+rf_model_tuned <- rand_forest(trees = 500, mtry = 3, min_n = 7) %>% 
+  set_engine("ranger", num.threads = cores) %>% 
+  set_mode("classification")
+
+rf_workflow <- 
+  workflow() %>% 
+  add_model(rf_model_tuned) %>% 
+  add_recipe(rf_recipe)
+
+rf_results <- fit_resamples(
+  rf_workflow,
+  resamples = folds,
+  metrics = class_metrics
+)
+
+## collect the metrics on the training data set
+rf_train <- collect_metrics(rf_results)
+rf_train
+
+## fit the model on the full training data set to make predictions on test set
+up_rf_model <- workflow() %>% 
+  add_model(rf_model_tuned) %>% 
+  add_recipe(rf_recipe) %>% 
+  fit(train)
+
+
+## compute the final metrics for the random forest model [reported in paper]
+rf_test_metrics <- predict(up_rf_model, test, type = "prob") %>%
+  bind_cols(predict(up_rf_model, test)) %>%
+  bind_cols(select(test, Source2)) %>%
+  #metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
+  class_metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
+rf_test_metrics
+
+
+## gain and AUC curves [presented as supplementary materials]
+## plot the AUC: first get predicted probabilities on the test set then use these for the plot for each potential food source
+rf_probs <- predict(up_rf_model, test, type = "prob") %>%
+  bind_cols(test) %>% 
+  glimpse()
+
+
+# Gain curve for each food source
+rf_gain <- rf_probs %>%
+  gain_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+  autoplot()
+rf_gain
+
+
+# ROC curve for each food source
+rf_ROC <- rf_probs %>%
+  roc_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+  autoplot()
+rf_ROC
+
+
+## save the naive gain curve to figures folder
+jpeg("figures\\rf_gain_cv.jpeg", width = 4, height = 4, units = 'in', res = 300)
+naive_gain
+dev.off()
+
+jpeg("figures\\rf_ROC_cv.jpeg", width = 4, height = 4, units = 'in', res = 300)
+naive_ROC
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

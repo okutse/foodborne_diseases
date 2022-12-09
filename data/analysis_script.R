@@ -389,7 +389,7 @@ summary_3<- df1 %>%
   arrange(desc(Frequency))%>%
   head(n=20)
 
-# Displaying table of top 20 Isolation sources
+# Displaying table of top 20 Isolation sources [Main results]
 summary_3 %>%
   kable(caption = 
           "Proportion of Isolation sources for listeria monocytogenes",
@@ -486,9 +486,20 @@ sub_dfx <- na.omit(sub_dfx)
 saveRDS(sub_dfx, "data\\final_df.RData")
 write.csv(sub_dfx, "data\\final_df.csv", row.names = FALSE)
 
-## Explore the class proportions
+
+
+## Explore the class proportions in the final analysis data set
 tab <- sub_dfx %>% dplyr::group_by(Source2) %>% 
-  dplyr::summarise(count = n())
+  dplyr::summarise(count = n()) %>% 
+  mutate(Freq = count/sum(count)*100) %>% 
+  arrange(desc(Freq)) %>% 
+  kable(caption = 
+          "Proportion of Isolation sources for listeria monocytogenes",
+        col.names = c("Source", "Samples (n)", "% Frequency"),
+        digits = c(0, 0, 2),
+        align = c("lll")) %>%
+  kable_styling(latex_options = "HOLD_position") %>%
+  column_spec(1, bold = TRUE) %>% row_spec(0, bold = TRUE)
 tab
 
 sub_dfx <- sub_dfx %>% 
@@ -809,12 +820,15 @@ dev.off()
 
 ## Performance of the models across 10 folds
 naive_metrics <- naive_train %>% dplyr::select(.metric, mean, std_err)
+rownames(naive_metrics) <- NULL
 rf_metrics <- rf_train %>% dplyr::select(.metric, mean, std_err)
+rownames(rf_metrics) <- NULL
 cv_metrics <- bind_cols(list(naive_metrics, rf_metrics))
-cv_metrics <- as.data.frame(cv_metrics)
+cv_metrics <- as.data.frame(cv_metrics)[, -c(1, 4)]
 rownames(cv_metrics) <- c("Accuracy", "Jaccard's index", "Kappa", "AUC", "Sensitivity", "Specificity")
-performance = kable(cv_metrics, format = "latex", caption = "Model performance measures across 10 folds with resampling for Naive Bayes and random forest classification algorithms",
-      digits = 4, booktabs = TRUE, col.names = c("Metric", "Estimate", "Standard error (SE)", "Metric", "Estimate", "Standard error (SE)")) %>% 
+
+performance = kable(cv_metrics, format = "pipe", caption = "Model performance measures across 10 folds with resampling for Naive Bayes and random forest classification algorithms",
+      digits = 4, booktabs = TRUE, col.names = c("Estimate", "Standard error (SE)", "Estimate", "Standard error (SE)")) %>% 
   add_header_above(header = c("Naive Bayes" = 2, "Random Forest" = 2))
 performance
 
@@ -852,21 +866,29 @@ rf_workflow <-
   add_model(best_rf_model) %>% 
   add_recipe(rf_recipe)
 
+
+## the best model refitted on the full dataset with resampling
 rf_results <- fit_resamples(
   rf_workflow,
   resamples = foldsx,
-  metrics = class_metrics
+  metrics = class_metrics,
+  control = control_resamples(allow_par = TRUE, save_pred = TRUE, parallel_over = "resamples") 
 )
 
 ## collect the metrics on the trained random forest on all the folds 
-best_rf_model_xtics <- collect_metrics(rf_results) %>% dplyr::select(.metric, mean, std_err)
+best_rf_model_xtics <- collect_metrics(rf_results)
+best_rf_model_xtics <- best_rf_model_xtics %>% dplyr::select(mean, std_err) 
+best_rf_model_xtics <- as.data.frame(best_rf_model_xtics)
+
+rownames(best_rf_model_xtics) <- c("Accuracy", "Jaccard's index", "Kappa", "AUC", "Sensitivity", "Specificity")
+names(best_rf_model_xtics) <- c("Estimate", "Standard Error (SE)")
 best_rf_model_xtics
 
 ## create the table of performance measures based on re-sampling the data set for the best model [Table in paper]
-final_best_model = kable(best_rf_model_xtics, format = "latex", 
-                         caption = "Model performance measures for random forest classification on the full dataset with resampling",
-                         digits = 4, booktabs = TRUE, col.names = c("Metric", "Estimate", "Standard error (SE)")) 
-final_best_model
+## final_best_model = kable(best_rf_model_xtics, format = "latex", 
+##                         caption = "Model performance measures for random forest classification on the full dataset with resampling",
+##                         digits = 4, booktabs = TRUE, col.names = c("Estimate", "Standard error (SE)")) 
+## final_best_model
 
 
 
@@ -901,7 +923,7 @@ rf_gain <- rf.probs %>%
 rf_gain
 
 
-# ROC curve for each food source
+# ROC curve for each food source  [Given in main article]
 rf_ROC <- rf.probs %>%
   roc_curve(Source2, .pred_dairy:.pred_vegetables) %>%
   autoplot()
@@ -936,3 +958,8 @@ some_pred <- predict(final.rf.model, newdf, type = "prob") %>%
 some_pred
 
 
+## confusion matrix for food source attribution [Included in paper]
+confusion_matrix <- rf_results %>% 
+  collect_predictions() %>% 
+  conf_mat(truth = Source2, estimate = .pred_class)
+confusion_matrix

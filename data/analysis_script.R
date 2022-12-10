@@ -463,8 +463,51 @@ figure_seven <- df_distance %>% ggplot(aes(x = log(Value), col = Type)) +
   theme_classic() +
   theme(legend.position="top")
 
+################################################################################
+##          Trends plot in Poster Presentation   
+################################################################################
+df_poster<- df1%>% filter(Year >= 2010)
 
+# Year summary
+summary_5 <- df_poster %>% 
+  group_by(Source1, Year) %>%
+  summarise(N = n()) %>% 
+  mutate(Frequency = N/sum(N)*100)%>%
+  arrange(N)
 
+# line plots
+
+# figure eight
+figure_eight <- summary_5 %>% 
+  filter(Source1 == "beef"| Source1=="chicken"| Source1=="pork" 
+         |Source1=="dairy")%>%
+  ggplot(aes(x= Year, y = N, group= Source1, color= Source1))+
+  geom_point(size=2)+ geom_line(size=1.2) +
+  scale_x_discrete(breaks= seq(2010,2025, by= 2))+
+  theme(plot.caption = element_text(hjust = 0))+
+  labs(title = "Line plots of top isolation surces",
+    x = "Year of Sample Collection", y= "Count")+
+  theme_classic()+
+  guides(color = guide_legend(title = ""))+
+  theme(legend.position="top")
+
+# figure nine
+figure_nine <- summary_5 %>% 
+  filter(Source1 == "water"| Source1=="food" |
+           Source1 =="potato"|Source1 =="fish")%>%
+  ggplot(aes(x= Year, y = N, group= Source1, color= Source1))+
+  geom_point(size=2)+ geom_line(size=1.2) +
+  theme(plot.caption = element_text(hjust = 0))+
+  scale_x_discrete(breaks= seq(2010,2025, by= 2))+
+  labs(x = "Year of Sample Collection", y= "Count")+
+  theme_classic()+
+  guides(color = guide_legend(title = ""))+
+  theme(legend.position="top")
+
+# Saving line plot trends for poster presentation
+jpeg("figures\\trends_poster.jpeg", width = 7, height = 4, units = 'in', res = 300)
+grid.arrange(figure_eight, figure_nine, ncol=2)
+dev.off()
 
 
 ################################################################################

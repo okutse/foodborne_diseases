@@ -94,13 +94,12 @@ Given the serious threat of foodborne diseases and the high burden posed by list
 
 This study uses secondary data downloaded on the 18th October, 2022 from the National Center for Biotechnology Information (NCBI) Pathogen Detection database [@ncbi2016] which assimilates bacterial and fungal pathogen genomic sequences from sources including food, environment, and patient samples. The data are contributed by researchers and public health agencies who sequence samples and submit them to NCBI where the sequences are analyzed and compared to identify relations between sequences and thus aid the investigation of outbreaks including real-time surveillance of pathogens such as those for foodborne illnesses. The isolates present in the database were collected by 390 different institutions and organizations. Even though the NCBI pathogen detection allows real-time identification of clusters of related genomic sequences to aid in outbreak detection, and track the spread of resistance genes, a potential limitation of this data source is that it does not identify outbreaks or outbreak memberships, and analyses rely solely on publicly available data submitted to the database.
 
-### Data and variable descriptions
 
-The downloaded data was comprised of n = 53, 725 *Listeria monocytogenes* pathogens with 50 variables related to the pathogenic strains submitted, including information about who collected the isolate, its taxonomic name, its isolation source, date of collection (day, month, year), country or state from which the strain originated, among other metadata. Table \@ref(tab:table-one) gives an overview of the variables considered in this analyses and their descriptions. Given the vast amount of information available in the database, these analyses employed an inclusion criteria to select strains for further analysis. In particular, for consideration and inclusion into the analysis sample, the isolate had to have a non-missing location, had been collected in the US, had a non-missing isolation source, and IFSAC category. The analysis sample based on this inclusion criteria included a total of n = 14, 653 *Listeria monocytogenes* pathogens. Figure \@ref(fig:fig-one) summarizes the isolate inclusion criteria for analysis and the resulting sample size. 
 
-```{r fig-one, echo=FALSE, dpi=300, out.width='100%', fig.align='center', fig.cap="The flow of the data cleaning process based on the specified isolate inclusion criteria."}
+```{r fig-one, echo=FALSE, dpi=300, out.width='86%', fig.align='center', fig.cap="The flow of the data cleaning process based on the specified isolate inclusion criteria."}
 knitr::include_graphics("figures/data_cleaning.jpg")
 ```
+
 
 ```{r table-one, warning=FALSE}
 kable(var_desc, format = "latex", caption = "Variable descriptions", booktabs = TRUE)%>%
@@ -109,6 +108,10 @@ kable(var_desc, format = "latex", caption = "Variable descriptions", booktabs = 
   row_spec(0, bold = TRUE) %>%
   column_spec(2, width = "11cm")
 ```
+
+### Data and variable descriptions
+
+The downloaded data was comprised of n = 53, 725 *Listeria monocytogenes* pathogens with 50 variables related to the pathogenic strains submitted, including information about who collected the isolate, its taxonomic name, its isolation source, date of collection (day, month, year), country or state from which the strain originated, among other metadata. Table \@ref(tab:table-one) gives an overview of the variables considered in this analyses and their descriptions. Given the vast amount of information available in the database, these analyses employed an inclusion criteria to select strains for further analysis. In particular, for consideration and inclusion into the analysis sample, the isolate had to have a non-missing location, had been collected in the US, had a non-missing isolation source, and IFSAC category. The analysis sample based on this inclusion criteria included a total of n = 14, 653 *Listeria monocytogenes* pathogens. Figure \@ref(fig:fig-one) summarizes the isolate inclusion criteria for analysis and the resulting sample size. 
 
 ### Missing Data
 
@@ -248,13 +251,13 @@ kable(best_rf_model_xtics, format = "latex",
 
 ```
 
+The random forest model correctly linked 66.07% of the pathogens to environmental sources (n = 5515 samples), 6.04% to dairy and dairy products (n = 504 samples), 2.56% to fruits (n = 214 samples), 0.50% to humans (n = 42 samples), 0.45% to leafy greens (n = 38 samples), 1.88% to meat (n = 157 samples), 4.79% to other unknown sources (n = 400 samples), 1.81% to poultry (n = 151 samples), 1.48% to sea food (n = 124 samples), and 2.85% to vegetables (n = 238 samples) (see Supplementary file X).
 
 ```{r fig-three, dpi=300, fig.align='center', fig.cap="Gain curves comparing the performance of the random forest algorithm to random guessing for all listeria pathogen isolation sources. The model shows a high gain relative to random guessing."}
 ## The discrimination of the best model for each isolation source
 rf_gain
 ```
 
-The random forest model correctly linked 66.07% of the pathogens to environmental sources (n = 5515 samples), 6.04% to dairy and dairy products (n = 504 samples), 2.56% to fruits (n = 214 samples), 0.50% to humans (n = 42 samples), 0.45% to leafy greens (n = 38 samples), 1.88% to meat (n = 157 samples), 4.79% to other unknown sources (n = 400 samples), 1.81% to poultry (n = 151 samples), 1.48% to sea food (n = 124 samples), and 2.85% to vegetables (n = 238 samples) (see Supplementary file X).
 
 ```{r four, eval=FALSE}
 confusion_matrix <- rf_results %>% 
@@ -265,43 +268,23 @@ confusion_matrix
 
 ## Discussion 
 
-- Aim/ Goal
-
-
-- Main Findings and what they mean
-
+Surveillance of foodborne illness  plays a critical role in limiting the incidence and prevalence rates of a disease. Early detection of food sources linked to outbreaks can facilitate immediate response and implementation of public health policies and intervention measures aimed at reducing the burden of a disease. The study aimed at implementing different statistical machine learning models to improve the accuracy and efficiency of predicting the sources of listeria pathogens. Accurate prediction and identification of food sources linked to listeria can result in prompt response to listeria outbreaks, thus reducing disease prevalence and mortality. The study found that compared with the naive Bayes classification algorithm, the random forest model showed higher accuracy and discrimination ability (AUC) of 88% and 96% respectively on the full dataset. Given the robustness to class imbalances, high accuracy and discriminatory ability, this implies that the random forest model performs well in source attribution of listeria monocytogenes pathogens.
 
 - Compare with other studies that found same or different effect. Why were results different? Why is our model better
 
 
 - How can it be used to make a difference in public health and epidemiological investigations of outbreaks?
 
-
-
+\newpage
 ### Study strengths and limitations
 
+One of the baseline and developmental objectives of Healthy People 2030 [@Healthypeople2030] is to reduce the incidence of laboratory-diagnosed, domestically-acquired Listeria monocytogenes infections and outbreaks related to food sources such as dairy, beef, fruits, poultry and leafy greens. Existing literature support machine learning predictive-based modeling as a meaningful approach to reducing incidence of foodborne illness in the US [@tanui2022machine], [@Munck2020], [@Njage2019], [@lupolova2017patchy], [@liu2021machine]. This study offers to propose a simple and robust model to use in providing estimates of the food categories responsible for listeria monocytogenes pathogens by comparing the performance of the Bayesian-based Naive Bayes classification algorithm and the ensemble-based random forest algorithm. The study characterizes the importance of using `strain`, `seasonality`, `location`, `isolate` information. Additionally, the effect of minimum SNP distance from one clinical isolate to another clinical isolate or to another isolate of of a different isolation type was incorporated into the model building process. The information from the current study can help the government, risk managers and relevant departments to carry out risk inspection, food safety investigation and health risk assessment, so that they can better predict and identify potential risks.
 
-- Discuss the importance of the study. What does it add to what is already known. Why is this important in reducing foodborne disease incidence?
-
-
-
-#### Potential study limitations
-
-Even though the NCBI pathogen detection allows real-time identification of clusters of related genomic sequences to aid in outbreak detection, and track the spread of resistance genes, a potential limitation of this data source is that it does not identify outbreaks or outbreak memberships and analyses rely solely on publicly available data submitted to the database. Additionally, the database allows a lot of flexibility in the naming conventions which results in substantial heterogeneity that make it difficult to query and extract meaningful patterns for microbial risk assessments [@sanaa2019genomegraphr]. For instance, the `collected by` and `isolation source` are fields that were entered as free text which are very extreme in the options they present for analysis. Moreover, there is a lot of missing data on potentially useful fields, a scenario that makes it difficult to derive inferences that could inform food policies.
-
-
-
+On study limitations, first, even though the NCBI pathogen detection allows real-time identification of clusters of related genomic sequences to aid in outbreak detection, and tracks the spread of resistance genes, a potential limitation of this data source is that it does not identify outbreaks or outbreak memberships and analyses rely solely on publicly available data submitted to the database. Secondly, given that NCBI [@ncbi2016] collects data from currently ongoing surveillance with multitude of sources such as production facilities, food, and human patients; the database allows a lot of flexibility in the naming conventions which results in substantial heterogeneity in reporting and data quality that makes it difficult to query and extract meaningful patterns for microbial risk assessments [@sanaa2019genomegraphr]. For instance, the `collected by` and `isolation source` are fields that were entered as free text which are very extreme in the options they present for analysis. Thirdly, the categorization of the `isolation source` variable may have introduced bias and loss of efficiency in the results. Fourth, the study was restricted to a complete case analysis due to high percentage of missing data on potentially useful fields, a scenario that makes it difficult to derive inferences that could inform food policies. Fifth, for the analysis, the study used data from over 20 years period and did not account for changes over this period. Perhaps, a shorter, more recent period is desirable when major implicated food sources have changed. For example, Listeria outbreaks caused by contamination of ready-to-eat meats products remarkably decreased after 2002. Sixth, the current study only compared two models. Other models such as gradient boosting machine (GBM) models could have been considered, only that such take longer computational time than RF models to construct due to the increased number of tuning parameters and the sequential model building nature.
 
 ## Conclusion and recommendations
 
-
-- What is the main finding?
-
-
-- what recommendations for the practice of public health?
-
-
-
+As shown by the performance the random forest model, our findings indicate that (i) machine learning modeling has potential future use in environmental surveillance, risk assessment and management programs for food source attribution, (ii) risk managers and analyst experts from different surveillance sectors may not use the same criteria in categorizing Isolation sources, and (iii) the longitudinal frequency of isolation sources, choice of best parameters and addressing imbalance in class distribution is important when attempting to achieve better performance of classification tools. Recommendations for future work include incorporating information on outbreak data as outbreak investigations often definitively link illnesses to particular foods and pathogens. Further work can compare additional models such as gradient boosting machine (GBM), Logit boost, stochastic gradient boosting and support vector machine learning models. Additional validation should be carried out to enhance the usefulness and generalizability of the developed model for food source attribution.
 
 \newpage
 ## References

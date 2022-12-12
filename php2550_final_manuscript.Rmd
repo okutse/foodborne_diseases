@@ -193,7 +193,7 @@ All statistical analyses were performed using the open-source R statistical prog
 
 ## Results
 
-Table \@ref(tab:one) shows the distribution of the analyzed listeriosis pathogens by the source from which they were obtained based on complete case analysis. The outcome variable was re-categorized into ten broad categories with the general environment accounting for 68.24% of the total listeriosis pathogens analyzed (n = 5696 samples) followed by dairy products (n = 624 samples; 7.48%), unknown foods (n = 618 samples, 7.40%), vegetables (n = 296 samples; 3.55%), meat (n = 267 samples; 3.55%), fruits (n = 258 samples; 3.09%), poultry (n = 254 samples; 3.04%), sea food (n = 198 samples; 2.37%), leafy greens (n = 70 samples; 0.84%), and human sources (n = 66 samples; 0.79%). Exploratory data analysis and additional results are available as a [Supplementary File](https://github.com/okutse/foodborne_diseases/blob/main/Supplementary-materials.pdf).
+Table \@ref(tab:one) shows the distribution of the analyzed listeriosis pathogens by the source from which they were obtained based on complete case analysis. The outcome variable was re-categorized into ten broad categories with the general environment accounting for 68.24% of the total listeriosis pathogens analyzed (n = 5696 samples) followed by dairy products (n = 624 samples; 7.48%), unknown foods (n = 618 samples, 7.40%), vegetables (n = 296 samples; 3.55%), meat (n = 267 samples; 3.55%), fruits (n = 258 samples; 3.09%), poultry (n = 254 samples; 3.04%), sea food (n = 198 samples; 2.37%), leafy greens (n = 70 samples; 0.84%), and human sources (n = 66 samples; 0.79%). Exploratory data analysis and additional results are available as a [Supplementary File](https://github.com/okutse/foodborne_diseases/blob/main/supplementary_materials.pdf).
 
 ```{r one}
 tab <- sub_dfx %>% dplyr::group_by(Source2) %>% 
@@ -247,7 +247,7 @@ kable(best_rf_model_xtics, format = "latex",
 
 ```
 
-The random forest model correctly linked 66.07% of the pathogens to environmental sources (n = 5515 samples), 6.04% to dairy and dairy products (n = 504 samples), 2.56% to fruits (n = 214 samples), 0.50% to humans (n = 42 samples), 0.45% to leafy greens (n = 38 samples), 1.88% to meat (n = 157 samples), 4.79% to other unknown sources (n = 400 samples), 1.81% to poultry (n = 151 samples), 1.48% to sea food (n = 124 samples), and 2.85% to vegetables (n = 238 samples) (see confusion matrix in the [Supplementary File](https://github.com/okutse/foodborne_diseases/blob/main/Supplementary-materials.pdf).
+The random forest model correctly linked 66.07% of the pathogens to environmental sources (n = 5515 samples), 6.04% to dairy and dairy products (n = 504 samples), 2.56% to fruits (n = 214 samples), 0.50% to humans (n = 42 samples), 0.45% to leafy greens (n = 38 samples), 1.88% to meat (n = 157 samples), 4.79% to other unknown sources (n = 400 samples), 1.81% to poultry (n = 151 samples), 1.48% to sea food (n = 124 samples), and 2.85% to vegetables (n = 238 samples) (see confusion matrix in the [Supplementary File](https://github.com/okutse/foodborne_diseases/blob/main/supplementary_materials.pdf).
 
 ```{r fig-three, dpi=300, fig.align='center', fig.cap="Gain curves comparing the performance of the random forest algorithm to random guessing for all listeria pathogen isolation sources. The model shows a high gain relative to random guessing."}
 ## The discrimination of the best model for each isolation source

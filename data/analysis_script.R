@@ -991,7 +991,7 @@ saveRDS(final.rf.model, "data\\final.rf.model.rds")
 ## re-sample the data and show example of how model performs with 5 variables
 idx <- c(1, 9, 14, 40, 53, 94, 193, 208, 173, 177)
 
-## sample the rows to create the new data frame [can as supplimentary results]
+## sample the rows to create the new data frame [can as supplementary results]
 newdf = sub_dfx[idx, ]
 
 some_pred <- predict(final.rf.model, newdf, type = "prob") %>%

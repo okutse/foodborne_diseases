@@ -1,0 +1,195 @@
+---
+title: "Supplimentary Materials Accompanying Statistical Machine Learning Methods for Source Attribution"
+author: "Prepared by Amos Okutse"
+date: "2022-12-08"
+output: pdf_document
+---
+```{r include=FALSE}
+knitr::opts_chunk$set(
+echo = FALSE,
+cache = FALSE,
+message = FALSE,
+warning = FALSE,
+fig.align = 'center',
+fig.pos = 'H',
+dpi = 350,
+tidy.opts = list(width.cutoff = 80, tidy = TRUE)
+)
+```
+
+```{r include=FALSE, message=FALSE, warning=TRUE}
+source("data/analysis_script.R")
+```
+
+
+## Variable pre-processing steps.
+
+
+- Explanations of the different data cleaning steps goes here! 
+
+
+## Exploratory data analysis {#eda}
+
+### Overall trends in the counts of *L. monocytogenes* through time
+
+We used descriptive statistics to first examine the proportion represented by our main variable of interest, the isolation source which originally had 1401 unique values which were as a result of punctuation, case sensitivity as well as many variations of the naming conventions of a general source. For example, 'cheese', 'white cheese', 'ham cheese', and 'double cheeseburger'. For simplicity and for comparative purposes, we grouped the isolation sources into broader categories based on the patterns observed in this variable. Ultimately, the number of isolation sources was reduced to 38 broad categories including environmental, food, pork, chicken, beef,turkey, stool, water, other/unspecified. Environmental sources were highest at 54.34% followed by other/unspecified sources (9.65%). Water, dairy, and food sources represented 9.65%, 9.24% and 6.43%, respectively, while fish, beef, and pork represented 1.67%, 1.56%, and 1.47%, respectively.
+
+We then used line plots to show an initial exploration of the trends in the number of *Listeria monocytogenes* over time. We filtered our data to work with a time frame from the year 2000 to 2022. The line plots in Figure \@ref(fig:fig-three) show a non-linear trend over time. There was a moderate increase in samples collected from the year 2000 to 2008, which sharply increased until about the year 2018. From 2018 to 2020, there was variation in terms of steady decrease/increase that was later followed by another sharp decrease in the samples collected. However, we also observed a slight increase in the counts following the year 2020. Grouped by isolation types, we observed a higher count in the environmental/other source types compared to the clinical type which remained relatively lower throughout the entire period of sample collection.
+
+```{r fig-three, fig.align='center', fig.cap= "$\\textbf{(a)}$ Trends in the total counts of collected $\\textit{L. monocytogene}$ pathogens. $\\textbf{(b)}$ Trends in the total counts of $\\textit{L. monocytogenes}$ by isolation type."}
+grid.arrange(figure_two, figure_three, ncol=2)
+
+```
+
+Additionally, we explored summary frequencies of *Listeria monocytogenes* grouping by `Month` and `Isolation type`. Table \@ref(tab:table-two) summarizes the counts of the *L. monocytogenes* where we observe that most cases of *Listeria monocytogenes* were observed in the early month of January; with 40% for clinical isolation type and 22.92% for environmental/other types. Additionally, for the clinical isolation types, frequent cases were observed in the months of September and October at 26.67% and 11.67% respectively. For the environmental/other isolation type, during the warmer months of April to August, we observed a moderate number of cases of *Listeria monocytogenes* ranging between 6.99% and 9.08%. There was missing clinical isolation types cases observed during the months of March, April and July. Looking at the trends by State, California had the largest number of *Listeria monocytogenes* cases throughout our study time frame, $N$ = 2672 (18.38%), followed by New York and Washington DC at 12.78% and 8.67% respectively. Nevada, West Virginia and Puerto Rico had the least number of cases each at 0.02%.
+
+
+### Trends in the counts of *L. monocytogenes* over time by the top isolation sources
+
+The `Isolation source` was re-categorized into 38 broad categories. Figure \@ref(fig:fig-four) presents the trends over time in the counts of *Listeria monocytogenes* for the following sources: beef, chicken, dairy, pork, fish, food, potato, water. We observe that the most common isolate source in our data is dairy, water, followed by food and and pork. 
+
+
+```{r fig-four, out.width='100%', fig.cap= "Line plots of top isolation surces for listeria monocytogenes counts over time. $\\textbf{(a)}$ Trends in the counts of pathogens from beef, chicken, dairy, and pork. $\\textbf{(b)}$ Trends in the pathogen counts from fish, food, potatoes, and water."}
+
+grid.arrange(figure_four, figure_five, ncol=2)
+
+```
+
+```{r table-two}
+# Displaying table
+kable(month_summary, caption = "Counts of $\\textit{Listeria monocytogenes}$ by month",
+      col.names = c("Isolation", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"),
+      align = c("llllllllllll"),
+      booktabs = TRUE) %>%
+      kable_styling(latex_options = "scale_down") %>%
+      column_spec(1, bold = TRUE) %>% row_spec(0, bold = TRUE)
+```
+
+
+### Serovar, AST phenotypes, AMR genotypes, and SNP Clusters
+
+Our data had 14,534 unique isolates for *Listeria monocytogenes* with 14517 distinct `Biosamples` and no missing data on this information. Additionally, we looked at the distribution of `Serovar` and noted a relatively high percentage of missing data (n = 14275; 98.22%). `Serovar` information was entered using free text as there are many variations of names that could be representing similar information such as 1, 1a, 1/2a. On the other hand, the `AST phenotypes` variable, denoting the Antimicrobial Susceptibility Test was recorded in a raw string form. This variable represents the antibiotics that each isolate is either susceptible or resistant to. The `AMR genotypes` variable represents the Antimicrobial resistance (AMR) genes found in the isolate during analysis. We found 184 unique AMR genes in our data with no missing information. There were 1, 474 SNP clusters whose genome assemblies were closely related.
+
+### Distributions of `Min Same` and `Min Difference` variables.
+
+Next we examined the distributions of `Min Same` and `Min Diff` variables. `Min-diff` is the minimum SNP distance to another isolate of a different isolation type (from an environmental isolate to a clinical isolate). Figure \@ref(fig:fig-five) shows that `Min Diff` approximately follows a bi-modal distribution suggesting that a transformation of this variable may be useful prior to using it in further analysis. On the other hand, `Min-same` was the minimum SNP distance to another isolate of the same isolation type (clinical to clinical or environmental to environmental). Additionally, Figure \@ref(fig:fig-five) shows that `Min Same` approximately follows an exponential distribution. A log transformation of this variable did not suggest a substantial deviation from the exponential distribution.
+
+```{r fig-five, out.width='90%', fig.cap= "The distributions of the minimum SNP distance to another isolate of a different isolation type and the minimum SNP distance to another isolate of a similar isolation type."}
+figure_six
+```
+
+
+## Modeling
+
+This section presents additional material and output from the statistical modeling including results based on additional data validation processes.
+Table \@ref(tab:s-one) presents the proportions of each sample in the training and testing proportion of the data by the isolation source.
+
+```{r s-one}
+test_train_prop <- bind_cols(list(train.prop, test.prop)) %>% 
+  dplyr::select(c(1, 2, 3, 5, 6))
+names(test_train_prop) <- c("Food source", "Train set sample size", "Train set proportion", "Test set sample size", "Test set proportion" )
+kable(test_train_prop, format = "latex", caption = "Proportions of sample from each isolation source in the derivation and validation datasets", booktabs = TRUE, digits = 4)
+```
+
+### Naive Bayes Gain and ROC Curves
+
+```{r fig-s1, fig.cap="The Naive Bayes Gain Curve on the test data set"}
+## plot the AUC: first get predicted probabilities on the test set then use these for the plot for each potential food source
+# Gain curve for each food source
+naive_gain <- naive_probs %>%
+  gain_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+  autoplot()
+naive_gain
+```
+
+
+
+```{r fig-s2, fig.cap="The naive Bayes AUC curve on the test dataset"}
+# ROC curve for each food source
+naive_ROC <- naive_probs %>%
+  roc_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+  autoplot()
+naive_ROC
+```
+
+### Random forest gain and AUC curve 
+
+Figure \@ref(tab:tab-s2) shows additional random forest test results.
+
+```{r tab-s2}
+## compute the final metrics for the random forest model [reported in paper]
+rf_test_metrics <- predict(up_rf_model, test, type = "prob") %>%
+  bind_cols(predict(up_rf_model, test)) %>%
+  bind_cols(select(test, Source2)) %>%
+  #metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
+  class_metrics(Source2, .pred_dairy:.pred_vegetables, estimate = .pred_class)
+kable(rf_test_metrics, format = "latex", caption = "Random forest additional test results", booktabs = TRUE, digits = 4)
+```
+
+
+
+
+```{r fig-s3, fig.cap = "Random Forest gain Curve on the test data"}
+
+## gain and AUC curves [presented as supplementary materials]
+## plot the AUC: first get predicted probabilities on the test set then use these for the plot for each potential food source
+
+# Gain curve for each food source
+rf_gain <- rf_probs %>%
+  gain_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+  autoplot()
+rf_gain
+```
+
+
+
+```{r fig-s4, fig.cap = "The AUC curve for the random forest regression model on the test dataset", warning=TRUE}
+
+# ROC curve for each food source
+rf_ROC <- rf_probs %>%
+  roc_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+  autoplot()
+rf_ROC
+```
+
+
+
+
+```{r fig-s5, fig.cap="The AUC curve for the random forest model on the full data set"}
+
+# ROC curve for each food source  [Given in main article]
+rf_ROC <- rf.probs %>%
+  roc_curve(Source2, .pred_dairy:.pred_vegetables) %>%
+  autoplot()
+rf_ROC
+```
+
+
+### Testing the predictive ability of the random forest model
+
+```{r}
+## showing how to use model
+##-----------------------------------------------------------------------------
+## re-sample the data and show example of how model performs with 5 variables
+idx <- c(1, 9, 14, 40, 53, 94, 193, 208, 173, 177)
+
+## sample the rows to create the new data frame [can as supplementary results]
+newdf = sub_dfx[idx, ]
+kable(some_pred, format = "latex", caption = "Sample predictions from the random forest classification model", booktabs = TRUE)
+```
+
+## Confusion matrix testing the performance of the random forest model on the full dataset
+
+Here, we examine the performance of the random forest model. How many isolation sources were attributed to each isolation source by the random forest model? These have been presented as % in the  main text.
+
+```{r}
+
+## confusion matrix for food source attribution [Included in paper]
+confusion_matrix <- rf_results %>% 
+  collect_predictions() %>% 
+  conf_mat(truth = Source2, estimate = .pred_class)
+confusion_matrix
+autoplot(confusion_matrix, "heatmap")
+```
+
+

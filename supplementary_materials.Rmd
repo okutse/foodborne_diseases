@@ -188,7 +188,6 @@ Here, we examine the performance of the random forest model. How many isolation 
 confusion_matrix <- rf_results %>% 
   collect_predictions() %>% 
   conf_mat(truth = Source2, estimate = .pred_class)
-confusion_matrix
 autoplot(confusion_matrix, "heatmap")
 ```
 

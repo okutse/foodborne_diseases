@@ -5,7 +5,7 @@ author:
 - Amos Okutse
 - Zexuan Yu
 - Rophence Ojiambo
-date: "  12 December, 2022 "
+date: "  14 December, 2022 "
 abstract: |
   **Background:** Listeria remains one of the most severe contributors to foodborne disease burden due to the severity of its clinical manifestations. The role of statistical models in linking pathogenic isolates of listeria to a particular source remains substantially unexplored in outbreak investigations. 
 
@@ -216,7 +216,7 @@ All statistical analyses were performed using the open-source R statistical prog
 
 ## Results
 
-Table \@ref(tab:one) shows the distribution of the analyzed listeriosis pathogens by the source from which they were obtained based on complete case analysis. The outcome variable was re-categorized into ten broad categories with the general environment accounting for 68.24% of the total listeriosis pathogens analyzed (n = 5696 samples) followed by dairy products (n = 624 samples; 7.48%), unknown foods (n = 618 samples, 7.40%), vegetables (n = 296 samples; 3.55%), meat (n = 267 samples; 3.55%), fruits (n = 258 samples; 3.09%), poultry (n = 254 samples; 3.04%), sea food (n = 198 samples; 2.37%), leafy greens (n = 70 samples; 0.84%), and human sources (n = 66 samples; 0.79%). Exploratory data analysis and additional results are available as a [Supplementary File](https://github.com/okutse/foodborne_diseases/blob/main/Supplementary-materials.pdf).
+Table \@ref(tab:one) shows the distribution of the analyzed listeriosis pathogens by the source from which they were obtained based on complete case analysis. The outcome variable was re-categorized into ten broad categories with the general environment accounting for 68.24% of the total listeriosis pathogens analyzed (n = 5696 samples) followed by dairy products (n = 624 samples; 7.48%), unknown foods (n = 618 samples, 7.40%), vegetables (n = 296 samples; 3.55%), meat (n = 267 samples; 3.55%), fruits (n = 258 samples; 3.09%), poultry (n = 254 samples; 3.04%), sea food (n = 198 samples; 2.37%), leafy greens (n = 70 samples; 0.84%), and human sources (n = 66 samples; 0.79%). Exploratory data analysis and additional results are available as a [Supplementary File](https://github.com/okutse/foodborne_diseases/blob/main/supplementary_materials.pdf).
 
 \begin{table}[H]
 
@@ -305,7 +305,7 @@ Specificity & 0.98 & 0.00\\
 \end{tabular}
 \end{table}
 
-The random forest model correctly linked 66.07% of the pathogens to environmental sources (n = 5515 samples), 6.04% to dairy and dairy products (n = 504 samples), 2.56% to fruits (n = 214 samples), 0.50% to humans (n = 42 samples), 0.45% to leafy greens (n = 38 samples), 1.88% to meat (n = 157 samples), 4.79% to other unknown sources (n = 400 samples), 1.81% to poultry (n = 151 samples), 1.48% to sea food (n = 124 samples), and 2.85% to vegetables (n = 238 samples) (see confusion matrix in the [Supplementary File](https://github.com/okutse/foodborne_diseases/blob/main/Supplementary-materials.pdf).
+The random forest model correctly linked 66.07% of the pathogens to environmental sources (n = 5515 samples), 6.04% to dairy and dairy products (n = 504 samples), 2.56% to fruits (n = 214 samples), 0.50% to humans (n = 42 samples), 0.45% to leafy greens (n = 38 samples), 1.88% to meat (n = 157 samples), 4.79% to other unknown sources (n = 400 samples), 1.81% to poultry (n = 151 samples), 1.48% to sea food (n = 124 samples), and 2.85% to vegetables (n = 238 samples). Figure \@ref(fig:figure-four) is a confusion matrix showing the classification performance of the random forest model in L. monocytogene source attribution.
 
 \begin{figure}[H]
 
@@ -318,10 +318,35 @@ The random forest model correctly linked 66.07% of the pathogens to environmenta
 
 
 
+\begin{figure}[H]
+
+{\centering \includegraphics{php2550_final_manuscript_files/figure-latex/figure-four-1} 
+
+}
+
+\caption{Performance of the random forest model in $\textit{Listeria monocytogene}$ source attribution. The model showed a relatively good classification performance.}(\#fig:figure-four)
+\end{figure}
+### Variable importance 
+
+Figure \@ref(fig:figure-five) shows the variable importance based on the random forest algorithm and the contributions of the features employed in modeling to node purity. The most important variables in linking a listeriosis pathogen to a source based on this model were the strain, the isolate, the state from which the pathogen was collected, the minimum SNP distance to another SNP of a different type, the minimum distance to a SNP of the same type, the season of the month the pathogen was collected, and the SNP cluster.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{php2550_final_manuscript_files/figure-latex/figure-five-1} 
+
+}
+
+\caption{Variable importance in the attribution of listeria pathogens to a source based on the random forest model. The strain denoting the microbial strain name used to distinguish a genetically distinct lineage separated from another strain by one or two mutations and the isolate type were the most substantial features in source attribution of listeria pathogens whereas the SNP cluster had the least significance.}(\#fig:figure-five)
+\end{figure}
+
+
+
+
+
 
 ## Discussion 
 
-Surveillance of foodborne illness  plays a critical role in limiting the incidence and prevalence rates of a disease. Early detection of sources linked to outbreaks can facilitate immediate response and implementation of public health policies and intervention measures aimed at reducing the burden of a disease. This study aimed at comparing different statistical machine learning models to propose a suitable model with high accuracy and efficiency in predicting the sources of listeria pathogens using data from the NCBI pathogen detection database. Accurate identification of sources linked to listeria can result in prompt responses to listeria outbreaks, thus reducing disease prevalence and mortality. This study found that compared with the naive Bayes classification algorithm, the random forest model showed higher accuracy and discrimination ability (AUC) of 88% and 96%, respectively. Given the robustness to class imbalance, high accuracy, and discriminatory ability, the the random forest model performs well in source attribution of listeria monocytogenes pathogens.In previous studies examining the role of machine learning methods in source attribution, the efficiency presented by these methods and their invaluable nature, particularly, to the public health practitioners, food industry professionals, microbiologists, among other professionals in allowing tailored practice has been highlighted [@tanui2022machine]. Promising performances using machine learning methods for listeriosis pathogen tracking in outbreak investigations were reported in the study by Liu et al. [@liu2021machine] who implemented the XGBoost algorithm with cgMLST profiles of L. monocytogenes.
+Surveillance of foodborne illness  plays a critical role in limiting the incidence and prevalence rates of a disease. Early detection of sources linked to outbreaks can facilitate immediate response and implementation of public health policies and intervention measures aimed at reducing the burden of a disease. This study aimed at comparing different statistical machine learning models to propose a suitable model with high accuracy and efficiency in predicting the sources of listeria pathogens using data from the NCBI pathogen detection database. Accurate identification of sources linked to listeria can result in prompt responses to listeria outbreaks, thus reducing disease prevalence and mortality. This study found that compared with the naive Bayes classification algorithm, the random forest model showed higher accuracy and discrimination ability (AUC) of 88% and 96%, respectively. Given the robustness to class imbalance, high accuracy, and discriminatory ability, the the random forest model performs well in source attribution of listeria monocytogenes pathogens. The study presents a simple model for linking a listeria monocytogene pathogens given features including strain, isolate type, collection location, minimum SNP distances to SNPs of the same or different type, the sample collection season, and the SNP cluster. In previous studies examining the role of machine learning methods in source attribution, the efficiency presented by these methods and their invaluable nature, particularly, to the public health practitioners, food industry professionals, microbiologists, among other professionals in allowing tailored practice has been highlighted [@tanui2022machine]. Promising performances using machine learning methods for listeriosis pathogen tracking in outbreak investigations were reported in the study by Liu et al. [@liu2021machine] who implemented the XGBoost algorithm with cgMLST profiles of L. monocytogenes.
 
 ### Study strengths and limitations
 

@@ -1006,3 +1006,31 @@ confusion_matrix <- rf_results %>%
   collect_predictions() %>% 
   conf_mat(truth = Source2, estimate = .pred_class)
 confusion_matrix
+
+
+## Variable importance based on the random forest model
+##------------------------------------------------------------------------------
+## Here, we create a last fit object based on the random forest model to obtain the variable importance based on this model
+
+best_rf_model <- rand_forest(trees = 500, mtry = 2, min_n = 3) %>% 
+  set_engine("ranger", importance = "impurity") %>% 
+  set_mode("classification")
+
+## update the workflow
+last_rf_workflow <- 
+  rf_workflow %>% 
+  update_model(best_rf_model)
+
+# the last fit
+set.seed(345)
+last_rf_fit <- 
+  last_rf_workflow %>% 
+  last_fit(df_split)
+last_rf_fit
+
+
+## the variable importance plot
+last_rf_fit %>% 
+  extract_fit_parsnip() %>% 
+  vip(num_features = 7)
+

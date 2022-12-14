@@ -1,0 +1,43 @@
+---
+title: "Group Collaboration Report"
+author: 
+- "Amos Okutse"
+- "Rophence Ojiambo"
+- "Zexhuan Yu"
+date: "2022-12-14"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Group Member Contributions
+
+The following is a breakdown of the group member contributions to the overall project. For each section, group member(s) that contributed to that section have listed their names against the named section.
+
+- Project conceptualization and design: 
+
+- Literature review:
+
+- Data cleaning, pre-processing and exploratory data analysis: 
+
+- Statistical modeling:
+
+- Results interpretation and reportings:
+
+- Discussion:
+
+
+- Final manuscript compilation:
+
+
+- Final manuscript review and approval:
+
+- Poster design:
+
+- Shiny dashboard preparation:
+
+- Compilation of the supplementary materials:
+
+

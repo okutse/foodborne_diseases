@@ -275,7 +275,7 @@ On the training data, we developed a robust model for source attribution of list
 \hline
 \end{tabular}
 \end{table}
-Similarly, the performance of the implemented models was evaluated against the test set. The naive Bayes classification algorithm and random forest model attained slightly lower accuracy of 24.96% and 86.25% respectively. On the other, the discriminatory ability of the random forest model based on the AUC value was 92.65% whereas the AUC for the naive Bayes model was 75.97%.The kappa and Jaccard's indices were 71.94% and 55.33%, respectively, for the random forest model whereas these values were 13.20% and 25.15%, respectively, for the naive Baye's model (see Table \@ref(tab:three)).
+Similarly, the performance of the implemented models was evaluated against the test set. The naive Bayes classification algorithm and random forest model attained slightly lower accuracy of 24.96% and 86.25% respectively. On the other, the discriminatory ability of the random forest model based on the AUC value was 92.65% whereas the AUC for the naive Bayes model was 75.97%. The kappa and Jaccard's indices were 71.94% and 55.33%, respectively, for the random forest model whereas these values were 13.20% and 25.15%, respectively, for the naive Baye's model (see Table \@ref(tab:three)).
 
 
 \begin{table}[H]

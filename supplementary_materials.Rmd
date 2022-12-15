@@ -2,12 +2,45 @@
 title: "Supplimentary Materials Accompanying Statistical Machine Learning Methods for Source Attribution"
 author: "Prepared by Amos Okutse"
 date: "2022-12-08"
-output: pdf_document
+header-includes:
+- |
+  ```{=latex}
+  \providecommand{\keywords}[1]{\textbf{Keywords:} #1}
+  ```
+- \usepackage{pdflscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+- \usepackage{fvextra}
+- \usepackage{float}
+- \usepackage{wrapfig}
+- \usepackage{amsmath}
+- \usepackage{threeparttable} %used to fix table with notes
+- \usepackage{float}
+- \usepackage{graphicx}
+- \usepackage{microtype}
+- \usepackage{setspace}
+- \usepackage[font=singlespacing]{caption} #can change font here for captions here!!
+- \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines, commandchars=\\\{\}}
+- \DeclareMathOperator*{\argmax}{arg\,max}
+- \DeclareMathOperator*{\argmin}{arg\,min}
+- \singlespacing
+fontsize: 10pt
+output:
+  bookdown::pdf_document2:
+    latex_engine: xelatex
+    toc: false
+    toc_depth: 4
+    number_sections: false
+    keep_md: false
+link-citations: yes
+colorlinks: yes
+linkcolor: blue
+urlcolor: blue
 ---
-```{r include=FALSE}
+```{r set-up, include=FALSE}
 knitr::opts_chunk$set(
 echo = FALSE,
-cache = FALSE,
+cache = TRUE,
 message = FALSE,
 warning = FALSE,
 fig.align = 'center',
@@ -17,15 +50,21 @@ tidy.opts = list(width.cutoff = 80, tidy = TRUE)
 )
 ```
 
-```{r include=FALSE, message=FALSE, warning=TRUE}
+```{r sourcing, include=FALSE, message=FALSE, warning=TRUE}
 source("data/analysis_script.R")
 ```
 
 
 ## Variable pre-processing steps.
 
-
-- Explanations of the different data cleaning steps goes here! 
+- There were 1401 unique isolation sources entered into the NCBI database from the date the data was generated, which comprised of 60 clinical types and 14,474 environmental/other types. To make meaningful comparisons in relation to our objective, for the initial work of this project, we aggregated the Isolation sourced category into 38 categories based on the top sources with relative frequencies $\geq 0.1$. These categories were used in the exploratory analysis as shown in Figure \@ref(fig:fig-three) and \@ref(fig:fig-four).
+- For the Methods section, we further aggregated the Isolation sourcing categories to be representative of the 7 broad sources contained in the IFSAC category scheme; Dairy, Poultry, Meat, Leafy greens, Fruits, Vegetables, Sea Food. Additional categories in the newly created source included environmental, human and other sources, bringing to a total of 10 categories.
+- We also examined the collection date variable that was used to explore trends over time. Since the Collection date variable contained the date the sample were collected in the format the submitter supplied ranging from Month-Date-Year, Year-Month and Year only while the Create date was in the Year-Month-Date ISO format with time stamp the data was added into the Pathogen Detection Project, we first converted these into a standard form of Year-Month-Date. Then for Collection date variable with missing values, we chose to fill in these dates by using those from the Create date variable. Finally we created Year and Month variables and extracted the respective years and months from the Collection date variable to maintain consistency
+in terms of available year records. 
+- For the seasonality variable included in our model building process, we created 4 seasons (Winter, Spring, Summer, and Fall) based on the newly created Month variable.
+- For the Location variable, we reduced this to only include 49 states in the
+United States and District of Puerto Rico, District of Columbia. We corrected for four wrongly abbreviated states (`FL`, `NC`, `CO`,`AZ`) and one state named `USA` was recoded to `Other`.
+- Finally for the Single Nucleotide Polymorphism (SNP) variable, we reduced this variable to 19 categories based on SNP clusters with $N > 100$ observed frequencies.
 
 
 ## Exploratory data analysis {#eda}
@@ -74,7 +113,7 @@ Our data had 14,534 unique isolates for *Listeria monocytogenes* with 14517 dist
 
 Next we examined the distributions of `Min Same` and `Min Diff` variables. `Min-diff` is the minimum SNP distance to another isolate of a different isolation type (from an environmental isolate to a clinical isolate). Figure \@ref(fig:fig-five) shows that `Min Diff` approximately follows a bi-modal distribution suggesting that a transformation of this variable may be useful prior to using it in further analysis. On the other hand, `Min-same` was the minimum SNP distance to another isolate of the same isolation type (clinical to clinical or environmental to environmental). Additionally, Figure \@ref(fig:fig-five) shows that `Min Same` approximately follows an exponential distribution. A log transformation of this variable did not suggest a substantial deviation from the exponential distribution.
 
-```{r fig-five, out.width='90%', fig.cap= "The distributions of the minimum SNP distance to another isolate of a different isolation type and the minimum SNP distance to another isolate of a similar isolation type."}
+```{r fig-five, out.width='86%', fig.cap= "The distributions of the minimum SNP distance to another isolate of a different isolation type and the minimum SNP distance to another isolate of a similar isolation type."}
 figure_six
 ```
 
@@ -104,7 +143,7 @@ naive_gain
 
 
 
-```{r fig-s2, fig.cap="The naive Bayes AUC curve on the test dataset"}
+```{r fig-s2, out.width='86%',fig.cap="The naive Bayes AUC curve on the test dataset"}
 # ROC curve for each food source
 naive_ROC <- naive_probs %>%
   roc_curve(Source2, .pred_dairy:.pred_vegetables) %>%
@@ -114,9 +153,10 @@ naive_ROC
 
 ### Random forest gain and AUC curve 
 
-Figure \@ref(tab:tab-s2) shows additional random forest test results.
 
-```{r tab-s2}
+
+```{r tab-s2, include=FALSE}
+#Figure \@ref(tab:tab-s2) shows additional random forest test results.
 ## compute the final metrics for the random forest model [reported in paper]
 rf_test_metrics <- predict(up_rf_model, test, type = "prob") %>%
   bind_cols(predict(up_rf_model, test)) %>%
@@ -129,7 +169,7 @@ kable(rf_test_metrics, format = "latex", caption = "Random forest additional tes
 
 
 
-```{r fig-s3, fig.cap = "Random Forest gain Curve on the test data"}
+```{r fig-s3, out.width='86%',fig.cap = "Random Forest gain Curve on the test data"}
 
 ## gain and AUC curves [presented as supplementary materials]
 ## plot the AUC: first get predicted probabilities on the test set then use these for the plot for each potential food source
@@ -143,7 +183,7 @@ rf_gain
 
 
 
-```{r fig-s4, fig.cap = "The AUC curve for the random forest regression model on the test dataset", warning=TRUE}
+```{r fig-s4, out.width='86%', fig.cap = "The AUC curve for the random forest regression model on the test dataset", warning=TRUE}
 
 # ROC curve for each food source
 rf_ROC <- rf_probs %>%
@@ -155,7 +195,7 @@ rf_ROC
 
 
 
-```{r fig-s5, fig.cap="The AUC curve for the random forest model on the full data set"}
+```{r fig-s5, out.width='86%', fig.cap="The AUC curve for the random forest model on the full data set"}
 
 # ROC curve for each food source  [Given in main article]
 rf_ROC <- rf.probs %>%
@@ -167,7 +207,7 @@ rf_ROC
 
 ### Testing the predictive ability of the random forest model
 
-```{r}
+```{r test}
 ## showing how to use model
 ##-----------------------------------------------------------------------------
 ## re-sample the data and show example of how model performs with 5 variables
@@ -175,14 +215,15 @@ idx <- c(1, 9, 14, 40, 53, 94, 193, 208, 173, 177)
 
 ## sample the rows to create the new data frame [can as supplementary results]
 newdf = sub_dfx[idx, ]
-kable(some_pred, format = "latex", caption = "Sample predictions from the random forest classification model", booktabs = TRUE)
+kable(some_pred, format = "latex", caption = "Sample predictions from the random forest classification model", booktabs = TRUE)%>%
+  kable_styling(latex_options = "HOLD_position")
 ```
 
 ## Confusion matrix testing the performance of the random forest model on the full dataset
 
 Here, we examine the performance of the random forest model. How many isolation sources were attributed to each isolation source by the random forest model? These have been presented as % in the  main text.
 
-```{r}
+```{r confusion-matrix}
 
 ## confusion matrix for food source attribution [Included in paper]
 confusion_matrix <- rf_results %>% 

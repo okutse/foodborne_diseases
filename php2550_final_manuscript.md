@@ -5,7 +5,7 @@ author:
 - Amos Okutse
 - Zexuan Yu
 - Rophence Ojiambo
-date: "  14 December, 2022 "
+date: "  15 December, 2022 "
 abstract: |
   **Background:** Listeria remains one of the most severe contributors to foodborne disease burden due to the severity of its clinical manifestations. The role of statistical models in linking pathogenic isolates of listeria to a particular source remains substantially unexplored in outbreak investigations. 
 
@@ -66,7 +66,7 @@ csl: sage-vancouver-brackets.csl
 
 The burden of foodborne illnesses remains substantially high across the globe. Contaminated food has been implicated in 600 million incident cases of foodborne diseases and 420, 000 deaths per year worldwide with children below five years accounting for one-third of the total fatalities [@who2015], [@Lee2021]. In the United States, foodborne illnesses result in about 128, 000 hospitalizations and about 3000 fatalities [@tanui2022machine]. Known pathogens account for most of the reported cases with most illnesses being caused by noroviruses (58%), non-typhoid salmonella (11%), *Clostridium perfringens* (10%), and *Campylobacter SPP.* (9%) whereas non-typhoid salmonella (35%), and norovirus (26%) account for the most hospitalizations [@Scallan2011]. *Salmonella enterica*, *E-coli*, and *Listeria monocytogenes* remain the three most common pathogens linked to foodborne disease outbreaks, defined as two or more cases of a similar illness resulting from the ingestion of a common food [@tanui2022machine], [@gourama2020foodborne].
 
-*Listeria monocytogene* remains one of the most severe causes of foodborne-related disease burden despite its characterization with low morbidity, particularly, due to the severity of its clinical manifestations [@chlebicz2018campylobacteriosis], [@filipello2020attribution]. The immuno-compromised, the elderly, pregnant women, and infants remain at high risk of listeriosis, a foodborne illness ranked as the third top cause of foodborne illness-associated deaths in the US [@lomonaco2015evolution]. The US Centers for Disease Control and Prevention (CDC) notes that about 1600 cases of listeriosis are recorded annually with about 260 mortalities [@cdc2022]. Outbreak investigations have shown links between these pathogens and specific food sources, a crucial phenomenon in identifying potential areas of food safety concerns including points of contamination and the current performance of foodborne illness prevention strategies [@tanui2022machine]. Many foodborne listeriosis outbreaks have been linked to a variety of foods, but mostly to different types of meat [@matle2020review], [@hilliard2018genomic]. The first laboratory-confirmed outbreak of listeriosis associated with meat products was caused by contaminated turkeys in 1988 [@schwartz1989investigation]. Since then, most meat products have been associated with outbreaks or sporadic listeriosis, including processed vacuum-packed meat products [@chen2017prevalence] and sausage [@jensen2016molecular] among others. Similarly, contaminated non-meat foods including ice cream, and diced celery have been previously linked to outbreaks [@gaul2013hospital], [@pouillot2016infectious]. In recent years, sporadic outbreaks of listeria have also been increasingly reported in developing countries across the globe [@de2014global].
+Despite its characterization with low morbidity, *Listeria monocytogene* remains one of the most severe causes of foodborne-related disease burden, particularly, due to the severity of its clinical manifestations [@chlebicz2018campylobacteriosis], [@filipello2020attribution]. The immuno-compromised, the elderly, pregnant women, and infants remain at high risk of listeriosis, a foodborne illness ranked as the third top cause of foodborne illness-associated deaths in the US [@lomonaco2015evolution]. The US Centers for Disease Control and Prevention (CDC) notes that about 1600 cases of listeriosis are recorded annually with about 260 mortalities [@cdc2022]. Outbreak investigations have shown links between these pathogens and specific food sources, a crucial phenomenon in identifying potential areas of food safety concerns including points of contamination and the current performance of foodborne illness prevention strategies [@tanui2022machine]. Many foodborne listeriosis outbreaks have been linked to a variety of foods, but mostly to different types of meat [@matle2020review], [@hilliard2018genomic]. The first laboratory-confirmed outbreak of listeriosis associated with meat products was caused by contaminated turkeys in 1988 [@schwartz1989investigation]. Since then, most meat products have been associated with outbreaks or sporadic listeriosis, including processed vacuum-packed meat products [@chen2017prevalence] and sausage [@jensen2016molecular] among others. Similarly, contaminated non-meat foods including ice cream, and diced celery have been previously linked to outbreaks [@gaul2013hospital], [@pouillot2016infectious]. In recent years, sporadic outbreaks of listeria have also been increasingly reported in developing countries across the globe [@de2014global].
 
 Technological advancements have seen increased attempts in leveraging the power of machine learning methods and core genome multilocus sequence typing (cgMLST) in the corroboration of epidemiological findings on food source attribution, in addition, to auditing the effect of public health interventions targeting the food chain on the food reservoirs [@tanui2022machine], [@Munck2020]. This methodology enables differentiation of isolates and can be used to link them to their potential food sources in studies seeking to infer the food source of an outbreak given a pathogenic strain and ultimately result in a reduction in the incidence of foodborne illnesses [@tanui2022machine, @Munck2020]. Since the pathogens associated with foodborne illnesses are prone to change, understanding the role of these changes in their adaptation to food handling practices is imperative in the effective surveillance of the distribution, as well as, the occurrence of the pathogens. Moreover, the use of genomic data with machine learning methods has gained precedence due to the ability of these methods to learn patterns in high-dimensional data sets which are then exploited in predictive models [@Munck2020]. 
 
@@ -133,9 +133,7 @@ The downloaded data was comprised of n = 53, 725 *Listeria monocytogenes* pathog
 
 ### Missing Data
 
-We shall start by assessing the missingness in our data set. Figure \@ref(fig:fig-two) shows us the overall missingness of our selected variables ordered from the least to the largest missing percentage. Key to note here is that there is over 86% missing observations in the variables. `Host Disease`, `AST Phenotypes`, `Computed types`, `Virulence genotypes`, `Source type` and `Outbreak` have approximately 100% of missing values. Variables such as `Isolation source`, `Isolation type`, `BioSample`, `Location`, `AMR genotypes` and `Isolates` have no missingness present. The missingness observed in this data set is likely due to  under-reporting or non-response by the researchers or clinicians who submit this information on the NCBI website. Missing information in the collection date variable could be due to data entry errors when entering this information or just an oversight by the submitter. Generally, the missingness can be attributed to the high variations in the reporting practices or amount of time taken for lab processing prior to submission to the NCBI pathogen detection database. We acknowledge that this amount of missingness will be pose a major limitation in our study as these variables may not be informative in our analysis and may limit the interpretation and generalizability of our study findings.
-
--All analyses consider a complete case analysis
+We shall start by assessing the missingness in our data set. Figure \@ref(fig:fig-two) shows us the overall missingness of our selected variables ordered from the least to the largest missing percentage. Key to note here is that there is over 86% missing observations in the variables. `Host Disease`, `AST Phenotypes`, `Computed types`, `Virulence genotypes`, `Source type` and `Outbreak` have approximately 100% of missing values. Variables such as `Isolation source`, `Isolation type`, `BioSample`, `Location`, `AMR genotypes` and `Isolates` have no missingness present. The missingness observed in this data set is likely due to  under-reporting or non-response by the researchers or clinicians who submit this information on the NCBI website. Missing information in the collection date variable could be due to data entry errors when entering this information or just an oversight by the submitter. Generally, the missingness can be attributed to the high variations in the reporting practices or amount of time taken for lab processing prior to submission to the NCBI pathogen detection database. We acknowledge that this amount of missingness will be pose a major limitation in our study as these variables may not be informative in our analysis and may limit the interpretation and generalizability of our study findings. All analyses in the next sections consider a complete case analysis.
 
 \begin{figure}[H]
 
@@ -188,9 +186,9 @@ Bootstrap aggregating provides a natural way of estimating the generalizability 
 
 ### Model building
 
-#### Data curation and preprocessing
+**Data curation and preprocessing**
 
-The data considered for analysis had a very high percentage of missing data which rendered the use of data imputation methods unreasonable. The inclusion of potentially predictive features in the model resulted in the exclusion of all possible observations with missing data under a complete case analysis. As such, the analysis that followed was limited to the variables we deemed useful based on previous literature in linking a particular *Listeria monocytogene* pathogen to a food source. The features which we deemed relevant for this analysis included the food source, the minimum Single Nucleotide Polymorphism (SNP) distance to another isolate of the same isolation type for example, the minimum SNP distance from one clinical isolate to another clinical isolate (`Min.same`), the minimum SNP distance to another isolate of a different isolation type (`Min.diff`), the microbial strain name used to distinguish a genetically distinct lineage separated from another strain by one or two mutations (`Strain`), the isolate, the SNP cluster derived from a re-categorization of the original SNP cluster variables into -- categories based on the frequency of occurrence of each level, the season derived from the month variable and the location (state) from which the particular isolate was collected, all of which were informed by literature [@tanui2022machine], [@filipello2020attribution]. The outcome variable (source) was based on a re-categorization of the IFSAC food categories into 10 broad food sources (Data pre-processing and exploratory analysis in Supplementary File). We split the data into training and testing sets with ¾ of the observations used in the training and the remaining ¼ of the observations used in the model validation. The split criteria considered the probable imbalance in the outcome by stratifying the way in which this split was performed using the food source variable. Class imbalance was handled by up-sampling the minority classes up to the same ratio as the majority class using the `step-upsample` function from the package `themis` [@Hvitfeldt2022]. All models were trained on the same data set using the same features to reduce the potential effect of varied model building strategies on the resulting model performance estimates and thus also enhance comparability of the performance metrics. 10-fold cross-validation was employed to handle potential model optimism.
+The data considered for analysis had a very high percentage of missing data which rendered the use of data imputation methods unreasonable. The inclusion of potentially predictive features in the model resulted in the exclusion of all possible observations with missing data under a complete case analysis. As such, the analysis that followed was limited to the variables we deemed useful based on previous literature in linking a particular *Listeria monocytogene* pathogen to a food source. The features which we deemed relevant for this analysis included the food source, the minimum Single Nucleotide Polymorphism (SNP) distance to another isolate of the same isolation type for example, the minimum SNP distance from one clinical isolate to another clinical isolate (`Min.same`), the minimum SNP distance to another isolate of a different isolation type (`Min.diff`), the microbial strain name used to distinguish a genetically distinct lineage separated from another strain by one or two mutations (`Strain`), the isolate, the SNP cluster derived from a re-categorization of the original SNP cluster variables into 19 categories based on the top frequency occurrences of each level, the season derived from the month variable and the location (state) from which the particular isolate was collected, all of which were informed by literature [@tanui2022machine], [@filipello2020attribution]. The outcome variable (source) was based on a re-categorization of the IFSAC food categories into 10 broad food sources (Data pre-processing and exploratory analysis in Supplementary File). We split the data into training and testing sets with ¾ of the observations used in the training and the remaining ¼ of the observations used in the model validation. The split criteria considered the probable imbalance in the outcome by stratifying the way in which this split was performed using the food source variable. Class imbalance was handled by up-sampling the minority classes up to the same ratio as the majority class using the `step-upsample` function from the package `themis` [@Hvitfeldt2022]. All models were trained on the same data set using the same features to reduce the potential effect of varied model building strategies on the resulting model performance estimates and thus also enhance comparability of the performance metrics. 10-fold cross-validation was employed to handle potential model optimism.
 
 #### Implementation
 
@@ -200,7 +198,7 @@ The Naïve Bayes algorithm was implemented using the `naive_bayes()` function wh
 
 (2)	Random forest
 
-The random forest algorithm was implemented using the `rand_forest()` function which defines a model for the creation of a substantial number of trees that are independent of each other. The final classification follows from averaging/bagging or majority voting. The model implementation employed the `ranger` engine, a workflow, similarly derived from the `tidymodels` package [@kuhn2020]. The `rand_forest()`  function takes in five arguments including the outcome mode of the prediction, the engine used in model fitting, and tuning parameters `mtry`, `trees`, and `min_n` corresponding to the number of predictors on which to split the creation of a tree, the number of trees in the ensemble, and the minimum number of data points in a node for an additional split to be performed at this node. Hyperparameter tuning proceeded using a space-filling design with 25 candidate models using the `tune_grid()` function and the `show_best()` metric set to the AUC. For this process, the training data is split further using the `validation_split()` function with 20% of the samples used in the validation. The `ranger` [@wright2017] package was used for parallel processing to allow computational efficiency. The best performing `mtry` value was 2 whereas the `min_n` was 3.     
+The random forest algorithm was implemented using the `rand_forest()` function which defines a model for the creation of a substantial number of trees that are independent of each other. The final classification follows from averaging/bagging or majority voting. The model implementation employed the `ranger` engine, a workflow, similarly derived from the `tidymodels` package [@kuhn2020]. The `rand_forest()`  function takes in five arguments including the outcome mode of the prediction, the engine used in model fitting, and tuning parameters `mtry`, `trees`, and `min_n` corresponding to the number of predictors on which to split the creation of a tree, the number of trees in the ensemble, and the minimum number of data points in a node for an additional split to be performed at this node. Hyperparameter tuning proceeded using a space-filling design with 25 candidate models using the `tune_grid()` function and the `show_best()` metric set to the AUC. For this process, the training data is split further using the `validation_split()` function with 20% of the samples used in the validation. The `ranger` [@wright2017] package was used for parallel processing to allow computational efficiency. The best performing `mtry` value, that is, the number of variables to randomly sample as candidate at each split was 2 whereas the minimum number of data points in a node that were required for further splits of nodes, `min_n` was 3.     
 
 ### Model evaluation {#performance}
 
@@ -208,7 +206,7 @@ Models were evaluated based on their classification accuracy and discriminatory 
 
 ### Model selection
 
-Model selection was based on the performance metrics discussed in \@ref(performance) to determine a suitable model with a combination of the highest accuracy as well as ability to discriminate between the different food sources to facilitate a relatively accurate linkage of the varied *Listeria monocytogene* pathogens to a potential food source and thus facilitate contact tracing and outcome investigation rapidly. The best model based on the metrics above was trained on the full set of features to allow the model to learn the heterogeneity in the full data set and thus enhance robustness. This approach has been employed elsewhere [@tanui2022machine], [@Munck2020] and has been shown to yield substantially throughput results for predictive models.
+Model selection was based on the performance metrics discussed in the model evaluation section to determine a suitable model with a combination of the highest accuracy as well as ability to discriminate between the different food sources to facilitate a relatively accurate linkage of the varied *Listeria monocytogene* pathogens to a potential food source and thus facilitate contact tracing and outcome investigation rapidly. The best model based on the metrics above was trained on the full set of features to allow the model to learn the heterogeneity in the full data set and thus enhance robustness. This approach has been employed elsewhere [@tanui2022machine], [@Munck2020] and has been shown to yield substantially throughput results for predictive models.
 
 ### Statistical software, code, and data availability
 
@@ -251,9 +249,9 @@ Table \@ref(tab:one) shows the distribution of the analyzed listeriosis pathogen
 
 ### Comparative model performance
 
-We developed a robust model for source attribution of listeriosis pathogens given genetic information such as the minimum SNP distance to a SNP of the same type, minimum distance of a SNP to another of a different type, the type of strain, and the SNP cluster, as well as, other information such as the collection location of the pathogen, and the season it was collected. The performance of the implemented models was compared based on the averaged estimates of the AUC and accuracy across ten minority class up-sampled iterations of the data via a 10 fold cross-validation. The random forest model attained an accuracy of 87.27% (SE = 0.33%) whereas the naive Bayes classification algorithm attained an accuracy of 25.77% (SE = 0.65%). On the other, the discriminatory ability of the random forest model based on the AUC value was 94.53% (SE = 0.28%) whereas the AUC for the naive Bayes model was 79.61% (SE = 0.57%). The imbalanced class proportions in the model derivation dataset were handled by up-sampling the minority classes to be at the same proportion as the majority class (environmental isolate sources) and thus alleviate bias of the models. The kappa and Jaccard's indices were 74.38% (SE = 0.55%) and 65.19% (SE = 1.03%), respectively, for the random forest model whereas these values were 13.98% (SE = 0.46%) and 28.31 (SE = 0.90%), respectively, for the naive Baye's model. The random forest model not only showed a high discriminatory ability but was also robust to class imbalance (see Table \@ref(tab:two)). 
+On the training data, we developed a robust model for source attribution of listeriosis pathogens given genetic information such as the minimum SNP distance to a SNP of the same type, minimum distance of a SNP to another of a different type, the type of strain, and the SNP cluster, as well as, other information such as the collection location of the pathogen, and the season it was collected. The performance of the implemented models was compared based on the averaged estimates of the AUC and accuracy across ten minority class up-sampled iterations of the data via a 10 fold cross-validation. The random forest model attained an accuracy of 87.27% (SE = 0.33%) whereas the naive Bayes classification algorithm attained an accuracy of 25.77% (SE = 0.65%). On the other, the discriminatory ability of the random forest model based on the AUC value was 94.53% (SE = 0.28%) whereas the AUC for the naive Bayes model was 79.61% (SE = 0.57%). The imbalanced class proportions in the model derivation dataset were handled by up-sampling the minority classes to be at the same proportion as the majority class (environmental isolate sources) and thus alleviate bias of the models. The kappa and Jaccard's indices were 74.38% (SE = 0.55%) and 65.19% (SE = 1.03%), respectively, for the random forest model whereas these values were 13.98% (SE = 0.46%) and 28.31 (SE = 0.90%), respectively, for the naive Baye's model. The random forest model not only showed a high discriminatory ability but was also robust to class imbalance (see Table \@ref(tab:two)). 
 
-\begin{table}
+\begin{table}[H]
 
 \caption{(\#tab:two)Model performance measures across 10 folds with resampling for Naive Bayes and random forest classification algorithms}
 \centering
@@ -263,28 +261,55 @@ We developed a robust model for source attribution of listeriosis pathogens give
 \cline{1-3} \cline{4-5}
 \textbf{ } & \textbf{Estimate} & \textbf{Standard error (SE)} & \textbf{Estimate} & \textbf{Standard error (SE)}\\
 \hline
-\textbf{Accuracy} & 0.26 & 0.01 & 0.87 & 0.00\\
+\textbf{Accuracy} & 0.2577 & 0.0065 & 0.8727 & 0.0033\\
 \hline
-\textbf{Jaccard's index} & 0.28 & 0.01 & 0.65 & 0.01\\
+\textbf{Jaccard's index} & 0.2831 & 0.0090 & 0.6519 & 0.0103\\
 \hline
-\textbf{Kappa} & 0.14 & 0.00 & 0.74 & 0.01\\
+\textbf{Kappa} & 0.1398 & 0.0046 & 0.7438 & 0.0055\\
 \hline
-\textbf{AUC} & 0.80 & 0.01 & 0.95 & 0.00\\
+\textbf{AUC} & 0.7961 & 0.0057 & 0.9453 & 0.0028\\
 \hline
-\textbf{Sensitivity} & 0.36 & 0.01 & 0.68 & 0.01\\
+\textbf{Sensitivity} & 0.3633 & 0.0092 & 0.6771 & 0.0105\\
 \hline
-\textbf{Specificity} & 0.92 & 0.00 & 0.97 & 0.00\\
+\textbf{Specificity} & 0.9198 & 0.0007 & 0.9748 & 0.0006\\
+\hline
+\end{tabular}
+\end{table}
+Similarly, the performance of the implemented models was evaluated against the test set. The naive Bayes classification algorithm and random forest model attained slightly lower accuracy of 24.96% and 86.25% respectively. On the other, the discriminatory ability of the random forest model based on the AUC value was 92.65% whereas the AUC for the naive Bayes model was 75.97%.The kappa and Jaccard's indices were 71.94% and 55.33%, respectively, for the random forest model whereas these values were 13.20% and 25.15%, respectively, for the naive Baye's model (see Table \@ref(tab:three)).
+
+
+\begin{table}[H]
+
+\caption{(\#tab:three)Model performance measures for Naive Bayes and random forest classification algorithms on the test dataset}
+\centering
+\begin{tabular}[t]{>{}l|r|r}
+\hline
+\multicolumn{2}{c|}{\textbf{Naive Bayes}} & \multicolumn{1}{c}{\textbf{Random Forest}} \\
+\cline{1-2} \cline{3-3}
+\textbf{ } & \textbf{Estimate} & \textbf{Estimate}\\
+\hline
+\textbf{Accuracy} & 0.2496 & 0.8625\\
+\hline
+\textbf{Kappa} & 0.1320 & 0.7194\\
+\hline
+\textbf{Jaccard's index} & 0.2515 & 0.5533\\
+\hline
+\textbf{Sensitivity} & 0.3324 & 0.5813\\
+\hline
+\textbf{Specificity} & 0.9191 & 0.9720\\
+\hline
+\textbf{AUC} & 0.7597 & 0.9265\\
 \hline
 \end{tabular}
 \end{table}
 
 ### Food source attribution of Listeriosis pathogens
 
-Table \@ref(tab:three) summarizes the performance of the random forest algorithm trained with re-sampling on the full dataset with the minority classes up-sampled to account for the potential impact of a class imbalanced dataset. The tmodel test results showed a relatively robust performance of this model (AUC = 0.96; Accuracy = 0.88, Kappa = 0.77). Figure \@ref(fig:fig-three) shows the discriminatory ability of the random forest model within each isolation source of the listeriosis pathogens. The model exhibits a high discriminatory ability for all isolation sources of the pathogens and is thus proposed for source attribution of listeria pathogens given its high accuracy, discriminatory ability, and robustness to the obvious class imbalances in the derivation dataset.  
+Table \@ref(tab:four) summarizes the performance of the random forest algorithm trained with re-sampling on the full dataset with the minority classes up-sampled to account for the potential impact of a class imbalanced dataset. The model results showed a relatively robust performance of this model (AUC = 0.96; Accuracy = 0.88, Kappa = 0.77). Figure \@ref(fig:fig-three) shows the discriminatory ability of the random forest model within each isolation source of the listeriosis pathogens. The model exhibits a high discriminatory ability for all isolation sources of the pathogens and is thus proposed for source attribution of listeria pathogens given its high accuracy, discriminatory ability, and robustness to the obvious class imbalances in the derivation dataset.  
 
 \begin{table}[H]
 
-\caption{(\#tab:three)Model performance measures for random forest classification on the full dataset with resampling}
+\caption{(\#tab:four)Model performance measures for random forest classification on the full dataset with resampling}
 \centering
 \begin{tabular}[t]{l|r|r}
 \hline

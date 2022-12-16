@@ -24,7 +24,6 @@ This repository holds files related to the final project in PHP2550 Practical Da
 
 - `references.bib`: This file contains latest version of the references used in this project.
 
-
 -------------------------------------------------------------
 ## Collaborators
 

@@ -984,7 +984,7 @@ dev.off()
 
 
 ## save the model trained on the full data for use in food source attribution
-saveRDS(final.rf.model, "data\\final.rf.model.rds")
+save(final.rf.model, file = "data\\final.rf.model.rda")
 
 ## showing how to use model
 ##-----------------------------------------------------------------------------

@@ -171,10 +171,13 @@ Table \@ref(tab:naive) presents the preliminary results based on the implementat
 \toprule
 .metric & .estimator & .estimate\\
 \midrule
-accuracy & multiclass & 0.723\\
-kap & multiclass & 0.594\\
-mn\_log\_loss & multiclass & 0.888\\
-roc\_auc & hand\_till & 0.823\\
+accuracy & multiclass & 0.250\\
+kap & multiclass & 0.132\\
+j\_index & macro & 0.252\\
+sens & macro & 0.332\\
+spec & macro & 0.919\\
+\addlinespace
+roc\_auc & hand\_till & 0.760\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -201,6 +204,16 @@ roc\_auc & hand\_till & 0.823\\
 
 
 
+Table: (\#tab:unnamed-chunk-2)Model performance measures across 10 folds with resampling for Naive Bayes and random forest classification algorithms
+
+|                | Estimate| Standard error (SE)| Estimate| Standard error (SE)|
+|:---------------|--------:|-------------------:|--------:|-------------------:|
+|Accuracy        |   0.2577|              0.0065|   0.8727|              0.0033|
+|Jaccard's index |   0.2831|              0.0090|   0.6519|              0.0103|
+|Kappa           |   0.1398|              0.0046|   0.7438|              0.0055|
+|AUC             |   0.7961|              0.0057|   0.9453|              0.0028|
+|Sensitivity     |   0.3633|              0.0092|   0.6771|              0.0105|
+|Specificity     |   0.9198|              0.0007|   0.9748|              0.0006|
 
 
 \newpage

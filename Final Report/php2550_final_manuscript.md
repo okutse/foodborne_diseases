@@ -85,7 +85,7 @@ This study uses secondary data downloaded on the 18th October, 2022 from the Nat
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=0.86\linewidth]{figures/data_cleaning} 
+{\centering \includegraphics[width=0.86\linewidth]{../figures/data_cleaning} 
 
 }
 

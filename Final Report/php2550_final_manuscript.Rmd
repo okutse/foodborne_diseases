@@ -72,6 +72,8 @@ tidy.opts = list(width.cutoff = 80, tidy = TRUE)
 ```
 
 ```{r include=FALSE, message=FALSE, warning=TRUE}
+# make sure to set your own working directory in order to source the analysis script.
+setwd("C:/Users/ADMIN/Documents/GitHub/foodborne_diseases")
 source("data/analysis_script.R")
 ```
 
@@ -97,7 +99,7 @@ This study uses secondary data downloaded on the 18th October, 2022 from the Nat
 
 
 ```{r fig-one, echo=FALSE, dpi=300, out.width='86%', fig.align='center', fig.cap="The flow of the data cleaning process based on the specified isolate inclusion criteria."}
-knitr::include_graphics("figures/data_cleaning.jpg")
+knitr::include_graphics("C:/Users/ADMIN/Documents/GitHub/foodborne_diseases/figures/data_cleaning.jpg")
 ```
 
 

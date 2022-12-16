@@ -51,6 +51,8 @@ tidy.opts = list(width.cutoff = 80, tidy = TRUE)
 ```
 
 ```{r sourcing, include=FALSE, message=FALSE, warning=TRUE}
+# make sure to set your own working directory in order to source the analysis script.
+setwd("C:/Users/ADMIN/Documents/GitHub/foodborne_diseases")
 source("data/analysis_script.R")
 ```
 
